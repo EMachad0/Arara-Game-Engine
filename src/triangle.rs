@@ -83,10 +83,10 @@ fn main() {
             tex: &texture,
         };
 
-        let mut target = display.draw();
-        target.clear_color(0.0, 0.0, 0.6, 0.5);
-        target.draw(&vertex_buffer, &indices, &program, &uniforms, &Default::default()).unwrap();
-        target.finish().unwrap();
+        let mut frame = display.draw();
+        frame.clear_color(0.0, 0.0, 0.6, 0.5);
+        frame.draw(&vertex_buffer, &indices, &program, &uniforms, &Default::default()).unwrap();
+        frame.finish().unwrap();
 
         let next_frame_time = std::time::Instant::now() +
             std::time::Duration::from_nanos(16_666_667);
