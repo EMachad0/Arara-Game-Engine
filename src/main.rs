@@ -20,8 +20,11 @@ implement_vertex!(Vertex, position, tex_coords, normal);
 fn main() {
     use glium::glutin;
 
+    let size = glium::glutin::dpi::LogicalSize::new(1024, 768);
     let event_loop = glutin::event_loop::EventLoop::new();
-    let wb = glutin::window::WindowBuilder::new();
+    let wb = glutin::window::WindowBuilder::new()
+        .with_inner_size(size)
+        .with_title("CGR");
     let cb = glutin::ContextBuilder::new();
     let display = glium::Display::new(wb, cb, &event_loop).unwrap();
 
@@ -92,42 +95,27 @@ fn main() {
         }
     "#;
 
+    let mut perspective = camera::Perspective::new(size.width, size.height, cgmath::Deg(60.0), 0.1, 1024.0);
+    let mut camera = camera::Camera::new((0.0, 5.0, 10.0), cgmath::Deg(-90.0), cgmath::Deg(-20.0));
+    let mut camera_controller = camera::CameraController::new(4.0, 0.4);
+    let mut mouse_pressed = false;
+
     let vertex_buffer = glium::VertexBuffer::new(&display, &shape).unwrap();
     let indices = glium::index::NoIndices(glium::index::PrimitiveType::TriangleStrip);
     let program = glium::Program::from_source(&display, vertex_shader_src, fragment_shader_src, None).unwrap();
 
     event_loop.run(move |ev, _, control_flow| {
         let mut frame = display.draw();
-
-        let perspective = {
-            let (width, height) = frame.get_dimensions();
-            let aspect_ratio = height as f32 / width as f32;
-
-            let fov: f32 = 3.141592 / 3.0;
-            let zfar = 1024.0;
-            let znear = 0.1;
-
-            let f = 1.0 / (fov / 2.0).tan();
-
-            [
-                [f*aspect_ratio , 0.0,                            0.0, 0.0],
-                [           0.0 ,   f,                            0.0, 0.0],
-                [           0.0 , 0.0,      (zfar+znear)/(zfar-znear), 1.0],
-                [           0.0 , 0.0, -(2.0*zfar*znear)/(zfar-znear), 0.0],
-            ]
-        };
-
-        let view = camera::view_matrix(
-            &[0.0, 0.0, -1.0],
-            &[0.0, 0.0, 1.0],
-            &[0.0, 1.0, 0.0],
-        );
+        
+        // let (width, height) = frame.get_dimensions();
+        let perspective_matrix: [[f32; 4]; 4] = perspective.calc_matrix().into();
+        let view: [[f32; 4]; 4]= camera.calc_matrix().into();
 
         let model = [
             [1.0, 0.0, 0.0, 0.0],
             [0.0, 1.0, 0.0, 0.0],
             [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 2.0, 1.0f32],
+            [0.0, 0.0, -2.0, 1.0f32],
         ];
 
         let light = [0.0, 0.0, 0.0f32];
@@ -135,7 +123,7 @@ fn main() {
         let uniforms = uniform! {
             model: model,
             view: view,
-            perspective: perspective,
+            perspective: perspective_matrix,
             u_light: light,
             tex: &texture,
         };
@@ -144,16 +132,52 @@ fn main() {
         frame.draw(&vertex_buffer, &indices, &program, &uniforms, &Default::default()).unwrap();
         frame.finish().unwrap();
 
-        let next_frame_time = std::time::Instant::now() +
-            std::time::Duration::from_nanos(16_666_667);
+        let dt = std::time::Duration::from_nanos(16_666_667);
+        let next_frame_time = std::time::Instant::now() + dt;
+
+        camera_controller.update_camera(&mut camera, dt);
         
         *control_flow = glutin::event_loop::ControlFlow::WaitUntil(next_frame_time);
+
+        use glutin::event::*;
         match ev {
-            glutin::event::Event::WindowEvent { event, .. } => match event {
-                glutin::event::WindowEvent::CloseRequested => {
+            Event::DeviceEvent { ref event, .. } => match event {
+                DeviceEvent::Key(
+                    KeyboardInput {
+                        virtual_keycode: Some(key),
+                        state,
+                        ..
+                    }
+                ) => {
+                    camera_controller.process_keyboard(*key, *state);
+                }
+                DeviceEvent::MouseWheel { delta, .. } => {
+                    camera_controller.process_scroll(delta);
+                }
+                DeviceEvent::Button {
+                    button: 1, // Left Mouse Button
+                    state,
+                } => {
+                    mouse_pressed = *state == ElementState::Pressed;
+                }
+                DeviceEvent::MouseMotion { delta } => {
+                    if mouse_pressed {
+                        camera_controller.process_mouse(delta.0, delta.1);
+                    }
+                }
+                _ => (),
+            }
+            Event::WindowEvent { event, .. } => match event {
+                WindowEvent::CloseRequested => {
                     *control_flow = glutin::event_loop::ControlFlow::Exit;
                     return;
                 },
+                WindowEvent::Resized(physical_size) => {
+                    perspective.resize_from_size(physical_size);
+                },
+                WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
+                    perspective.resize_from_size(*new_inner_size);
+                }
                 _ => return,
             },
             _ => (),
