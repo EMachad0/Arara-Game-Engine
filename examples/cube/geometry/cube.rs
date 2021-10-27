@@ -46,12 +46,6 @@ impl Default for Cuboid {
     }
 }
 
-impl Cuboid {
-    pub fn new() -> Self {
-        Default::default()
-    }
-}
-
 /* faces:
       0--1
      /|  |
