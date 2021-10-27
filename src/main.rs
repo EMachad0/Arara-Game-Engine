@@ -97,7 +97,7 @@ fn main() {
 
     let mut perspective = camera::Perspective::new(size.width, size.height, cgmath::Deg(60.0), 0.1, 1024.0);
     let mut camera = camera::Camera::new((0.0, 5.0, 10.0), cgmath::Deg(-90.0), cgmath::Deg(-20.0));
-    let mut camera_controller = camera::CameraController::new(4.0, 0.4);
+    let mut camera_controller = camera::CameraController::new(1.0, 0.4);
     let mut mouse_pressed = false;
 
     let vertex_buffer = glium::VertexBuffer::new(&display, &shape).unwrap();
