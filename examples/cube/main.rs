@@ -23,7 +23,7 @@ fn main() {
     let display = glium::Display::new(wb, cb, &event_loop).unwrap();
 
     let image = image::load(
-        Cursor::new(&include_bytes!("../joaozinho.png")),
+        Cursor::new(&include_bytes!("../../joaozinho.png")),
         image::ImageFormat::Png,
     ).unwrap().to_rgba8();
 
