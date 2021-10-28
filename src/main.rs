@@ -45,8 +45,37 @@ fn main() {
 
     let sphere = geometry::sphere::Sphere::new(32, 16);
 
+    let mut spheres = (0 .. 10000).map(|_| {
+        let pos: (f32, f32, f32) = (rand::random(), rand::random(), rand::random());
+        let dir: (f32, f32, f32) = (rand::random(), rand::random(), rand::random());
+        let pos = (pos.0 * 1.5 - 0.75, pos.1 * 1.5 - 0.75, pos.2 * 1.5 - 0.75);
+        let dir = (dir.0 * 1.5 - 0.75, dir.1 * 1.5 - 0.75, dir.2 * 1.5 - 0.75);
+        (pos, dir)
+    }).collect::<Vec<_>>();
+
+    let vb = glium::vertex::VertexBuffer::dynamic();
     let vertex_buffer = glium::VertexBuffer::new(&display, &sphere.vertices).unwrap();
     let indices = glium::IndexBuffer::new(&display, glium::index::PrimitiveType::TrianglesList, &sphere.indices).unwrap();
+
+    let instance_count = 5;
+
+    let mut per_instance = {
+        #[derive(Copy, Clone)]
+        struct Attr {
+            world_position: (f32, f32, f32),
+        }
+
+        implement_vertex!(Attr, world_position);
+
+        let data = (0..instance_count).iter().map(|i| {
+            Attr {
+                world_position: (i, i, i),
+            }
+        }).collect::<Vec<_>>();
+
+        glium::vertex::VertexBuffer::dynamic(&display, &data).unwrap()
+    };
+
     let shaders = shaders::Shaders::default();
     let program = glium::Program::from_source(&display, shaders.vertex_shader, shaders.fragment_shader, None).unwrap();
 
@@ -75,6 +104,7 @@ fn main() {
                 write: true,
                 .. Default::default()
             },
+            // backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockwise,
             .. Default::default()
         };
 
