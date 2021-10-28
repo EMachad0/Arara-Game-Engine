@@ -1,13 +1,10 @@
 use std::f32::consts::PI;
 
-use cgmath::*;
-
 use super::vertex::Vertex;
 
 pub struct Sphere {
     pub vertices: Vec<Vertex>,
     pub indices: Vec<u32>,
-    pub model: cgmath::Matrix4::<f32>,
 }
 
 
@@ -72,10 +69,7 @@ impl Sphere {
             }
         }
 
-        let model = cgmath::Matrix4::<f32>::identity();
-
         Self {
-            model,
             indices,
             vertices,
         }

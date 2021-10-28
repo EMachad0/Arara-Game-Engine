@@ -10,7 +10,7 @@ use std::io::Cursor;
 
 use glium::Surface;
 use glium::glutin;
-use geometry::vertex::Vertex;
+use geometry::{Vertex, Transform};
 
 fn main() {
     let size = glium::glutin::dpi::LogicalSize::new(1024, 768);
@@ -45,31 +45,43 @@ fn main() {
 
     let sphere = geometry::sphere::Sphere::new(32, 16);
 
-    let mut spheres = (0 .. 10000).map(|_| {
-        let pos: (f32, f32, f32) = (rand::random(), rand::random(), rand::random());
-        let dir: (f32, f32, f32) = (rand::random(), rand::random(), rand::random());
-        let pos = (pos.0 * 1.5 - 0.75, pos.1 * 1.5 - 0.75, pos.2 * 1.5 - 0.75);
-        let dir = (dir.0 * 1.5 - 0.75, dir.1 * 1.5 - 0.75, dir.2 * 1.5 - 0.75);
-        (pos, dir)
-    }).collect::<Vec<_>>();
+    // let sphere_model = cgmath::Matrix4::new(
+    //     0.6, 0.0, 0.0, 0.0,
+    //     0.0, 0.0, 0.6, 0.0,
+    //     0.0, -0.6, 0.0, 0.0,
+    //     0.0, 1.5, 0.0, 1.0f32,
+    // );
 
-    let vb = glium::vertex::VertexBuffer::dynamic();
+    let transforms = [
+        Transform::new().build(),
+        Transform::new()
+            .translate(0.0, 1.5, 0.0)
+            .scale(0.8)
+            .build(),
+        Transform::new()
+            .scale(0.4)
+            .translate(0.0, 2.3, 0.0)
+            .build(),
+        Transform::new()
+            .scale(0.1)
+            .translate(0.0, 2.3, 0.4)
+            .build(),
+    ];
+
     let vertex_buffer = glium::VertexBuffer::new(&display, &sphere.vertices).unwrap();
     let indices = glium::IndexBuffer::new(&display, glium::index::PrimitiveType::TrianglesList, &sphere.indices).unwrap();
-
-    let instance_count = 5;
-
-    let mut per_instance = {
+    
+    let per_instance = {
         #[derive(Copy, Clone)]
-        struct Attr {
-            world_position: (f32, f32, f32),
+        struct Model {
+            transform: [[f32; 4]; 4],
         }
 
-        implement_vertex!(Attr, world_position);
+        implement_vertex!(Model, transform);
 
-        let data = (0..instance_count).iter().map(|i| {
-            Attr {
-                world_position: (i, i, i),
+        let data = transforms.iter().map(|t| {
+            Model {
+                transform: *t,
             }
         }).collect::<Vec<_>>();
 
@@ -80,18 +92,14 @@ fn main() {
     let program = glium::Program::from_source(&display, shaders.vertex_shader, shaders.fragment_shader, None).unwrap();
 
     event_loop.run(move |ev, _, control_flow| {
-        let mut frame = display.draw();
-        
+
         // let (width, height) = frame.get_dimensions();
         let perspective_matrix: [[f32; 4]; 4] = perspective.calc_matrix().into();
         let view: [[f32; 4]; 4] = camera.calc_matrix().into();
 
-        let model : [[f32; 4]; 4] = sphere.model.into();
-
         let light = [0.0, 0.0, 0.0f32];
 
         let uniforms = uniform! {
-            model: model,
             view: view,
             perspective: perspective_matrix,
             u_light: light,
@@ -108,8 +116,10 @@ fn main() {
             .. Default::default()
         };
 
+        let mut frame = display.draw();
         frame.clear_color_and_depth((1.0, 1.0, 1.0, 1.0), 1.0);
-        frame.draw(&vertex_buffer, &indices, &program, &uniforms, &params).unwrap();
+        frame.draw((&vertex_buffer, per_instance.per_instance().unwrap()), &indices, &program, &uniforms, &params).unwrap();
+        // frame.draw((&vertex_buffer, per_instance.per_instance().unwrap()), &indices, &program, &uniforms_2, &params).unwrap();
         frame.finish().unwrap();
 
         let dt = std::time::Duration::from_nanos(16_666_667);
