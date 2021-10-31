@@ -1,19 +1,12 @@
-
 use cgmath::*;
 
-pub mod consts {
-    use cgmath::*;
-    
-    pub const X_AXIS : Vector3::<f32> = Vector3::<f32>::new(1.0, 0.0, 0.0);
-    pub const Y_AXIS : Vector3::<f32> = Vector3::<f32>::new(0.0, 1.0, 0.0);
-    pub const Z_AXIS : Vector3::<f32> = Vector3::<f32>::new(0.0, 0.0, 1.0);
-}
+use super::transform::Transform;
 
-pub struct Transform {
+pub struct TransformBuilder {
     matrix: Matrix4::<f32>,
 }
 
-impl Default for Transform {
+impl Default for TransformBuilder {
     fn default() -> Self {
         Self {
             matrix: Matrix4::<f32>::identity(),
@@ -21,7 +14,7 @@ impl Default for Transform {
     }
 }
 
-impl Transform {
+impl TransformBuilder {
     pub fn new() -> Self {
         Self::default()
     }
@@ -46,7 +39,7 @@ impl Transform {
         self
     }
 
-    pub fn build(self) -> [[f32; 4]; 4] {
-        self.matrix.into()
+    pub fn build(self) -> Transform {
+        Transform::new(self.matrix.into())
     }
 }
