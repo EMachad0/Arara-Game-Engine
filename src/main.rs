@@ -5,6 +5,7 @@ mod transform;
 
 #[macro_use]
 extern crate glium;
+extern crate cgmath;
 extern crate image;
 
 use std::io::Cursor;
@@ -37,20 +38,20 @@ fn main() {
     let mut camera_controller = camera::CameraController::new(1.0, 0.4);
     let mut mouse_pressed = false;
 
-    let sphere = geometry::sphere::Sphere::new(32, 16);
+    let sphere = geometry::Circle::new(32);
 
     let transforms = [
         TransformBuilder::new().build(),
         TransformBuilder::new()
             .translate(0.0, 1.5, 0.0)
-            .scale(0.8)
+            // .scale(0.8)
             .build(),
         TransformBuilder::new()
-            .scale(0.4)
+            // .scale(0.4)
             .translate(0.0, 2.3, 0.0)
             .build(),
         TransformBuilder::new()
-            .scale(0.1)
+            // .scale(0.1)
             .translate(0.0, 2.3, 0.4)
             .build(),
     ];
@@ -83,7 +84,7 @@ fn main() {
                 write: true,
                 .. Default::default()
             },
-            backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockwise,
+            // backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockwise,
             .. Default::default()
         };
 
