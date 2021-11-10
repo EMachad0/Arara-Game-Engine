@@ -38,27 +38,26 @@ fn main() {
     let mut camera_controller = camera::CameraController::new(1.0, 0.4);
     let mut mouse_pressed = false;
 
-    let sphere = geometry::Circle::new(32);
-
+    let shape = geometry::Sphere::new(32, 16);
+    let vertex_buffer = glium::VertexBuffer::new(&display, &shape.vertices).unwrap();
+    let indices = glium::IndexBuffer::new(&display, glium::index::PrimitiveType::TrianglesList, &shape.indices).unwrap();
+    
     let transforms = [
-        TransformBuilder::new().build(),
         TransformBuilder::new()
-            .translate(0.0, 1.5, 0.0)
-            // .scale(0.8)
             .build(),
         TransformBuilder::new()
-            // .scale(0.4)
+            .scale(0.8)
+            .translate(0.0, 1.5, 0.0)
+            .build(),
+        TransformBuilder::new()
+            .scale(0.4)
             .translate(0.0, 2.3, 0.0)
             .build(),
         TransformBuilder::new()
-            // .scale(0.1)
+            .scale(0.1)
             .translate(0.0, 2.3, 0.4)
             .build(),
     ];
-
-    let vertex_buffer = glium::VertexBuffer::new(&display, &sphere.vertices).unwrap();
-    let indices = glium::IndexBuffer::new(&display, glium::index::PrimitiveType::TrianglesList, &sphere.indices).unwrap();
-    
     let per_instance = glium::VertexBuffer::new(&display, &transforms).unwrap();
 
     let shaders = shaders::Shaders::default();
@@ -97,24 +96,6 @@ fn main() {
         use glutin::event::*;
         match ev {
             Event::DeviceEvent { ref event, .. } => match event {
-                DeviceEvent::Key(
-                    KeyboardInput {
-                        virtual_keycode: Some(key),
-                        state,
-                        ..
-                    }
-                ) => {
-                    camera_controller.process_keyboard(*key, *state);
-                }
-                DeviceEvent::MouseWheel { delta, .. } => {
-                    camera_controller.process_scroll(delta);
-                }
-                DeviceEvent::Button {
-                    button: 1, // Left Mouse Button
-                    state,
-                } => {
-                    mouse_pressed = *state == ElementState::Pressed;
-                }
                 DeviceEvent::MouseMotion { delta } => {
                     if mouse_pressed {
                         camera_controller.process_mouse(delta.0, delta.1);
@@ -122,11 +103,32 @@ fn main() {
                 }
                 _ => (),
             }
-            Event::WindowEvent { event, .. } => match event {
+            Event::WindowEvent { event, window_id } if window_id == display.gl_window().window().id() => match event {
                 WindowEvent::CloseRequested => {
                     *control_flow = glutin::event_loop::ControlFlow::Exit;
                     return;
                 },
+                WindowEvent::KeyboardInput {
+                    input:
+                        KeyboardInput {
+                            virtual_keycode: Some(key),
+                            state,
+                            ..
+                        },
+                    ..
+                } => {
+                    camera_controller.process_keyboard(key, state);
+                }
+                WindowEvent::MouseInput {
+                    button: MouseButton::Left,
+                    state,
+                    ..
+                } => {
+                    mouse_pressed = state == ElementState::Pressed;
+                }
+                WindowEvent::MouseWheel { delta, .. } => {
+                    camera_controller.process_scroll(&delta);
+                }
                 WindowEvent::Resized(physical_size) => {
                     perspective.resize_from_size(physical_size);
                 },
