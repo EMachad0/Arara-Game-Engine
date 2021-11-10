@@ -1,11 +1,8 @@
-use cgmath::*;
-
 use super::vertex::Vertex;
 
 pub struct Cuboid {
     pub vertices: [Vertex; 8],
     pub indices: [u16; 36],
-    pub model: cgmath::Matrix4::<f32>,
 }
 
 impl Default for Cuboid {
@@ -36,12 +33,9 @@ impl Default for Cuboid {
             5, 3, 1,
         ];
 
-        let model = cgmath::Matrix4::<f32>::identity();
-
         Self {
             vertices,
             indices,
-            model,
         }
     }
 }

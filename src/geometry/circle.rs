@@ -39,7 +39,7 @@ impl Circle {
             tex_coords: [0.5, 0.5],
         });
 
-        Circle {
+        Self {
             vertices,
             indices,
         }
