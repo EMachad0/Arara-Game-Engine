@@ -9,16 +9,15 @@ pub struct Circle {
 }
 
 impl Circle {
-    pub fn new(sector_count: u32) -> Self {
-        let circle = circle_points(sector_count);
+    pub fn new(sector_count: u32, radius: f32) -> Self {
+        let circle = unit_circle_points(sector_count);
         let normal = [0.0, 1.0, 0.0];
 
         let mut vertices: Vec<Vertex> = Vec::new();
         
-        for (i, vertice) in circle.iter().enumerate() {
-            let position = [vertice.x, 0.0, vertice.y];
+        for vertice in circle.iter() {
+            let position = [vertice.x * radius, 0.0, vertice.y * radius];
             let tex_coords = [(vertice.x + 1.0) / 2.0, (vertice.y + 1.0) / 2.0];
-
             vertices.push(Vertex {
                 position, 
                 normal,
@@ -28,14 +27,9 @@ impl Circle {
 
         let mut indices: Vec<u32> = Vec::new();
         let center_index = vertices.len() as u32;
-
         for i in 0..center_index {
             indices.push(center_index);
-            if i + 1 == center_index {
-                indices.push(0);
-            } else {
-                indices.push(i+1);
-            }
+            indices.push(if i+1 == center_index { 0 } else { i+1 });
             indices.push(i);
         }
 
@@ -45,7 +39,6 @@ impl Circle {
             tex_coords: [0.5, 0.5],
         });
 
-
         Circle {
             vertices,
             indices,
@@ -53,7 +46,7 @@ impl Circle {
     }
 }
 
-pub fn circle_points(sector_count: u32) -> Vec<cgmath::Vector2::<f32>> {
+pub fn unit_circle_points(sector_count: u32) -> Vec<cgmath::Vector2::<f32>> {
     let sector_step = 2.0 * PI / sector_count as f32;
 
     let mut circle_vertices = Vec::new();
