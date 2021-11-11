@@ -5,4 +5,4 @@ pub struct Vertex {
     pub tex_coords: [f32; 2],
 }
 
-implement_vertex!(Vertex, position, tex_coords, normal);
+glium::implement_vertex!(Vertex, position, tex_coords, normal);

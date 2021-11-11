@@ -6,8 +6,8 @@ pub struct Shaders {
 impl Default for Shaders {
     fn default() -> Self {
         Self {
-            vertex_shader: include_str!("vertex_shader_src.glsl"),
-            fragment_shader: include_str!("fragment_shader_src.glsl"),
+            vertex_shader: include_str!("../../../assets/shaders/vertex_shader_src.glsl"),
+            fragment_shader: include_str!("../../../assets/shaders/fragment_shader_src.glsl"),
         }
     }
 }

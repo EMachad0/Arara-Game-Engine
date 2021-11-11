@@ -1,11 +1,11 @@
 use super::vertex::Vertex;
 
-pub struct Cuboid {
+pub struct Cube {
     pub vertices: [Vertex; 8],
     pub indices: [u16; 36],
 }
 
-impl Default for Cuboid {
+impl Default for Cube {
     fn default() -> Self {
         let vertices = [
             Vertex { position: [ 0.0, 1.0, 1.0], tex_coords: [0.0, 1.0], normal: [0.0, 0.0, -1.0] },
