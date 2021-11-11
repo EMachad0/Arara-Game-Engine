@@ -50,7 +50,7 @@ pub fn unit_circle_points(sector_count: u32) -> Vec<cgmath::Vector2::<f32>> {
     let sector_step = 2.0 * PI / sector_count as f32;
 
     let mut circle_vertices = Vec::new();
-    for i in 0..(sector_count + 1) {
+    for i in 0..=sector_count {
         let sector_angle = i as f32 * sector_step;
         circle_vertices.push(cgmath::vec2 (
             sector_angle.cos(), 
