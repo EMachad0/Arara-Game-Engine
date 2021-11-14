@@ -7,7 +7,10 @@ edition = "2021"
 
 [dependencies]
 # internal
-arara_internal = { path = "crates/arara_internal", version = "0.1.0" }
+arara_camera = { path = "crates/arara_camera", version = "0.1.0" }
+arara_geometry = { path = "crates/arara_geometry", version = "0.1.0" }
+arara_shaders = { path = "crates/arara_shaders", version = "0.1.0" }
+arara_transform = { path = "crates/arara_transform", version = "0.1.0" }
 # external
 glium = "*"
 image = "*"
