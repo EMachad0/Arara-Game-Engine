@@ -1,3 +1,5 @@
+#![allow(unused_variables)]
+
 pub mod runnable;
 pub mod window_props;
 pub mod window;
@@ -15,14 +17,17 @@ pub mod prelude {
     };
 }
 
-extern crate log;
+use arara_app::{AppBuilder, Plugin};
 
-use arara_app::AppBuilder;
+#[derive(Default)]
+pub struct WindowPlugin;
 
-pub fn build_resource(app_builder: &mut AppBuilder) {
-    app_builder
-        .init_non_send_resource::<EventLoop>()
-        .init_resource::<WindowProps>()
-        .init_non_send_resource::<Window>()
-        .set_runnable(run);
+impl Plugin for WindowPlugin {
+    fn build(&self, app_builder: &mut AppBuilder) {
+        app_builder
+            .init_non_send_resource::<EventLoop>()
+            .init_resource::<WindowProps>()
+            .init_non_send_resource::<Window>()
+            .set_runnable(run);
+    }
 }

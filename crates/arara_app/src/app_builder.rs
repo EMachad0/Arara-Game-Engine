@@ -2,7 +2,10 @@ use bevy_ecs::{
     world::{World, FromWorld},
 };
 
+use arara_logger::*;
+
 use crate::app::App;
+use crate::plugin::Plugin;
 
 pub struct AppBuilder {
     pub app : App,
@@ -10,11 +13,9 @@ pub struct AppBuilder {
 
 impl Default for AppBuilder {
     fn default() -> Self {
-        let mut app_builder = AppBuilder {
+        let app_builder = Self {
             app: App::default(),
         };
-
-        app_builder.init_main_resources();
         app_builder
     }
 }
@@ -51,7 +52,6 @@ impl AppBuilder {
     where
         R: FromWorld + 'static,
     {
-        // See perf comment in init_resource
         if self.app.world.get_non_send_resource::<R>().is_none() {
             let resource = R::from_world(self.world_mut());
             self.app.world.insert_non_send(resource);
@@ -67,7 +67,9 @@ impl AppBuilder {
         self
     }
 
-    fn init_main_resources(&mut self) {
-        
+    pub fn add_plugin<T: Plugin>(&mut self, plugin: T) -> &mut Self {
+        debug!("added plugin: {}", plugin.name());
+        plugin.build(self);
+        self
     }
 }

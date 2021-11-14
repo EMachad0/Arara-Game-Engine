@@ -1,5 +1,7 @@
 use bevy_ecs::world::World;
 
+use arara_logger::*;
+
 use crate::app_builder::AppBuilder;
 
 pub struct App {
@@ -23,7 +25,7 @@ impl App {
 
     pub fn update(&mut self) {
         // TODO
-        println!("App updated!")
+        trace!("App updated!")
     }
 
     pub fn run(mut self) {

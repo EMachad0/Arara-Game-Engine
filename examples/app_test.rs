@@ -7,7 +7,8 @@ fn main() {
 
     logger::test_logging_level();
 
-    let mut app_builder = App::builder();
-    // arara_window::build_resource(&mut app_builder);
-    app_builder.build().run();
+    App::builder()
+        .add_plugin(arara_window::WindowPlugin::default())
+        .build()
+        .run();
 }

@@ -3,8 +3,6 @@ use glium::{self, glutin::{self, event::*, window::WindowId}};
 
 use arara_logger::*;
 use arara_app::App;
-use arara_camera::prelude::*;
-
 
 use crate::{EventLoop, Window, WindowProps};
 

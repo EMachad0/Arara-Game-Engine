@@ -7,8 +7,7 @@ edition = "2021"
 
 [dependencies]
 arara_camera = { path = "../arara_camera", version = "0.1.0" }
-# arara_window = { path = "../arara_window", version = "0.1.0" }
-
+arara_logger = { path = "../arara_logger", version = "0.1.0" }
 glium = "*"
 cgmath = "*"
 bevy_ecs = "*"
