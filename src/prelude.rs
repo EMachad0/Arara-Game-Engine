@@ -1,4 +1,5 @@
 pub use crate::{
+    logger,
     camera::prelude::*,
     geometry::prelude::*,
     shaders::prelude::*,

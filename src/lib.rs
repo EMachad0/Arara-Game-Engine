@@ -15,3 +15,7 @@ pub mod shaders {
 pub mod transform {
     pub use arara_transform::*;
 }
+
+pub mod logger {
+    pub use arara_logger::*;
+}
