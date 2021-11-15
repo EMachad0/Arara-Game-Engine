@@ -5,4 +5,6 @@ pub use crate::{
     shaders::prelude::*,
     transform::prelude::*,
     ecs::prelude::*,
+    app::prelude::*,
+    window::prelude::*,
 };

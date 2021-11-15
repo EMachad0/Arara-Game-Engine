@@ -12,6 +12,7 @@ pub use event_loop::*;
 
 pub mod prelude {
     pub use crate::{
+        WindowPlugin,
         window_props::WindowProps,
         window::Window,
     };
