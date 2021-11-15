@@ -31,8 +31,16 @@ impl App {
     }
 
     pub fn run(mut self) {
+        self.debug_stage_order();
         let runnable = std::mem::replace(&mut self.runnable, Box::new(run_once));
         (runnable)(self);
+    }
+
+    pub fn debug_stage_order(&self) {
+        debug!("------------ Stages ------------");
+        for stage in self.schedule.iter_stages() {
+            debug!("{:?}", stage.0);
+        }
     }
 }
 
