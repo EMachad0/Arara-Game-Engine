@@ -1,13 +1,27 @@
-use glium::{self, Display, glutin::{self, dpi, event_loop::EventLoop}};
-use crate::window_props::WindowProps;
+use glium::{
+    self,
+    Display,
+    glutin::{
+        self,
+        dpi
+    }
+};
+use bevy_ecs::world::{World, FromWorld};
 
-#[derive(Default)]
+use crate::{
+    event_loop::EventLoop, 
+    window_props::WindowProps
+};
+
 pub struct Window {
-    display: Option<Display>,
+    display: Display,
 }
 
-impl Window {
-    pub fn build_display(&mut self, window_props: &WindowProps, event_loop: &EventLoop<()>) {
+impl FromWorld for Window {
+    fn from_world(world: &mut World) -> Self {
+        let event_loop = world.get_non_send_resource::<EventLoop>().unwrap();
+        let window_props = world.get_resource::<WindowProps>().unwrap();
+
         let size = dpi::LogicalSize::new(window_props.width, window_props.height);
         let wb = glutin::window::WindowBuilder::new()
             .with_inner_size(size)
@@ -15,10 +29,16 @@ impl Window {
         let cb = glutin::ContextBuilder::new()
             .with_depth_buffer(24)
             .with_vsync(window_props.vsync);
-        self.display = Some(Display::new(wb, cb, event_loop).unwrap())
-    }
 
+        let display = Display::new(wb, cb, event_loop.borrow()).unwrap();
+        Self {
+            display,
+        }
+    }
+}
+
+impl Window {
     pub fn display(&self) -> &Display {
-        self.display.as_ref().unwrap()
+        &self.display
     }
 }

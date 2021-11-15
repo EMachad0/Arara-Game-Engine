@@ -1,15 +1,21 @@
 use bevy_ecs::prelude::World;
-use glium::{self, glutin::{self, event::*, window::WindowId}};
+
+use glium::{
+    self,
+    glutin::{
+        self,
+        event::*,
+        window::WindowId
+    }
+};
 
 use arara_logger::*;
 use arara_app::App;
 
-use crate::{EventLoop, Window, WindowProps};
+use crate::{EventLoop, Window};
 
 pub fn run(mut app: App) {
     let mut mouse_pressed = false;
-
-    create_windown(&mut app.world);
 
     let mut ev = app.world.get_non_send_resource_mut::<EventLoop>().unwrap();
     let event_loop = ev.take();
@@ -82,12 +88,4 @@ pub fn run(mut app: App) {
 fn get_primaty_window_id(world: &World) -> WindowId {
     let window = world.get_non_send_resource::<Window>().unwrap();
     window.display().gl_window().window().id()
-}
-
-fn create_windown(world: &mut World) {
-    let world = world.cell();
-    let window_props = world.get_resource::<WindowProps>().unwrap();
-    let event_loop = world.get_non_send::<EventLoop>().unwrap();
-    let mut window = world.get_non_send_mut::<Window>().unwrap();
-    window.build_display(&window_props, event_loop.borrow());
 }
