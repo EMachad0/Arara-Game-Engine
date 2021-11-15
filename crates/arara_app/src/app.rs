@@ -1,4 +1,4 @@
-use bevy_ecs::world::World;
+use bevy_ecs::{schedule::{Schedule, Stage}, world::World};
 
 use arara_logger::*;
 
@@ -6,6 +6,7 @@ use crate::app_builder::AppBuilder;
 
 pub struct App {
     pub world: World,
+    pub schedule: Schedule,
     pub runnable: Box<dyn Fn(App)>,
 }
 
@@ -13,7 +14,8 @@ impl Default for App {
     fn default() -> Self {
         Self {
             world: Default::default(),
-            runnable: Box::new(run_once),        
+            schedule: Schedule::default(),
+            runnable: Box::new(run_once),
         }
     }
 }
@@ -24,8 +26,8 @@ impl App {
     }
 
     pub fn update(&mut self) {
-        // TODO
-        trace!("App updated!")
+        trace!("App updated!");
+        self.schedule.run(&mut self.world);
     }
 
     pub fn run(mut self) {

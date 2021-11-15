@@ -9,6 +9,16 @@ fn main() {
 
     App::builder()
         .add_plugin(arara_window::WindowPlugin::default())
+        .add_startup_system(hello_world.system())
+        .add_system(render.system())
         .build()
         .run();
+}
+
+fn hello_world() {
+    println!("Hello World")
+}
+
+fn render() {
+    println!("Renderizando...")
 }

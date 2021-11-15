@@ -4,4 +4,5 @@ pub use crate::{
     geometry::prelude::*,
     shaders::prelude::*,
     transform::prelude::*,
+    ecs::prelude::*,
 };

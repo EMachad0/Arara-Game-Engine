@@ -1,11 +1,8 @@
-use bevy_ecs::{
-    world::{World, FromWorld},
-};
+use bevy_ecs::{schedule::{RunOnce, Schedule, Stage, StageLabel, SystemDescriptor, SystemStage}, world::{World, FromWorld}};
 
 use arara_logger::*;
 
-use crate::app::App;
-use crate::plugin::Plugin;
+use crate::{CoreStage, StartupStage, app::App, plugin::Plugin};
 
 pub struct AppBuilder {
     pub app : App,
@@ -13,9 +10,10 @@ pub struct AppBuilder {
 
 impl Default for AppBuilder {
     fn default() -> Self {
-        let app_builder = Self {
+        let mut app_builder = Self {
             app: App::default(),
         };
+        app_builder.add_core_stages();
         app_builder
     }
 }
@@ -70,6 +68,50 @@ impl AppBuilder {
     pub fn add_plugin<T: Plugin>(&mut self, plugin: T) -> &mut Self {
         debug!("added plugin: {}", plugin.name());
         plugin.build(self);
+        self
+    }
+
+    pub fn add_system(&mut self, system: impl Into<SystemDescriptor>) -> &mut Self {
+        self.add_system_to_stage(CoreStage::Update, system)
+    }
+
+    pub fn add_system_to_stage(
+        &mut self,
+        stage_label: impl StageLabel,
+        system: impl Into<SystemDescriptor>
+    ) -> &mut Self {
+        self.app.schedule.add_system_to_stage(stage_label, system);
+        self
+    }
+
+    pub fn add_startup_system(&mut self, system: impl Into<SystemDescriptor>) -> &mut Self {
+        self.add_system_to_startup_stage(StartupStage::Startup, system)
+    }
+
+    pub fn add_system_to_startup_stage(
+        &mut self,
+        stage_label: impl StageLabel,
+        system: impl Into<SystemDescriptor>
+    ) -> &mut Self {
+        self.app.schedule.stage(CoreStage::Startup, |schedule: &mut Schedule| {
+            schedule.add_system_to_stage(stage_label, system)
+        });
+        self
+    }
+
+    pub fn add_core_stages(&mut self) -> &mut Self {
+        self.add_stage(CoreStage::First, SystemStage::parallel())
+            .add_stage(
+                CoreStage::Startup,
+                Schedule::default()
+                    .with_run_criteria(RunOnce::default())
+                    .with_stage(StartupStage::Startup, SystemStage::parallel()),
+                )
+            .add_stage(CoreStage::Update, SystemStage::parallel())
+    }
+
+    pub fn add_stage(&mut self, stage_label: impl StageLabel, stage: impl Stage) -> &mut Self {
+        self.app.schedule.add_stage(stage_label, stage);
         self
     }
 }

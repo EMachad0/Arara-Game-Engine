@@ -19,3 +19,7 @@ pub mod transform {
 pub mod logger {
     pub use arara_logger::*;
 }
+
+pub mod ecs {
+    pub use bevy_ecs::*;    
+}

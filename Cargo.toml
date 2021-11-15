@@ -15,6 +15,7 @@ arara_app = { path = "crates/arara_app", version = "0.1.0" }
 arara_window = { path = "crates/arara_window", version = "0.1.0" }
 arara_logger = { path = "crates/arara_logger", version = "0.1.0" }
 # external
+bevy_ecs = "*"
 glium = "*"
 image = "*"
 cgmath = "*"

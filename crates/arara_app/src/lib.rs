@@ -13,3 +13,17 @@ pub mod prelude {
         plugin::Plugin,
     };
 }
+
+use bevy_ecs::schedule::StageLabel;
+
+#[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
+pub enum CoreStage {
+    First,
+    Startup,
+    Update,
+}
+
+#[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
+pub enum StartupStage {
+    Startup,
+}
