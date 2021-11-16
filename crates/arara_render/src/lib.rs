@@ -1,15 +1,18 @@
 mod simple_mesh;
 mod color;
 mod renderer;
+mod clear_color;
 
 pub use simple_mesh::*;
 pub use color::*;
 pub use renderer::*;
+pub use clear_color::*;
 
 pub mod prelude {
     pub use crate::{
         simple_mesh::SimpleMeshBundle,
         color::Color,
+        clear_color::ClearColor,
     };
 }
 
@@ -40,6 +43,8 @@ impl Plugin for RenderPlugin {
             SystemStage::parallel(),
         );
         
-        app_builder.add_system_to_stage(RenderStage::Draw, draw.system());
+        app_builder
+            .init_resource::<ClearColor>()
+            .add_system_to_stage(RenderStage::Draw, draw.system());
     }
 }
