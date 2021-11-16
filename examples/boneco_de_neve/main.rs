@@ -28,8 +28,8 @@ fn main() {
     let image = glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
     let texture = glium::texture::SrgbTexture2d::new(&display, image).unwrap();
 
-    let mut perspective = Perspective::new(size.width, size.height, cgmath::Deg(60.0), 0.1, 1024.0);
-    let mut camera = Camera::new((0.0, 5.0, 10.0), cgmath::Deg(-90.0), cgmath::Deg(-20.0));
+    // let mut perspective = Perspective::new(size.width, size.height, cgmath::Deg(60.0), 0.1, 1024.0);
+    // let mut camera = Camera::new((0.0, 5.0, 10.0), cgmath::Deg(-90.0), cgmath::Deg(-20.0));
     let mut camera_controller = CameraController::new(1.0, 0.4);
     let mut mouse_pressed = false;
 
@@ -61,13 +61,13 @@ fn main() {
     event_loop.run(move |ev, _, control_flow| {
 
         // let (width, height) = frame.get_dimensions();
-        let perspective_matrix: [[f32; 4]; 4] = perspective.calc_matrix().into();
-        let view: [[f32; 4]; 4] = camera.calc_matrix().into();
+        // let perspective_matrix: [[f32; 4]; 4] = perspective.calc_matrix().into();
+        // let view: [[f32; 4]; 4] = camera.calc_matrix().into();
         let light = [0.0, 0.0, 0.0f32];
 
         let uniforms = uniform! {
-            view: view,
-            perspective: perspective_matrix,
+            // view: view,
+            // perspective: perspective_matrix,
             u_light: light,
             tex: &texture,
         };
@@ -124,12 +124,12 @@ fn main() {
                 WindowEvent::MouseWheel { delta, .. } => {
                     camera_controller.process_scroll(&delta);
                 }
-                WindowEvent::Resized(physical_size) => {
+                // WindowEvent::Resized(physical_size) => {
                     // perspective.resize_from_size(physical_size);
-                },
-                WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
+                // },
+                // WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
                     // perspective.resize_from_size(*new_inner_size);
-                }
+                // }
                 _ => return,
             },
             _ => (),
