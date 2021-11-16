@@ -15,7 +15,7 @@ fn main() {
 
 fn add_spheres(mut commands: Commands) {
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Sphere::new(32, 16),
+        mesh: Box::new(Sphere::new(32, 16)),
         shaders: Shaders::default(),
         transform: TransformBuilder::new().build(),
         color: Color::PURPLE,

@@ -1,10 +1,20 @@
 use std::f32::consts::PI;
 
-use super::vertex::Vertex;
+use crate::Vertex;
+use crate::Shape;
 
 pub struct Sphere {
-    pub vertices: Vec<Vertex>,
-    pub indices: Vec<u32>,
+    vertices: Vec<Vertex>,
+    indices: Vec<u32>,
+}
+impl Shape for Sphere {
+    fn get_vertices(&self) -> &Vec<Vertex> {
+        &self.vertices
+    }
+
+    fn get_indices(&self) -> &Vec<u32> {
+        &self.indices
+    }
 }
 
 

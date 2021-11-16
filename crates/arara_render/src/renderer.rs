@@ -2,7 +2,7 @@ use glium::Surface;
 use bevy_ecs::prelude::*;
 use crate::{ClearColor, Color};
 use arara_camera::camera_controller::CameraController;
-use arara_geometry::Sphere;
+use arara_geometry::Shape;
 use arara_shaders::Shaders;
 use arara_transform::Transform;
 use arara_window::Window;
@@ -12,7 +12,7 @@ pub fn draw(
     window: NonSend<Window>,
     clear_color: Res<ClearColor>,
     mut camera_controller: ResMut<CameraController>,
-    query: Query<(&Sphere, &Shaders, &Transform, &Color)>,
+    query: Query<(&Box<dyn Shape>, &Shaders, &Transform, &Color)>,
 ) {
     let display = window.display();
     let clear_color = clear_color.0;
@@ -33,8 +33,8 @@ pub fn draw(
     let mut frame = display.draw();
     frame.clear_color_and_depth((clear_color.r(), clear_color.g(), clear_color.b(), clear_color.a()), 1.0);
     for (shape, shaders, transform, color) in query.iter() {
-        let vertex_buffer = glium::VertexBuffer::new(display, &shape.vertices).unwrap();
-        let indices = glium::IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, &shape.indices).unwrap();
+        let vertex_buffer = glium::VertexBuffer::new(display, &shape.get_vertices()).unwrap();
+        let indices = glium::IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, &shape.get_indices()).unwrap();
         let program = glium::Program::from_source(display, shaders.vertex_shader, shaders.fragment_shader, None).unwrap();
         let color: [f32; 3] = color.to_owned().into();
         

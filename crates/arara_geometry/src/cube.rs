@@ -1,13 +1,23 @@
-use super::vertex::Vertex;
+use crate::Vertex;
+use crate::Shape;
 
 pub struct Cube {
-    pub vertices: [Vertex; 8],
-    pub indices: [u16; 36],
+    vertices: Vec<Vertex>,
+    indices: Vec<u32>,
+}
+impl Shape for Cube {
+    fn get_vertices(&self) -> &Vec<Vertex> {
+        &self.vertices
+    }
+
+    fn get_indices(&self) -> &Vec<u32> {
+        &self.indices
+    }
 }
 
 impl Default for Cube {
     fn default() -> Self {
-        let vertices = [
+        let vertices = vec![
             Vertex { position: [ 0.0, 1.0, 1.0], tex_coords: [0.0, 1.0], normal: [0.0, 0.0, -1.0] },
             Vertex { position: [ 1.0, 1.0, 1.0], tex_coords: [1.0, 1.0], normal: [0.0, 0.0, -1.0] },
             Vertex { position: [ 0.0, 0.0, 1.0], tex_coords: [0.0, 0.0], normal: [0.0, 0.0, -1.0] },
@@ -18,7 +28,7 @@ impl Default for Cube {
             Vertex { position: [ 1.0, 0.0, 0.0], tex_coords: [1.0, 1.0], normal: [0.0, 0.0,  1.0] },
         ];
         
-        let indices = [
+        let indices = vec![
             2, 3, 1,
             2, 1, 0,
             2, 0, 4,

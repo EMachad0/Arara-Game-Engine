@@ -1,9 +1,20 @@
 use super::vertex::Vertex;
 use super::circle;
+use crate::Shape;
+
 
 pub struct Cylinder {
     pub vertices: Vec<Vertex>,
     pub indices: Vec<u32>,
+}
+impl Shape for Cylinder {
+    fn get_vertices(&self) -> &Vec<Vertex> {
+        &self.vertices
+    }
+
+    fn get_indices(&self) -> &Vec<u32> {
+        &self.indices
+    }
 }
 
 impl Cylinder {
