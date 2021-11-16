@@ -17,8 +17,9 @@ pub fn draw(
     let display = window.display();
     let clear_color = clear_color.0;
 
-    let u_pv_matrix = camera_controller.calc_matrix();
-    let light = [50.0, 50.0, 50.0f32];
+    let pv_matrix = camera_controller.calc_matrix();
+    let camera_pos : [f32; 3] = camera_controller.camera().position.into();
+    let light_pos = [0.0, 5.0, 0.0f32];
     
     let params = glium::DrawParameters {
         depth: glium::Depth {
@@ -39,9 +40,10 @@ pub fn draw(
         let color: [f32; 3] = color.to_owned().into();
         
         let uniforms = uniform! {
-            u_pv_matrix: u_pv_matrix,
-            transform: transform.transform,
-            u_light: light,
+            u_pv_matrix: pv_matrix,
+            u_transform: transform.transform,
+            u_light_pos: light_pos,
+            u_camera_pos: camera_pos,
             u_color: color,
         };
         

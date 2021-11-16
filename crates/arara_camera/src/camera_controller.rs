@@ -164,4 +164,8 @@ impl CameraController {
         }
         self.cached_matrix
     }
+
+    pub fn camera(&self) -> &Camera {
+        &self.camera
+    }
 }
