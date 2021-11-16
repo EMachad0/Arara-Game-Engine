@@ -1,11 +1,17 @@
 use cgmath::*;
-use glium::glutin::dpi::PhysicalSize;
 
+#[derive(Debug)]
 pub struct Perspective {
     aspect: f32,
     fovy: Rad<f32>,
     znear: f32,
     zfar: f32,
+}
+
+impl Default for Perspective {
+    fn default() -> Self {
+        Self::new(1024, 768, Deg(60.0), 0.1, 1024.0)
+    }
 }
 
 impl Perspective {
@@ -22,10 +28,6 @@ impl Perspective {
             znear,
             zfar,
         }
-    }
-
-    pub fn resize_from_size(&mut self, new_size: PhysicalSize<u32>) {
-        self.resize(new_size.width, new_size.height);
     }
 
     pub fn resize(&mut self, width: u32, height: u32) {

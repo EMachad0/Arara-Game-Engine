@@ -1,11 +1,16 @@
 use cgmath::*;
 
-
 #[derive(Debug)]
 pub struct Camera {
     pub position: Point3<f32>,
     pub yaw: Rad<f32>,
     pub pitch: Rad<f32>,
+}
+
+impl Default for Camera {
+    fn default() -> Self {
+        Self::new((0.0, 5.0, 10.0), cgmath::Deg(-90.0), cgmath::Deg(-20.0))
+    }
 }
 
 impl Camera {

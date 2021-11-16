@@ -2,16 +2,16 @@
         
 in vec3 v_position;
 in vec3 v_normal;
-
+in vec2 v_tex_coords;
 out vec4 color;
 
 uniform vec3 u_light;
-uniform vec3 u_color;
+uniform sampler2D tex;
 
 const vec3 specular_color = vec3(1.0, 1.0, 1.0);
 
 void main() {
-    vec3 diffuse_color = u_color;
+    vec3 diffuse_color = texture(tex, v_tex_coords).rgb;
     vec3 ambient_color = diffuse_color;
     
     float diffuse = max(dot(normalize(v_normal), normalize(u_light)), 0.0);

@@ -11,6 +11,7 @@ pub mod prelude {
         app::App,
         app_builder::AppBuilder,
         plugin::Plugin,
+        CoreStage, StartupStage,
     };
 }
 

@@ -26,7 +26,6 @@ impl App {
     }
 
     pub fn update(&mut self) {
-        trace!("App updated!");
         self.schedule.run(&mut self.world);
     }
 

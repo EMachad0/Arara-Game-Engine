@@ -11,6 +11,8 @@ use glium::{
 
 use arara_logger::*;
 use arara_app::App;
+// Refactor this, Camera should be its own plugin and listen for events on the event system
+use arara_camera::camera_controller::CameraController;
 
 use crate::{EventLoop, Window};
 
@@ -22,19 +24,16 @@ pub fn run(mut app: App) {
 
     event_loop.run(move |ev, _, control_flow| {
         match ev {
-            Event::MainEventsCleared => {
-                app.update();
-            }
             Event::DeviceEvent { ref event, .. } => match event {
                 DeviceEvent::MouseMotion { delta } => {
                     if mouse_pressed {
-                        // camera_controller.process_mouse(delta.0, delta.1);
+                        let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
+                        camera_controller.process_mouse(delta.0, delta.1);
                     }
                 }
-                _ => (),
+                _ => ()
             },
             Event::WindowEvent { event, window_id } => {
-                
                 if window_id != get_primaty_window_id(&app.world) { 
                     trace!("recieved event for unknown window_id");
                     return;
@@ -54,7 +53,8 @@ pub fn run(mut app: App) {
                             },
                         ..
                     } => {
-                        // camera_controller.process_keyboard(key, state);
+                        let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
+                        camera_controller.process_keyboard(key, state);
                     }
                     WindowEvent::MouseInput {
                         button: MouseButton::Left,
@@ -64,23 +64,31 @@ pub fn run(mut app: App) {
                         mouse_pressed = state == ElementState::Pressed;
                     }
                     WindowEvent::MouseWheel { delta, .. } => {
-                        // camera_controller.process_scroll(&delta);
+                        let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
+                        camera_controller.process_scroll(&delta);
                     }
                     WindowEvent::Resized(physical_size) => {
-                        // perspective.resize_from_size(physical_size);
+                        let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
+                        camera_controller.resize_from_size(physical_size);
                     }
                     WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-                        // perspective.resize_from_size(*new_inner_size);
+                        let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
+                        camera_controller.resize_from_size(*new_inner_size);
                     }
                     _ => return,
                 }
             }
+            Event::MainEventsCleared => {
+                app.update();
+            }
             _ => (),
         }
 
+        let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
+
         let dt = std::time::Duration::from_nanos(16_666_667);
         let next_frame_time = std::time::Instant::now() + dt;
-        // camera_controller.update_camera(&mut camera, dt);
+        camera_controller.update_camera(dt);
         *control_flow = glutin::event_loop::ControlFlow::WaitUntil(next_frame_time);
     });
 }

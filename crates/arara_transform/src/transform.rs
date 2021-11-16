@@ -1,6 +1,6 @@
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct Transform {
-    transform: [[f32; 4]; 4],
+    pub transform: [[f32; 4]; 4],
 }
 
 glium::implement_vertex!(Transform, transform);
