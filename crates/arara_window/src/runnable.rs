@@ -2,15 +2,11 @@ use bevy_ecs::prelude::World;
 
 use glium::{
     self,
-    glutin::{
-        self,
-        event::*,
-        window::WindowId
-    }
+    glutin::{self, event::*, window::WindowId},
 };
 
-use arara_logger::*;
 use arara_app::App;
+use arara_logger::*;
 // Refactor this, Camera should be its own plugin and listen for events on the event system
 use arara_camera::camera_controller::CameraController;
 
@@ -20,21 +16,22 @@ pub fn run(mut app: App) {
     let mut mouse_pressed = false;
 
     let mut ev = app.world.get_non_send_resource_mut::<EventLoop>().unwrap();
-    let event_loop = ev.take();
+    let event_loop = ev.take().unwrap();
 
     event_loop.run(move |ev, _, control_flow| {
         match ev {
             Event::DeviceEvent { ref event, .. } => match event {
                 DeviceEvent::MouseMotion { delta } => {
                     if mouse_pressed {
-                        let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
+                        let mut camera_controller =
+                            app.world.get_resource_mut::<CameraController>().unwrap();
                         camera_controller.process_mouse(delta.0, delta.1);
                     }
                 }
-                _ => ()
+                _ => (),
             },
             Event::WindowEvent { event, window_id } => {
-                if window_id != get_primaty_window_id(&app.world) { 
+                if window_id != get_primaty_window_id(&app.world) {
                     trace!("recieved event for unknown window_id");
                     return;
                 }
@@ -53,7 +50,8 @@ pub fn run(mut app: App) {
                             },
                         ..
                     } => {
-                        let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
+                        let mut camera_controller =
+                            app.world.get_resource_mut::<CameraController>().unwrap();
                         camera_controller.process_keyboard(key, state);
                     }
                     WindowEvent::MouseInput {
@@ -64,15 +62,18 @@ pub fn run(mut app: App) {
                         mouse_pressed = state == ElementState::Pressed;
                     }
                     WindowEvent::MouseWheel { delta, .. } => {
-                        let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
+                        let mut camera_controller =
+                            app.world.get_resource_mut::<CameraController>().unwrap();
                         camera_controller.process_scroll(&delta);
                     }
                     WindowEvent::Resized(physical_size) => {
-                        let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
+                        let mut camera_controller =
+                            app.world.get_resource_mut::<CameraController>().unwrap();
                         camera_controller.resize_from_size(physical_size);
                     }
                     WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-                        let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
+                        let mut camera_controller =
+                            app.world.get_resource_mut::<CameraController>().unwrap();
                         camera_controller.resize_from_size(*new_inner_size);
                     }
                     _ => return,

@@ -1,17 +1,11 @@
+use bevy_ecs::world::{FromWorld, World};
 use glium::{
     self,
+    glutin::{self, dpi},
     Display,
-    glutin::{
-        self,
-        dpi
-    }
 };
-use bevy_ecs::world::{World, FromWorld};
 
-use crate::{
-    event_loop::EventLoop, 
-    window_props::WindowProps
-};
+use crate::{event_loop::EventLoop, window_props::WindowProps};
 
 pub struct Window {
     display: Display,
@@ -30,10 +24,8 @@ impl FromWorld for Window {
             .with_depth_buffer(24)
             .with_vsync(window_props.vsync);
 
-        let display = Display::new(wb, cb, event_loop.borrow()).unwrap();
-        Self {
-            display,
-        }
+        let display = Display::new(wb, cb, event_loop.borrow().as_ref().unwrap()).unwrap();
+        Self { display }
     }
 }
 
