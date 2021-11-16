@@ -16,7 +16,7 @@ pub fn draw(
     let display = window.display();
 
     let u_pv_matrix = camera_controller.calc_matrix();
-    let light = [0.0, 0.0, 0.0f32];
+    let light = [50.0, 50.0, 50.0f32];
     
     let params = glium::DrawParameters {
         depth: glium::Depth {
