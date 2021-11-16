@@ -125,10 +125,10 @@ fn main() {
                     camera_controller.process_scroll(&delta);
                 }
                 WindowEvent::Resized(physical_size) => {
-                    perspective.resize_from_size(physical_size);
+                    // perspective.resize_from_size(physical_size);
                 },
                 WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-                    perspective.resize_from_size(*new_inner_size);
+                    // perspective.resize_from_size(*new_inner_size);
                 }
                 _ => return,
             },
@@ -137,7 +137,7 @@ fn main() {
 
         let dt = std::time::Duration::from_nanos(16_666_667);
         let next_frame_time = std::time::Instant::now() + dt;
-        camera_controller.update_camera(&mut camera, dt);
+        // camera_controller.update_camera(&mut camera, dt);
         *control_flow = glutin::event_loop::ControlFlow::WaitUntil(next_frame_time);
     });
 }
