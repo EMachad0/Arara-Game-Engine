@@ -1,11 +1,21 @@
 
 use std::f32::consts::PI;
 
-use super::vertex::Vertex;
+use crate::Vertex;
+use crate::Shape;
 
 pub struct Circle {
     pub vertices: Vec<Vertex>,
     pub indices: Vec<u32>,
+}
+impl Shape for Circle {
+    fn get_vertices(&self) -> &Vec<Vertex> {
+        &self.vertices
+    }
+
+    fn get_indices(&self) -> &Vec<u32> {
+        &self.indices
+    }
 }
 
 impl Circle {

@@ -12,6 +12,11 @@ pub use cube::*;
 pub use sphere::*;
 pub use cylinder::*;
 
+pub trait Shape: Sync + Send {
+    fn get_vertices(&self) -> &Vec<Vertex>;
+    fn get_indices(&self) -> &Vec<u32>;
+}
+
 pub mod prelude {
     pub use crate::{
         vertex::Vertex,
