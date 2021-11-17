@@ -44,7 +44,7 @@ fn add_shapes(mut commands: Commands) {
         shaders: Shaders::default(),
         transform: TransformBuilder::new()
             .scale(1.2f32)
-            .translate(0f32, 3.4f32, 0f32)
+            .translate(0f32, 3.3f32, 0f32)
             .build(),
         color: Color::WHITE,
     });
@@ -57,6 +57,50 @@ fn add_shapes(mut commands: Commands) {
             .translate(0f32, 4.75f32, 0f32)
             .build(),
         color: Color::WHITE,
+    });
+
+    
+
+    // ------------- Clothing ------------------
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Sphere::new(32, 16)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new()
+            .scale(0.09f32)
+            .translate(0f32, 3.8f32, 1.05f32)
+            .build(),
+        color: Color::BLACK,
+    });
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Sphere::new(32, 16)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new()
+            .scale(0.09f32)
+            .translate(0f32, 3.4f32, 1.175f32)
+            .build(),
+        color: Color::BLACK,
+    });
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Sphere::new(32, 16)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new()
+            .scale(0.09f32)
+            .translate(0f32, 2.4f32, 1.55f32)
+            .build(),
+        color: Color::BLACK,
+    });
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Sphere::new(32, 16)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new()
+            .scale(0.09f32)
+            .translate(0f32, 1.9f32, 1.84f32)
+            .build(),
+        color: Color::BLACK,
     });
 
     // ------------- Eyes ------------------
@@ -137,21 +181,23 @@ fn add_shapes(mut commands: Commands) {
     // ------------- Arms ------------------
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 2.7f32, 0.08f32, 0.01f32)),
+        mesh: Box::new(Cylinder::new(32, 2.5f32, 0.08f32, 0.01f32)),
         shaders: Shaders::default(),
         transform: TransformBuilder::new()
             .rotate(Vector3::unit_y(), Deg(90.0))
-            .translate(3f32, 3.4f32, 0f32)
+            .rotate(Vector3::unit_z(), Deg(30.0))
+            .translate(2.2f32, 4.2f32, 0f32)
             .build(),
         color: Color::hex("2C1A0B").unwrap(),
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 2.7f32, 0.08f32, 0.01f32)),
+        mesh: Box::new(Cylinder::new(32, 2.5f32, 0.08f32, 0.01f32)),
         shaders: Shaders::default(),
         transform: TransformBuilder::new()
             .rotate(Vector3::unit_y(), Deg(-90.0))
-            .translate(3f32, 3.4f32, 0f32)
+            .rotate(Vector3::unit_z(), Deg(-30.0))
+            .translate(-2.2f32, 4.2f32, 0f32)
             .build(),
         color: Color::hex("2C1A0B").unwrap(),
     });
