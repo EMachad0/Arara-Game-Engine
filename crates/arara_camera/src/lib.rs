@@ -1,6 +1,6 @@
-pub mod camera;
-pub mod perspective;
-pub mod camera_controller;
+mod camera;
+mod perspective;
+mod camera_controller;
 
 pub use camera::*;
 pub use perspective::*;

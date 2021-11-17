@@ -7,4 +7,8 @@ pub use crate::{
     ecs::prelude::*,
     app::prelude::*,
     window::prelude::*,
+    render::prelude::*,
+    diagnostics::prelude::*,
+    time::prelude::*,
+    DefaultPlugins,
 };

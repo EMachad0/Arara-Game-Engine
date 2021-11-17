@@ -10,6 +10,7 @@ pub use clear_color::*;
 
 pub mod prelude {
     pub use crate::{
+        RenderPlugin,
         simple_mesh::SimpleMeshBundle,
         color::Color,
         clear_color::ClearColor,
@@ -22,10 +23,11 @@ extern crate arara_logger;
 
 use bevy_ecs::prelude::*;
 use arara_app::{
-    app_builder::AppBuilder,
-    plugin::Plugin,
+    AppBuilder,
+    Plugin,
     CoreStage,
 };
+use arara_camera::CameraController;
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
 pub enum RenderStage {
@@ -45,6 +47,7 @@ impl Plugin for RenderPlugin {
         
         app_builder
             .init_resource::<ClearColor>()
+            .init_resource::<CameraController>()
             .add_system_to_stage(RenderStage::Draw, draw.system());
     }
 }

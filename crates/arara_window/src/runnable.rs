@@ -5,7 +5,7 @@ use glium::{self, glutin::{event::*, event_loop::ControlFlow, window::WindowId}}
 use arara_time::Time;
 use arara_app::App;
 // Refactor this, Camera should be its own plugin and listen for events on the event system
-use arara_camera::camera_controller::CameraController;
+use arara_camera::CameraController;
 
 use crate::{EventLoop, Window};
 

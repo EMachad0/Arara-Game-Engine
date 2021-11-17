@@ -8,7 +8,8 @@ pub use timer::*;
 
 pub mod prelude {
     pub use crate::{
-        time::Time,
+        TimePlugin,
+        time::{Duration, Instant, Time},
         stopwatch::Stopwatch,
         timer::Timer,
     };

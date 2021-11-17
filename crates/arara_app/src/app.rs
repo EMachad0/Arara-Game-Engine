@@ -1,7 +1,5 @@
 use bevy_ecs::{schedule::{Schedule, Stage}, world::World};
 
-use arara_logger::*;
-
 use crate::app_builder::AppBuilder;
 
 pub struct App {

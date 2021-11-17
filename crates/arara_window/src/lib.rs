@@ -1,9 +1,7 @@
-#![allow(unused_variables)]
-
-pub mod runnable;
-pub mod window_props;
-pub mod window;
-pub mod event_loop;
+mod runnable;
+mod window_props;
+mod window;
+mod event_loop;
 
 pub use runnable::*;
 pub use window_props::*;

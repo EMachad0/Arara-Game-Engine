@@ -1,7 +1,7 @@
 use glium::Surface;
 use bevy_ecs::prelude::*;
 use crate::{ClearColor, Color};
-use arara_camera::camera_controller::CameraController;
+use arara_camera::CameraController;
 use arara_geometry::Shape;
 use arara_shaders::Shaders;
 use arara_transform::Transform;

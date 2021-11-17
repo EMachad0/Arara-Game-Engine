@@ -1,3 +1,6 @@
+mod default_plugins;
+pub use default_plugins::*;
+
 pub mod prelude;
 
 pub mod camera {
@@ -30,4 +33,20 @@ pub mod app {
 
 pub mod ecs {
     pub use bevy_ecs::*;    
+}
+
+pub mod utils {
+    pub use arara_utils::*;
+}
+
+pub mod time {
+    pub use arara_time::*;
+}
+
+pub mod diagnostics {
+    pub use arara_diagnostic::*;
+}
+
+pub mod render {
+    pub use arara_render::*;
 }

@@ -1,14 +1,10 @@
 use arara::prelude::*;
-use arara_render::*;
 use cgmath::{Deg, Vector3};
 
 fn main() {
     logger::init();
-
     App::builder()
-        .add_plugin(WindowPlugin)
-        .add_plugin(RenderPlugin)
-        .init_resource::<CameraController>()
+        .add_plugins(DefaultPlugins)
         .add_startup_system(add_shapes.system())
         .build()
         .run()

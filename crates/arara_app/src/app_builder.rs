@@ -1,8 +1,6 @@
 use bevy_ecs::{schedule::{RunOnce, Schedule, Stage, StageLabel, SystemDescriptor, SystemStage}, world::{World, FromWorld}};
 
-use arara_logger::*;
-
-use crate::{CoreStage, StartupStage, app::App, plugin::Plugin};
+use crate::{CoreStage, StartupStage, app::App, plugin::{Plugin, PluginGroup, PluginGroupBuilder}};
 
 pub struct AppBuilder {
     pub app : App,
@@ -68,6 +66,13 @@ impl AppBuilder {
     pub fn add_plugin<T: Plugin>(&mut self, plugin: T) -> &mut Self {
         debug!("added plugin: {}", plugin.name());
         plugin.build(self);
+        self
+    }
+
+    pub fn add_plugins<T: PluginGroup>(&mut self, mut group: T) -> &mut Self {
+        let mut plugin_group_builder = PluginGroupBuilder::default();
+        group.build(&mut plugin_group_builder);
+        plugin_group_builder.finish(self);
         self
     }
 
