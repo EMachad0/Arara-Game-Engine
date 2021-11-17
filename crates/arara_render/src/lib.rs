@@ -11,7 +11,7 @@ pub use clear_color::*;
 pub mod prelude {
     pub use crate::{
         RenderPlugin,
-        simple_mesh::SimpleMeshBundle,
+        simple_mesh::{SimpleMeshBundle, BPLight},
         color::Color,
         clear_color::ClearColor,
     };
@@ -27,6 +27,7 @@ use arara_app::{
     Plugin,
     CoreStage,
 };
+
 use arara_camera::CameraController;
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
@@ -47,6 +48,7 @@ impl Plugin for RenderPlugin {
         
         app_builder
             .init_resource::<ClearColor>()
+            .init_resource::<BPLight>()
             .init_resource::<CameraController>()
             .add_system_to_stage(RenderStage::Draw, draw.system());
     }

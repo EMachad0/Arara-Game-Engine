@@ -1,6 +1,6 @@
 use glium::Surface;
 use bevy_ecs::prelude::*;
-use crate::{ClearColor, Color};
+use crate::{ClearColor, Color, BPLight};
 use arara_camera::CameraController;
 use arara_geometry::Shape;
 use arara_shaders::Shaders;
@@ -11,6 +11,7 @@ use arara_window::Window;
 pub fn draw(
     window: NonSend<Window>,
     clear_color: Res<ClearColor>,
+    light: Res<BPLight>,
     mut camera_controller: ResMut<CameraController>,
     query: Query<(&Box<dyn Shape>, &Shaders, &Transform, &Color)>,
 ) {
@@ -19,7 +20,7 @@ pub fn draw(
 
     let pv_matrix = camera_controller.calc_matrix();
     let camera_pos: [f32; 3] = camera_controller.camera().position.into();
-    let light_pos: [f32; 3] = [0.0, 10.0, 0.0];
+    let light_pos: [f32; 3] = light.position.into();
     
     let params = glium::DrawParameters {
         depth: glium::Depth {
