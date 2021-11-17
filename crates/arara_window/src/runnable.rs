@@ -2,8 +2,8 @@ use bevy_ecs::prelude::World;
 
 use glium::{self, glutin::{event::*, event_loop::ControlFlow, window::WindowId}};
 
+use arara_time::Time;
 use arara_app::App;
-use arara_logger::*;
 // Refactor this, Camera should be its own plugin and listen for events on the event system
 use arara_camera::camera_controller::CameraController;
 
@@ -83,15 +83,19 @@ pub fn run(mut app: App) {
             _ => (),
         }
 
-        let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
-        let dt = std::time::Duration::from_nanos(16_666_667);
-        let next_frame_time = std::time::Instant::now() + dt;
-        camera_controller.update_camera(dt);
-        *control_flow = ControlFlow::WaitUntil(next_frame_time);
+        update_camera(&mut app.world);
+        *control_flow = ControlFlow::Poll;
     });
 }
 
 fn get_primary_window_id(world: &World) -> WindowId {
     let window = world.get_non_send_resource::<Window>().unwrap();
     window.display().gl_window().window().id()
+}
+
+fn update_camera(world: &mut World) {
+    let world = world.cell();
+    let mut camera_controller = world.get_non_send_mut::<CameraController>().unwrap();
+    let time = world.get_resource::<Time>().unwrap();
+    camera_controller.update_camera(time.delta());
 }

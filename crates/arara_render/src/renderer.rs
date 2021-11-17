@@ -19,7 +19,7 @@ pub fn draw(
 
     let pv_matrix = camera_controller.calc_matrix();
     let camera_pos: [f32; 3] = camera_controller.camera().position.into();
-    let light_pos: [f32; 3] = [0.0, 500.0, 0.0];
+    let light_pos: [f32; 3] = [0.0, 10.0, 0.0];
     
     let params = glium::DrawParameters {
         depth: glium::Depth {
