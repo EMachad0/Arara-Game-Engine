@@ -4,25 +4,33 @@ fn main() {
     logger::init();
 
     App::builder()
-    .add_plugins(DefaultPlugins)
-    .add_plugin(FrameTimeDiagnosticPlugin)
-    // .add_plugin(EntityCountDiagnosticPlugin)
-    // .add_plugin(LogDiagnosticPlugin { wait_duration: Duration::from_secs(1) })
-    .add_system(add_shapes.system())
-    .build()
-    .run()
+        .add_plugins(DefaultPlugins)
+        .add_plugin(FrameTimeDiagnosticPlugin)
+        // .add_plugin(EntityCountDiagnosticPlugin)
+        // .add_plugin(LogDiagnosticPlugin { wait_duration: Duration::from_secs(1) })
+        .add_startup_system(add_shapes.system())
+        .insert_resource(BPLight {
+        position: vec3(-2.0, 5.0, 3.0),
+    })
+        .build()
+        .run()
 }
 
 fn add_shapes(mut commands: Commands) {
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Circle::new(32, 5f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::default().build(),
-        color: Color::PURPLE,
-    });
+
+    // ------------- Floor ------------------
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(16, 8)),
+        mesh: Box::new(Cylinder::new(32, 0.1f32, 4f32, 4f32)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new().rotate(Vector3::unit_x(), Deg(-90.0)).build(),
+        color: Color::MIDNIGHT_BLUE,
+    });
+
+    // ------------- Body ------------------
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Sphere::new(32, 16)),
         shaders: Shaders::default(),
         transform: TransformBuilder::new()
             .scale(2f32)
@@ -32,7 +40,7 @@ fn add_shapes(mut commands: Commands) {
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(16, 8)),
+        mesh: Box::new(Sphere::new(32, 16)),
         shaders: Shaders::default(),
         transform: TransformBuilder::new()
             .scale(1.2f32)
@@ -42,7 +50,7 @@ fn add_shapes(mut commands: Commands) {
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(16, 8)),
+        mesh: Box::new(Sphere::new(32, 16)),
         shaders: Shaders::default(),
         transform: TransformBuilder::new()
             .scale(0.75f32)
@@ -51,15 +59,101 @@ fn add_shapes(mut commands: Commands) {
         color: Color::WHITE,
     });
 
+    // ------------- Eyes ------------------
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 0.3, 0.2, 0.01)),
+        mesh: Box::new(Sphere::new(32, 16)),
         shaders: Shaders::default(),
         transform: TransformBuilder::new()
-            .scale(0.75f32)
-            .translate(0f32, 4.75f32, 1f32)
+            .scale(0.1f32)
+            .translate(-0.25f32, 4.77f32, 0.7f32)
             .build(),
-        color: Color::ORANGE,
+        color: Color::BLACK,
+    });
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Sphere::new(32, 16)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new()
+            .scale(0.1f32)
+            .translate(0.25f32, 4.77f32, 0.7f32)
+            .build(),
+        color: Color::BLACK,
+    });
+
+    // ------------- Nose ------------------
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Cylinder::new(32, 0.8f32, 0.15, 0.01)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new()
+            .translate(0f32, 4.70f32, 1f32)
+            .build(),
+        color: Color::ORANGE_RED,
+    });
+
+    // ------------- Hat ------------------
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Cylinder::new(32, 0.05f32, 1.1f32, 1.1f32)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new()
+            .rotate(Vector3::unit_x(), Deg(90.0))
+            .translate(0f32, 5.1f32, 0f32)
+            .build(),
+        color: Color::BLACK,
+    });
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Cylinder::new(32, 2f32, 0.6f32, 0.6f32)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new()
+            .rotate(Vector3::unit_x(), Deg(90.0))
+            .translate(0f32, 5.1f32, 0f32)
+            .build(),
+        color: Color::BLACK,
+    });
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Cylinder::new(32, 0.5f32, 0.655f32, 0.655f32)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new()
+            .rotate(Vector3::unit_x(), Deg(90.0))
+            .translate(0f32, 5.1f32, 0f32)
+            .build(),
+        color: Color::BLUE,
+    });
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Cylinder::new(32, 0.5f32, 0.655f32, 0.655f32)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new()
+            .rotate(Vector3::unit_x(), Deg(90.0))
+            .translate(0f32, 5.1f32, 0f32)
+            .build(),
+        color: Color::BLUE,
+    });
+
+    // ------------- Arms ------------------
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Cylinder::new(32, 2.7f32, 0.08f32, 0.01f32)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new()
+            .rotate(Vector3::unit_y(), Deg(90.0))
+            .translate(3f32, 3.4f32, 0f32)
+            .build(),
+        color: Color::hex("2C1A0B").unwrap(),
+    });
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: Box::new(Cylinder::new(32, 2.7f32, 0.08f32, 0.01f32)),
+        shaders: Shaders::default(),
+        transform: TransformBuilder::new()
+            .rotate(Vector3::unit_y(), Deg(-90.0))
+            .translate(3f32, 3.4f32, 0f32)
+            .build(),
+        color: Color::hex("2C1A0B").unwrap(),
     });
 
 }
