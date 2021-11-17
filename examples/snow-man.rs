@@ -68,7 +68,7 @@ fn add_shapes(mut commands: Commands) {
         shaders: Shaders::default(),
         transform: TransformBuilder::new()
             .scale(0.09f32)
-            .translate(0f32, 3.8f32, 1.05f32)
+            .translate(0f32, 3.8f32, 1.055f32)
             .build(),
         color: Color::BLACK,
     });
@@ -78,7 +78,7 @@ fn add_shapes(mut commands: Commands) {
         shaders: Shaders::default(),
         transform: TransformBuilder::new()
             .scale(0.09f32)
-            .translate(0f32, 3.4f32, 1.175f32)
+            .translate(0f32, 3.4f32, 1.16f32)
             .build(),
         color: Color::BLACK,
     });
@@ -88,7 +88,7 @@ fn add_shapes(mut commands: Commands) {
         shaders: Shaders::default(),
         transform: TransformBuilder::new()
             .scale(0.09f32)
-            .translate(0f32, 2.4f32, 1.55f32)
+            .translate(0f32, 2.4f32, 1.558f32)
             .build(),
         color: Color::BLACK,
     });
