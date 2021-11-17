@@ -2,8 +2,7 @@ use arara::prelude::*;
 
 fn main() {
     logger::init();
-
-    logger::test_logging_level();
+    logger::debug_logging_level();
 
     App::builder()
         .add_plugin(GreetPeoplePlugin)

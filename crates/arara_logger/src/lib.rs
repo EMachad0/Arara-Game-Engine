@@ -12,7 +12,7 @@ pub mod prelude {
     };
 }
 
-pub fn test_logging_level() {
+pub fn debug_logging_level() {
     trace!("a trace example");
     debug!("deboogging");
     info!("such information");

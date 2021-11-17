@@ -1,9 +1,6 @@
 use bevy_ecs::prelude::World;
 
-use glium::{
-    self,
-    glutin::{self, event::*, window::WindowId},
-};
+use glium::{self, glutin::{event::*, event_loop::ControlFlow, window::WindowId}};
 
 use arara_app::App;
 use arara_logger::*;
@@ -18,6 +15,7 @@ pub fn run(mut app: App) {
     let mut ev = app.world.get_non_send_resource_mut::<EventLoop>().unwrap();
     let event_loop = ev.take().unwrap();
 
+    trace!("Entering winit event loop");
     event_loop.run(move |ev, _, control_flow| {
         match ev {
             Event::DeviceEvent { ref event, .. } => match event {
@@ -31,14 +29,14 @@ pub fn run(mut app: App) {
                 _ => (),
             },
             Event::WindowEvent { event, window_id } => {
-                if window_id != get_primaty_window_id(&app.world) {
+                if window_id != get_primary_window_id(&app.world) {
                     trace!("recieved event for unknown window_id");
                     return;
                 }
 
                 match event {
                     WindowEvent::CloseRequested => {
-                        *control_flow = glutin::event_loop::ControlFlow::Exit;
+                        *control_flow = ControlFlow::Exit;
                         return;
                     }
                     WindowEvent::KeyboardInput {
@@ -86,15 +84,14 @@ pub fn run(mut app: App) {
         }
 
         let mut camera_controller = app.world.get_resource_mut::<CameraController>().unwrap();
-
         let dt = std::time::Duration::from_nanos(16_666_667);
         let next_frame_time = std::time::Instant::now() + dt;
         camera_controller.update_camera(dt);
-        *control_flow = glutin::event_loop::ControlFlow::WaitUntil(next_frame_time);
+        *control_flow = ControlFlow::WaitUntil(next_frame_time);
     });
 }
 
-fn get_primaty_window_id(world: &World) -> WindowId {
+fn get_primary_window_id(world: &World) -> WindowId {
     let window = world.get_non_send_resource::<Window>().unwrap();
     window.display().gl_window().window().id()
 }

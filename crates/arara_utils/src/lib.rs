@@ -1,0 +1,48 @@
+pub use ahash::AHasher;
+use ahash::RandomState;
+
+/// A hasher builder that will create a fixed hasher.
+#[derive(Default)]
+pub struct FixedState;
+
+impl std::hash::BuildHasher for FixedState {
+    type Hasher = AHasher;
+
+    #[inline]
+    fn build_hasher(&self) -> AHasher {
+        AHasher::new_with_keys(
+            0b1001010111101110000001001100010000000011001001101011001001111000,
+            0b1100111101101011011110001011010100000100001111100011010011010101,
+        )
+    }
+}
+
+/// A std hash map implementing AHash, a high speed keyed hashing algorithm
+/// intended for use in in-memory hashmaps.
+///
+/// AHash is designed for performance and is NOT cryptographically secure.
+pub type HashMap<K, V> = std::collections::HashMap<K, V, RandomState>;
+
+/// A stable std hash map implementing AHash, a high speed keyed hashing algorithm
+/// intended for use in in-memory hashmaps.
+///
+/// Unlike [`HashMap`] this has an iteration order that only depends on the order
+/// of insertions and deletions and not a random source.
+///
+/// AHash is designed for performance and is NOT cryptographically secure.
+pub type StableHashMap<K, V> = std::collections::HashMap<K, V, FixedState>;
+
+/// A std hash set implementing AHash, a high speed keyed hashing algorithm
+/// intended for use in in-memory hashmaps.
+///
+/// AHash is designed for performance and is NOT cryptographically secure.
+pub type HashSet<K> = std::collections::HashSet<K, RandomState>;
+
+/// A stable std hash set implementing AHash, a high speed keyed hashing algorithm
+/// intended for use in in-memory hashmaps.
+///
+/// Unlike [`HashSet`] this has an iteration order that only depends on the order
+/// of insertions and deletions and not a random source.
+///
+/// AHash is designed for performance and is NOT cryptographically secure.
+pub type StableHashSet<K> = std::collections::HashSet<K, FixedState>;

@@ -21,7 +21,9 @@ use bevy_ecs::schedule::StageLabel;
 pub enum CoreStage {
     First,
     Startup,
+    PreUpdate,
     Update,
+    PostUpdate,
 }
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]

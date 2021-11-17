@@ -99,7 +99,7 @@ impl AppBuilder {
         self
     }
 
-    pub fn add_core_stages(&mut self) -> &mut Self {
+    fn add_core_stages(&mut self) -> &mut Self {
         self.add_stage(CoreStage::First, SystemStage::parallel())
             .add_stage(
                 CoreStage::Startup,
@@ -107,7 +107,9 @@ impl AppBuilder {
                     .with_run_criteria(RunOnce::default())
                     .with_stage(StartupStage::Startup, SystemStage::parallel()),
                 )
+            .add_stage(CoreStage::PreUpdate, SystemStage::parallel())
             .add_stage(CoreStage::Update, SystemStage::parallel())
+            .add_stage(CoreStage::PostUpdate, SystemStage::parallel())
     }
 
     pub fn add_stage(&mut self, stage_label: impl StageLabel, stage: impl Stage) -> &mut Self {
