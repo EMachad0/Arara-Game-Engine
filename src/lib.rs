@@ -50,3 +50,7 @@ pub mod diagnostics {
 pub mod render {
     pub use arara_render::*;
 }
+
+pub mod math {
+    pub use cgmath::*;
+}

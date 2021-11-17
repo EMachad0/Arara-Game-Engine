@@ -10,5 +10,6 @@ pub use crate::{
     render::prelude::*,
     diagnostics::prelude::*,
     time::prelude::*,
+    math::*,
     DefaultPlugins,
 };

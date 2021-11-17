@@ -1,5 +1,4 @@
 use arara::prelude::*;
-use cgmath::{Deg, Vector3};
 
 fn main() {
     logger::init();
