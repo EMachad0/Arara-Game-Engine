@@ -1,14 +1,14 @@
 mod vertex;
 mod square;
 mod circle;
-mod cube;
+mod cuboid;
 mod sphere;
 mod cylinder;
 
 pub use vertex::*;
 pub use square::*;
 pub use circle::*;
-pub use cube::*;
+pub use cuboid::*;
 pub use sphere::*;
 pub use cylinder::*;
 
@@ -17,7 +17,7 @@ pub mod prelude {
         vertex::Vertex,
         square::Square,
         circle::Circle,
-        cube::Cube,
+        cuboid::Cuboid,
         sphere::Sphere,
         cylinder::Cylinder,
     };

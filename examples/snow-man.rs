@@ -10,20 +10,21 @@ fn main() {
         // .add_plugin(LogDiagnosticPlugin { wait_duration: Duration::from_secs(1) })
         .add_startup_system(add_shapes.system())
         .insert_resource(BPLight {
-        position: vec3(-2.0, 5.0, 3.0),
-    })
+            position: vec3(-2.0, 5.0, 3.0),
+        })
         .build()
         .run()
 }
 
 fn add_shapes(mut commands: Commands) {
-
     // ------------- Floor ------------------
 
     commands.spawn_bundle(SimpleMeshBundle {
         mesh: Box::new(Cylinder::new(32, 0.1f32, 4f32, 4f32)),
         shaders: Shaders::default(),
-        transform: TransformBuilder::new().rotate(Vector3::unit_x(), Deg(-90.0)).build(),
+        transform: TransformBuilder::new()
+            .rotate(Vector3::unit_x(), Deg(-90.0))
+            .build(),
         color: Color::MIDNIGHT_BLUE,
     });
 
@@ -58,8 +59,6 @@ fn add_shapes(mut commands: Commands) {
             .build(),
         color: Color::WHITE,
     });
-
-    
 
     // ------------- Clothing ------------------
 
@@ -201,5 +200,4 @@ fn add_shapes(mut commands: Commands) {
             .build(),
         color: Color::hex("2C1A0B").unwrap(),
     });
-
 }
