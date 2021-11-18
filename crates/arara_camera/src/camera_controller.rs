@@ -12,7 +12,7 @@ use std::f32::consts::FRAC_PI_2;
 
 #[derive(Debug)]
 pub struct CameraController {
-    camera: Camera,
+    pub camera: Camera,
     perspective: Perspective,
     changed: bool,
     cached_matrix: [[f32; 4]; 4],
@@ -39,6 +39,26 @@ impl CameraController {
     pub fn new(speed: f32, sensitivity: f32) -> Self {
         Self {
             camera: Default::default(),
+            perspective: Default::default(),
+            changed: true,
+            cached_matrix: Default::default(),
+            amount_left: 0.0,
+            amount_right: 0.0,
+            amount_forward: 0.0,
+            amount_backward: 0.0,
+            amount_up: 0.0,
+            amount_down: 0.0,
+            rotate_horizontal: 0.0,
+            rotate_vertical: 0.0,
+            scroll: 0.0,
+            speed,
+            sensitivity,
+        }
+    }
+
+    pub fn from_camera(camera: Camera, speed: f32, sensitivity: f32) -> Self {
+        Self {
+            camera,
             perspective: Default::default(),
             changed: true,
             cached_matrix: Default::default(),
@@ -163,9 +183,5 @@ impl CameraController {
             self.cached_matrix = pv_matrix.into();
         }
         self.cached_matrix
-    }
-
-    pub fn camera(&self) -> &Camera {
-        &self.camera
     }
 }

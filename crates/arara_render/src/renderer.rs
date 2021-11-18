@@ -19,7 +19,7 @@ pub fn draw(
     let clear_color = clear_color.0;
 
     let pv_matrix = camera_controller.calc_matrix();
-    let camera_pos: [f32; 3] = camera_controller.camera().position.into();
+    let camera_pos: [f32; 3] = camera_controller.camera.position.into();
     let light_pos: [f32; 3] = light.position.into();
     
     let params = glium::DrawParameters {
