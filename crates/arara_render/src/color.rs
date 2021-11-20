@@ -1,4 +1,4 @@
-use cgmath::*;
+use glam::{Vec3, Vec4};
 
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -159,15 +159,15 @@ impl From<[f32; 4]> for Color {
     }
 }
 
-impl From<Color> for Vector4<f32> {
+impl From<Color> for Vec4 {
     fn from(color: Color) -> Self {
         let color: [f32; 4] = color.into();
-        vec4(color[0], color[1], color[2], color[3])
+        Vec4::new(color[0], color[1], color[2], color[3])
     }
 }
 
-impl From<Vector4<f32>> for Color {
-    fn from(vec4: Vector4<f32>) -> Self {
+impl From<Vec4> for Color {
+    fn from(vec4: Vec4) -> Self {
         Color::rgba(vec4.x, vec4.y, vec4.z, vec4.w)
     }
 }
@@ -181,6 +181,12 @@ impl From<Color> for [f32; 3] {
 impl From<[f32; 3]> for Color {
     fn from([r, g, b]: [f32; 3]) -> Self {
         Color::rgba(r, g, b, 1.0)
+    }
+}
+
+impl From<Vec3> for Color {
+    fn from(vec3: Vec3) -> Self {
+        Color::rgba(vec3.x, vec3.y, vec3.z, 1.0)
     }
 }
 

@@ -22,5 +22,6 @@ arara_diagnostic = { path = "crates/arara_diagnostic", version = "0.1.0" }
 bevy_ecs = "*"
 glium = "*"
 image = "*"
-cgmath = "*"
+glam = "*"
+# cgmath = "*"
 rand = "*"

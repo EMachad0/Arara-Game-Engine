@@ -4,7 +4,7 @@ use crate::{ClearColor, Color, BPLight};
 use arara_camera::CameraController;
 use arara_geometry::Shape;
 use arara_shaders::Shaders;
-use arara_transform::Transform;
+use arara_transform::{Transform, GlobalTransform};
 use arara_window::Window;
 
 
@@ -13,7 +13,7 @@ pub fn draw(
     clear_color: Res<ClearColor>,
     light: Res<BPLight>,
     mut camera_controller: ResMut<CameraController>,
-    query: Query<(&Box<dyn Shape>, &Shaders, &Transform, &Color)>,
+    query: Query<(&Box<dyn Shape>, &Shaders, &Transform, &GlobalTransform, &Color)>,
 ) {
     let display = window.display();
     let clear_color = clear_color.0;
@@ -34,15 +34,16 @@ pub fn draw(
 
     let mut frame = display.draw();
     frame.clear_color_and_depth((clear_color.r(), clear_color.g(), clear_color.b(), clear_color.a()), 1.0);
-    for (shape, shaders, transform, color) in query.iter() {
+    for (shape, shaders, _transform, global_transform, color) in query.iter() {
         let vertex_buffer = glium::VertexBuffer::new(display, &shape.get_vertices()).unwrap();
         let indices = glium::IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, &shape.get_indices()).unwrap();
         let program = glium::Program::from_source(display, shaders.vertex_shader, shaders.fragment_shader, None).unwrap();
+        let transform: [[f32; 4]; 4] = global_transform.compute_matrix().to_cols_array_2d();
         let color: [f32; 3] = color.to_owned().into();
         
         let uniforms = uniform! {
             u_pv_matrix: pv_matrix,
-            u_transform: transform.transform,
+            u_transform: transform,
             u_light_pos: light_pos,
             u_camera_pos: camera_pos,
             u_color: color,

@@ -20,12 +20,12 @@ impl Shape for Sphere {
 
 impl Default for Sphere {
     fn default() -> Self {
-        Self::new(36, 18)
+        Self::new(36, 18, 1.0)
     }
 }
 
 impl Sphere {
-    pub fn new(sector_count: u32, stack_count: u32) -> Self {
+    pub fn new(sector_count: u32, stack_count: u32, radius: f32) -> Self {
         let sector_step = 2.0 * PI / sector_count as f32;
         let stack_step = PI / stack_count as f32;
 
@@ -42,7 +42,7 @@ impl Sphere {
                 let x = xy * sector_angle.cos();
                 let y = xy * sector_angle.sin();
 
-                let position = [x, y, z];
+                let position = [x * radius, y * radius, z * radius];
                 let normal = position;
 
                 let s = (j as f32) / (sector_count as f32);

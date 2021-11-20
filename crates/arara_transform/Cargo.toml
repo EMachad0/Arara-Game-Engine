@@ -4,5 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-glium = "*"
-cgmath = "*"
+# arara
+arara_utils = { path = "../arara_utils", version = "0.1.0" }
+arara_logger = { path = "../arara_logger", version = "0.1.0" }
+arara_app = { path = "../arara_app", version = "0.1.0" }
+# other
+glam = "*"
+bevy_ecs = "*"
+smallvec = { version = "1.4", features = ["serde"] }

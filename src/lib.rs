@@ -52,5 +52,6 @@ pub mod render {
 }
 
 pub mod math {
-    pub use cgmath::*;
+    pub use glam::*;
+    pub use std::f32::consts::*;
 }

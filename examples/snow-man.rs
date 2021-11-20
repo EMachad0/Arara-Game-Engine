@@ -2,202 +2,274 @@ use arara::prelude::*;
 
 fn main() {
     logger::init();
-
     App::builder()
         .add_plugins(DefaultPlugins)
         .add_plugin(FrameTimeDiagnosticPlugin)
-        // .add_plugin(EntityCountDiagnosticPlugin)
-        // .add_plugin(LogDiagnosticPlugin { wait_duration: Duration::from_secs(1) })
+        .add_plugin(EntityCountDiagnosticPlugin)
+        .add_plugin(LogDiagnosticPlugin::default())
+        .add_startup_system(draw_cordinate_system.system())
         .add_startup_system(add_shapes.system())
-        .insert_resource(BPLight {
-            position: vec3(-2.0, 5.0, 3.0),
-        })
+        .init_resource::<Timer>()
+        .insert_resource(BPLight::new(-2.0, 5.0, 3.0))
+        .add_system(move_snowman.system())
         .build()
         .run()
 }
 
+struct SnowMan;
+struct Body;
+struct Clothing;
+struct Face;
+struct Hat;
+struct Arms;
+
+fn move_snowman(
+    time: Res<Time>,
+    mut query: Query<(&mut Transform, With<SnowMan>)>,
+) {
+    for transform in query.iter_mut() {
+        let mut tr = transform.0;
+        tr.rotate(Quat::from_rotation_y(FRAC_PI_2 * time.delta_seconds()));
+    }
+}
+
 fn add_shapes(mut commands: Commands) {
     // ------------- Floor ------------------
-
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 0.1f32, 4f32, 4f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .rotate(Vector3::unit_x(), Deg(-90.0))
-            .build(),
+        mesh: Box::new(Cylinder::new(32, 0.1, 4.0, 4.0)),
+        transform: Transform::from_rotation(Quat::from_rotation_x(-FRAC_PI_2)),
         color: Color::MIDNIGHT_BLUE,
+        ..Default::default()
     });
 
-    // ------------- Body ------------------
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(2f32)
-            .translate(0f32, 1.2f32, 0f32)
-            .build(),
-        color: Color::WHITE,
+    // ------------- SnowMan ------------------
+    commands.spawn()
+    .insert(SnowMan)
+    .insert_bundle(TransformBundle {
+        transform: Transform::default(),
+        global_transform: GlobalTransform::default(),
+    })
+    .with_children(|snow_man| {
+        // ------------- Body ------------------
+        snow_man.spawn().insert(Body)
+        .insert_bundle(TransformBundle::default())
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Sphere::default()),
+                transform: Transform {
+                    scale: vec3(2.0, 2.0, 2.0),
+                    translation: vec3(0.0, 1.2, 0.0),
+                    ..Default::default()
+                },
+                color: Color::WHITE,
+                ..Default::default()
+            });
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Sphere::default()),
+                transform: Transform {
+                    scale: vec3(1.2, 1.2, 1.2),
+                    translation: vec3(0.0, 3.3, 0.0),
+                    ..Default::default()
+                },
+                color: Color::WHITE,
+                ..Default::default()
+            });
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Sphere::default()),
+                transform: Transform {
+                    scale: vec3(0.75, 0.75, 0.75),
+                    translation: vec3(0.0, 4.75, 0.0),
+                    ..Default::default()
+                },
+                color: Color::WHITE,
+                ..Default::default()
+            });
+        });
+    })
+    .with_children(|snow_man| {
+        // ------------- Clothing ------------------
+        snow_man.spawn().insert(Clothing)
+        .insert_bundle(TransformBundle::default())
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Sphere::new(32, 16, 0.09)),
+                transform: Transform::from_xyz(0.0, 3.8, 1.055),
+                color: Color::BLACK,
+                ..Default::default()
+            });
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Sphere::new(32, 16, 0.09)),
+                transform: Transform::from_xyz(0.0, 2.4, 1.558),
+                color: Color::BLACK,
+                ..Default::default()
+            });
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Sphere::new(32, 16, 0.09)),
+                transform: Transform::from_xyz(0.0, 3.4, 1.16),
+                color: Color::BLACK,
+                ..Default::default()
+            });
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Sphere::new(32, 16, 0.09)),
+                transform: Transform::from_xyz(0.0, 1.9, 1.84),
+                color: Color::BLACK,
+                ..Default::default()
+            });
+        });
+    })
+    .with_children(|snow_man| {
+        // ------------- Face ------------------
+        snow_man.spawn().insert(Face)
+        .insert_bundle(TransformBundle {
+            transform: Transform::from_xyz(0.0, 4.72, 0.0),
+            ..Default::default()
+        })
+        // ------------- Eyes ------------------
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Sphere::new(32, 16, 0.1)),
+                transform: Transform::from_xyz(-0.25, 0.07, 0.7),
+                color: Color::BLACK,
+                ..Default::default()
+            });
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Sphere::new(32, 16, 0.1)),
+                transform: Transform::from_xyz(0.25, 0.07, 0.7),
+                color: Color::BLACK,
+                ..Default::default()
+            });
+        })
+        // ------------- Nose ------------------
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Cylinder::new(32, 0.8, 0.15, 0.01)),
+                transform: Transform::from_xyz(0.0, 0.00, 1.0),
+                color: Color::ORANGE_RED,
+                ..Default::default()
+            });
+        });
+    })
+    .with_children(|snow_man| {
+        // ------------- Hat ------------------
+        snow_man.spawn().insert(Hat)
+        .insert_bundle(TransformBundle {
+            transform: Transform {
+                translation: vec3(0.0, 5.1, 0.0),
+                rotation: Quat::from_rotation_x(FRAC_PI_2),
+                ..Default::default()
+            },
+            ..Default::default()
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Cylinder::new(32, 0.05, 1.1, 1.1)),
+                color: Color::BLACK,
+                ..Default::default()
+            });
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Cylinder::new(32, 2.0, 0.6, 0.6)),
+                color: Color::BLACK,
+                ..Default::default()
+            });
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Cylinder::new(32, 0.5, 0.655, 0.655)),
+                color: Color::BLUE,
+                ..Default::default()
+            });
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Cylinder::new(32, 0.5, 0.655, 0.655)),
+                color: Color::BLUE,
+                ..Default::default()
+            });
+        });
+    })
+    .with_children(|snow_man| {
+        // ------------- Arms ------------------
+        snow_man.spawn().insert(Arms)
+        .insert_bundle(TransformBundle {
+            transform: Transform { 
+                translation: vec3(0.0, 4.2, 0.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Cylinder::new(32, 2.5, 0.08, 0.01)),
+                transform: Transform {
+                    translation: vec3(2.2, 0.0, 0.0),
+                    rotation: Quat::from_euler(EulerRot::ZYX, FRAC_PI_6, FRAC_PI_2, 0.0),
+                    scale: Vec3::ONE,
+                },
+                color: Color::hex("2C1A0B").unwrap(),
+                ..Default::default()
+            });
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Cylinder::new(32, 2.5, 0.08, 0.01)),
+                transform: Transform {
+                    translation: vec3(-2.2, 0.0, 0.0),
+                    rotation: Quat::from_euler(EulerRot::ZYX, -FRAC_PI_6, -FRAC_PI_2, 0.0),
+                    scale: Vec3::ONE,
+                },
+                color: Color::hex("2C1A0B").unwrap(),
+                ..Default::default()
+            });
+        });
     });
+}
 
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(1.2f32)
-            .translate(0f32, 3.3f32, 0f32)
-            .build(),
-        color: Color::WHITE,
-    });
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(0.75f32)
-            .translate(0f32, 4.75f32, 0f32)
-            .build(),
-        color: Color::WHITE,
-    });
-
-    // ------------- Clothing ------------------
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(0.09f32)
-            .translate(0f32, 3.8f32, 1.055f32)
-            .build(),
-        color: Color::BLACK,
-    });
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(0.09f32)
-            .translate(0f32, 3.4f32, 1.16f32)
-            .build(),
-        color: Color::BLACK,
-    });
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(0.09f32)
-            .translate(0f32, 2.4f32, 1.558f32)
-            .build(),
-        color: Color::BLACK,
-    });
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(0.09f32)
-            .translate(0f32, 1.9f32, 1.84f32)
-            .build(),
-        color: Color::BLACK,
-    });
-
-    // ------------- Eyes ------------------
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(0.1f32)
-            .translate(-0.25f32, 4.77f32, 0.7f32)
-            .build(),
-        color: Color::BLACK,
-    });
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(0.1f32)
-            .translate(0.25f32, 4.77f32, 0.7f32)
-            .build(),
-        color: Color::BLACK,
-    });
-
-    // ------------- Nose ------------------
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 0.8f32, 0.15, 0.01)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .translate(0f32, 4.70f32, 1f32)
-            .build(),
-        color: Color::ORANGE_RED,
-    });
-
-    // ------------- Hat ------------------
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 0.05f32, 1.1f32, 1.1f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .rotate(Vector3::unit_x(), Deg(90.0))
-            .translate(0f32, 5.1f32, 0f32)
-            .build(),
-        color: Color::BLACK,
-    });
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 2f32, 0.6f32, 0.6f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .rotate(Vector3::unit_x(), Deg(90.0))
-            .translate(0f32, 5.1f32, 0f32)
-            .build(),
-        color: Color::BLACK,
-    });
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 0.5f32, 0.655f32, 0.655f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .rotate(Vector3::unit_x(), Deg(90.0))
-            .translate(0f32, 5.1f32, 0f32)
-            .build(),
-        color: Color::BLUE,
-    });
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 0.5f32, 0.655f32, 0.655f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .rotate(Vector3::unit_x(), Deg(90.0))
-            .translate(0f32, 5.1f32, 0f32)
-            .build(),
-        color: Color::BLUE,
-    });
-
-    // ------------- Arms ------------------
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 2.5f32, 0.08f32, 0.01f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .rotate(Vector3::unit_y(), Deg(90.0))
-            .rotate(Vector3::unit_z(), Deg(30.0))
-            .translate(2.2f32, 4.2f32, 0f32)
-            .build(),
-        color: Color::hex("2C1A0B").unwrap(),
-    });
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 2.5f32, 0.08f32, 0.01f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .rotate(Vector3::unit_y(), Deg(-90.0))
-            .rotate(Vector3::unit_z(), Deg(-30.0))
-            .translate(-2.2f32, 4.2f32, 0f32)
-            .build(),
-        color: Color::hex("2C1A0B").unwrap(),
-    });
+fn draw_cordinate_system(mut commands: Commands) {
+    let radius = 0.05;
+    for i in 0..5 {
+        let h = i as f32;
+        commands.spawn_bundle(SimpleMeshBundle {
+            mesh: Box::new(Cylinder::new(4, 0.9, radius, radius)),
+            shaders: Shaders::default(),
+            transform: Transform {
+                translation: vec3(h+0.5, 0.0, 0.0),
+                rotation: Quat::from_rotation_y(FRAC_PI_2),
+                ..Default::default()
+            },
+            color: Color::RED,
+            ..Default::default()
+        });
+        commands.spawn_bundle(SimpleMeshBundle {
+            mesh: Box::new(Cylinder::new(4, 0.9, radius, radius)),
+            shaders: Shaders::default(),
+            transform: Transform {
+                translation: vec3(0.0, h+0.5, 0.0),
+                rotation: Quat::from_rotation_x(FRAC_PI_2),
+                ..Default::default()
+            },
+            color: Color::GREEN,
+            ..Default::default()
+        });
+        commands.spawn_bundle(SimpleMeshBundle {
+            mesh: Box::new(Cylinder::new(4, 0.9, radius, radius)),
+            shaders: Shaders::default(),
+            transform: Transform::from_xyz(0.0, 0.0, h+0.5),
+            color: Color::BLUE,
+            ..Default::default()
+        });
+    }
 }

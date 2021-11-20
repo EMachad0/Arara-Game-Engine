@@ -1,6 +1,6 @@
-use bevy_ecs::{schedule::{RunOnce, Schedule, Stage, StageLabel, SystemDescriptor, SystemStage}, world::{World, FromWorld}};
+use bevy_ecs::{component::Component, prelude::*, schedule::{RunOnce, SystemDescriptor}};
 
-use crate::{CoreStage, StartupStage, app::App, plugin::{Plugin, PluginGroup, PluginGroupBuilder}};
+use crate::{CoreStage, Events, StartupStage, app::App, plugin::{Plugin, PluginGroup, PluginGroupBuilder}};
 
 pub struct AppBuilder {
     pub app : App,
@@ -104,13 +104,29 @@ impl AppBuilder {
         self
     }
 
+    pub fn add_startup_system_to_stage(
+        &mut self,
+        stage_label: impl StageLabel,
+        system: impl Into<SystemDescriptor>,
+    ) -> &mut Self {
+        self.app
+            .schedule
+            .stage(CoreStage::Startup, |schedule: &mut Schedule| {
+                schedule.add_system_to_stage(stage_label, system)
+            });
+        self
+    }
+
     fn add_core_stages(&mut self) -> &mut Self {
         self.add_stage(CoreStage::First, SystemStage::parallel())
+            .add_stage(CoreStage::EventUpdateStage, SystemStage::parallel())
             .add_stage(
                 CoreStage::Startup,
                 Schedule::default()
                     .with_run_criteria(RunOnce::default())
-                    .with_stage(StartupStage::Startup, SystemStage::parallel()),
+                    .with_stage(StartupStage::PreStartup, SystemStage::parallel())
+                    .with_stage(StartupStage::Startup, SystemStage::parallel())
+                    .with_stage(StartupStage::PostStartup, SystemStage::parallel()),
                 )
             .add_stage(CoreStage::PreUpdate, SystemStage::parallel())
             .add_stage(CoreStage::Update, SystemStage::parallel())
@@ -120,5 +136,13 @@ impl AppBuilder {
     pub fn add_stage(&mut self, stage_label: impl StageLabel, stage: impl Stage) -> &mut Self {
         self.app.schedule.add_stage(stage_label, stage);
         self
+    }
+
+    pub fn add_event<T>(&mut self) -> &mut Self
+    where
+        T: Component,
+    {
+        self.insert_resource(Events::<T>::default())
+            .add_system_to_stage(CoreStage::EventUpdateStage, Events::<T>::update_system.system())
     }
 }
