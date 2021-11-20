@@ -1,5 +1,5 @@
 use arara::prelude::*;
-use arara_geometry::Cuboid;
+use cgmath::Deg;
 
 fn main() {
     logger::init();
@@ -27,137 +27,109 @@ fn add_shapes(mut commands: Commands) {
     // ------------- Floor ------------------
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 0.1f32, 4f32, 4f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .rotate(Vector3::unit_x(), Deg(-90.0))
-            .build(),
+        mesh: Box::new(Cylinder::new(32, 0.1, 4., 4.)),
+        transform: Transform::from_rotation(Quat::from_rotation_x(-FRAC_PI_2)),
         color: Color::BLACK,
+        ..Default::default()
     });
 
     // ------------- Foot ------------------
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(0.5f32, 0.3f32, 1f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new().translate(-1., 0.2f32, 0f32).build(),
+        mesh: Box::new(Cuboid::new(0.5, 0.3, 1.)),
+        transform: Transform::from_xyz(-1., 0.2, 0.),
         color: Color::SILVER,
+        ..Default::default()
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(0.5f32, 0.3f32, 1f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new().translate(1., 0.2f32, 0f32).build(),
+        mesh: Box::new(Cuboid::new(0.5, 0.3, 1.)),
+        transform: Transform::from_xyz(1., 0.2, 0.),
         color: Color::SILVER,
+        ..Default::default()
     });
 
     // ------------- Legs ------------------
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(0.5f32, 2f32, 0.5f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .translate(-1., 1f32, -0.25f32)
-            .build(),
+        mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
+        transform: Transform::from_xyz(-1., 1., -0.25),
         color: Color::SILVER,
+        ..Default::default()
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(0.5f32, 2f32, 0.5f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .translate(1., 1f32, -0.25f32)
-            .build(),
+        mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
+        transform: Transform::from_xyz(1., 1., -0.25),
         color: Color::SILVER,
+        ..Default::default()
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(0.45)
-            .translate(1., 2.1f32, -0.25f32)
-            .build(),
+        mesh: Box::new(Sphere::new(32, 16, 0.45)),
+        transform: Transform::from_xyz(1., 2.1, -0.25),
         color: Color::DARK_GRAY,
+        ..Default::default()
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(0.45)
-            .translate(-1., 2.1f32, -0.25f32)
-            .build(),
+        mesh: Box::new(Sphere::new(32, 16, 0.45)),
+        transform: Transform::from_xyz(-1., 2.1, -0.25),
         color: Color::DARK_GRAY,
+        ..Default::default()
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(0.5f32, 1.8f32, 0.5f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .translate(-1., 3f32, -0.25f32)
-            .build(),
+        mesh: Box::new(Cuboid::new(0.5, 1.8, 0.5)),
+        transform: Transform::from_xyz(-1., 3., -0.25),
         color: Color::SILVER,
+        ..Default::default()
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(0.5f32, 1.8f32, 0.5f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .translate(1., 3f32, -0.25f32)
-            .build(),
+        mesh: Box::new(Cuboid::new(0.5, 1.8, 0.5)),
+        transform: Transform::from_xyz(1., 3., -0.25),
         color: Color::SILVER,
+        ..Default::default()
     });
 
     // ------------- Body ------------------
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(2.55f32, 3f32, 1f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .translate(0., 5.4f32, -0.25f32)
-            .build(),
+        mesh: Box::new(Cuboid::new(2.55, 3., 1.)),
+        transform: Transform::from_xyz(0., 5.4, -0.25),
         color: Color::SILVER,
+        ..Default::default()
     });
 
-    // ------------- Arms ------------------
+    // // ------------- Arms ------------------
     
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(0.5f32, 2f32, 0.5f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .translate(1.6, 5.6, -0.25f32)
-            .build(),
+        mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
+        transform: Transform::from_xyz(1.6, 5.6, -0.25),
         color: Color::SILVER,
+        ..Default::default()
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(0.45)
-            .translate(1.6, 6.6, -0.25)
-            .build(),
+        mesh: Box::new(Sphere::new(32, 16, 0.45)),
+        transform: Transform::from_xyz(1.6, 6.6, -0.25),
         color: Color::DARK_GRAY,
+        ..Default::default()
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(0.5f32, 2f32, 0.5f32)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .translate(-1.6, 5.6, -0.25f32)
-            .build(),
+        mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
+        transform: Transform::from_xyz(-1.6, 5.6, -0.25),
         color: Color::SILVER,
+        ..Default::default()
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Sphere::new(32, 16)),
-        shaders: Shaders::default(),
-        transform: TransformBuilder::new()
-            .scale(0.45)
-            .translate(-1.6, 6.6, -0.25)
-            .build(),
+        mesh: Box::new(Sphere::new(32, 16, 0.45)),
+        transform: Transform::from_xyz(-1.6, 6.6, -0.25),
         color: Color::DARK_GRAY,
+        ..Default::default()
     });
 
 }
@@ -168,27 +140,32 @@ fn draw_cordinate_system(mut commands: Commands) {
         let h = i as f32;
         commands.spawn_bundle(SimpleMeshBundle {
             mesh: Box::new(Cylinder::new(4, 0.9, radius, radius)),
-            shaders: Shaders::default(),
-            transform: TransformBuilder::new()
-                .rotate(Vector3::unit_y(), Deg(90.0))
-                .translate(h + 0.5, 0.0, 0.0)
-                .build(),
+
+            transform: Transform {
+                translation: vec3(h+0.5, 0.0, 0.0),
+                rotation: Quat::from_rotation_y(FRAC_PI_2),
+                ..Default::default()
+            },
             color: Color::RED,
+            ..Default::default()
         });
         commands.spawn_bundle(SimpleMeshBundle {
             mesh: Box::new(Cylinder::new(4, 0.9, radius, radius)),
-            shaders: Shaders::default(),
-            transform: TransformBuilder::new()
-                .rotate(Vector3::unit_x(), Deg(90.0))
-                .translate(0.0, h + 0.5, 0.0)
-                .build(),
+
+            transform: Transform {
+                translation: vec3(0.0, h+0.5, 0.0),
+                rotation: Quat::from_rotation_x(FRAC_PI_2),
+                ..Default::default()
+            },
             color: Color::GREEN,
+            ..Default::default()
         });
         commands.spawn_bundle(SimpleMeshBundle {
             mesh: Box::new(Cylinder::new(4, 0.9, radius, radius)),
-            shaders: Shaders::default(),
-            transform: TransformBuilder::new().translate(0.0, 0.0, h + 0.5).build(),
+
+            transform: Transform::from_xyz(0.0, 0.0, h+0.5),
             color: Color::BLUE,
+            ..Default::default()
         });
     }
 }

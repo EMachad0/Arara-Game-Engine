@@ -9,7 +9,7 @@ pub struct Camera {
 
 impl Default for Camera {
     fn default() -> Self {
-        Self::new((0.0, 5.0, 10.0), cgmath::Deg(-90.0), cgmath::Deg(-20.0))
+        Self::new((0.0, 5.0, 10.0), Deg(-90.0), Deg(-20.0))
     }
 }
 

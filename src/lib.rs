@@ -54,4 +54,7 @@ pub mod render {
 pub mod math {
     pub use glam::*;
     pub use std::f32::consts::*;
+    pub fn rad(deg: f32) -> f32 {
+        return deg * PI / 180.0;
+    }
 }

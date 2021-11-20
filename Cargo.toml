@@ -23,5 +23,5 @@ bevy_ecs = "*"
 glium = "*"
 image = "*"
 glam = "*"
-# cgmath = "*"
+cgmath = "*"    # Remove after camera refactor
 rand = "*"
