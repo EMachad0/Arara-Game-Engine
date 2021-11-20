@@ -28,8 +28,6 @@ use arara_app::{
     CoreStage,
 };
 
-use arara_camera::CameraController;
-
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
 pub enum RenderStage {
     Draw,
@@ -49,7 +47,6 @@ impl Plugin for RenderPlugin {
         app_builder
             .init_resource::<ClearColor>()
             .init_resource::<BPLight>()
-            .init_resource::<CameraController>()
             .add_system_to_stage(RenderStage::Draw, draw.system());
     }
 }

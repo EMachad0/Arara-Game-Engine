@@ -4,5 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+# internal
+arara_app = { path = "../arara_app", version = "0.1.0" }
+arara_time = { path = "../arara_time", version = "0.1.0" }
+arara_transform = { path = "../arara_transform", version = "0.1.0" }
+arara_input = { path = "../arara_input", version = "0.1.0" }
+arara_window = { path = "../arara_window", version = "0.1.0" }
+# other
+bevy_ecs = "*"
 glium = "*"
 cgmath = "*"

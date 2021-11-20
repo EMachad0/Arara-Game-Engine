@@ -14,7 +14,7 @@ fn main() {
         .insert_resource(BPLight {
             position: vec3(-2.0, 5.0, 3.0),
         })
-        .insert_resource(CameraController::from_camera(
+        .insert_resource(FlyCamera::from_camera(
             Camera::new((0.0, 2.0, 10.0), Deg(-90.0), Deg(0.0)),
             1.0,
             0.5,

@@ -58,3 +58,7 @@ pub mod math {
         return deg * PI / 180.0;
     }
 }
+
+pub mod input {
+    pub use arara_input::*;
+}

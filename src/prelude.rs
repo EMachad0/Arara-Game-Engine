@@ -1,5 +1,6 @@
 pub use crate::{
     logger,
+    math::*,
     camera::prelude::*,
     geometry::prelude::*,
     shaders::prelude::*,
@@ -10,6 +11,6 @@ pub use crate::{
     render::prelude::*,
     diagnostics::prelude::*,
     time::prelude::*,
-    math::*,
+    input::prelude::*,
     DefaultPlugins,
 };

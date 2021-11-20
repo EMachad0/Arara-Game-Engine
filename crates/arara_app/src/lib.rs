@@ -39,3 +39,7 @@ pub enum StartupStage {
     Startup,
     PostStartup,
 }
+
+/// An event that indicates the app should exit. This will fully exit the app process.
+#[derive(Debug, Clone)]
+pub struct AppExit;

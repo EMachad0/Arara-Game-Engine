@@ -1,6 +1,6 @@
 use bevy_ecs::{component::Component, prelude::*, schedule::{RunOnce, SystemDescriptor}};
 
-use crate::{CoreStage, Events, StartupStage, app::App, plugin::{Plugin, PluginGroup, PluginGroupBuilder}};
+use crate::{AppExit, CoreStage, Events, StartupStage, app::App, plugin::{Plugin, PluginGroup, PluginGroupBuilder}};
 
 pub struct AppBuilder {
     pub app : App,
@@ -11,7 +11,8 @@ impl Default for AppBuilder {
         let mut app_builder = Self {
             app: App::default(),
         };
-        app_builder.add_core_stages();
+        app_builder.add_core_stages()
+            .add_event::<AppExit>();
         app_builder
     }
 }

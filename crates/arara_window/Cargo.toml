@@ -8,9 +8,9 @@ edition = "2021"
 [dependencies]
 # internal
 arara_app = { path = "../arara_app", version = "0.1.0" }
-arara_camera = { path = "../arara_camera", version = "0.1.0" }
 arara_logger = { path = "../arara_logger", version = "0.1.0" }
 arara_time = { path = "../arara_time", version = "0.1.0" }
+arara_input = { path = "../arara_input", version = "0.1.0" }
 # other
 log = "*"
 bevy_ecs = "*"

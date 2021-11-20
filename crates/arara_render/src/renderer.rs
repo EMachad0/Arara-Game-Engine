@@ -1,7 +1,7 @@
 use glium::Surface;
 use bevy_ecs::prelude::*;
 use crate::{ClearColor, Color, BPLight};
-use arara_camera::CameraController;
+use arara_camera::FlyCamera;
 use arara_geometry::Shape;
 use arara_shaders::Shaders;
 use arara_transform::{Transform, GlobalTransform};
@@ -12,7 +12,7 @@ pub fn draw(
     window: NonSend<Window>,
     clear_color: Res<ClearColor>,
     light: Res<BPLight>,
-    mut camera_controller: ResMut<CameraController>,
+    mut camera_controller: ResMut<FlyCamera>,
     query: Query<(&Box<dyn Shape>, &Shaders, &Transform, &GlobalTransform, &Color)>,
 ) {
     let display = window.display();
