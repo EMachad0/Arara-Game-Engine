@@ -4,6 +4,9 @@ mod circle;
 mod cuboid;
 mod sphere;
 mod cylinder;
+mod thorus;
+mod capsule;
+mod icosphere;
 
 pub use vertex::*;
 pub use square::*;
@@ -11,6 +14,9 @@ pub use circle::*;
 pub use cuboid::*;
 pub use sphere::*;
 pub use cylinder::*;
+pub use thorus::*;
+pub use capsule::*;
+pub use icosphere::*;
 
 pub mod prelude {
     pub use crate::{
@@ -20,6 +26,9 @@ pub mod prelude {
         cuboid::Cuboid,
         sphere::Sphere,
         cylinder::Cylinder,
+        thorus::Thorus,
+        capsule::{Capsule, CapsuleUvProfile},
+        icosphere::Icosphere,
     };
 }
 
