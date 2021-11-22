@@ -16,7 +16,7 @@ pub mod prelude {
         simple_mesh::{SimpleMeshBundle, BPLight},
         color::Color,
         clear_color::ClearColor,
-        coordinate_system::CoordinateSystemPlugin,
+        coordinate_system::{CoordinateSystem, CoordinateSystemPlugin},
     };
 }
 
