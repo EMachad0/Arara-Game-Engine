@@ -7,7 +7,7 @@ fn main() {
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
         .add_plugin(LogDiagnosticPlugin::default())
-        .add_startup_system(draw_cordinate_system.system())
+        .add_plugin(CoordinateSystemPlugin::default())
         .add_startup_system(add_shapes.system())
         .init_resource::<Timer>()
         .insert_resource(BPLight::new(-2.0, 5.0, 3.0))
@@ -53,8 +53,8 @@ fn add_shapes(mut commands: Commands) {
         // ------------- Body ------------------
         snow_man.spawn().insert(Body)
         .insert_bundle(TransformBundle::default())
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+        .with_children(|body| {
+            body.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Sphere::default()),
                 transform: Transform {
                     scale: vec3(2.0, 2.0, 2.0),
@@ -64,9 +64,7 @@ fn add_shapes(mut commands: Commands) {
                 color: Color::WHITE,
                 ..Default::default()
             });
-        })
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+            body.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Sphere::default()),
                 transform: Transform {
                     scale: vec3(1.2, 1.2, 1.2),
@@ -76,9 +74,7 @@ fn add_shapes(mut commands: Commands) {
                 color: Color::WHITE,
                 ..Default::default()
             });
-        })
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+            body.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Sphere::default()),
                 transform: Transform {
                     scale: vec3(0.75, 0.75, 0.75),
@@ -94,32 +90,26 @@ fn add_shapes(mut commands: Commands) {
         // ------------- Clothing ------------------
         snow_man.spawn().insert(Clothing)
         .insert_bundle(TransformBundle::default())
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+        .with_children(|clothing| {
+            clothing.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Sphere::new(32, 16, 0.09)),
                 transform: Transform::from_xyz(0.0, 3.8, 1.055),
                 color: Color::BLACK,
                 ..Default::default()
             });
-        })
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+            clothing.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Sphere::new(32, 16, 0.09)),
                 transform: Transform::from_xyz(0.0, 2.4, 1.558),
                 color: Color::BLACK,
                 ..Default::default()
             });
-        })
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+            clothing.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Sphere::new(32, 16, 0.09)),
                 transform: Transform::from_xyz(0.0, 3.4, 1.16),
                 color: Color::BLACK,
                 ..Default::default()
             });
-        })
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+            clothing.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Sphere::new(32, 16, 0.09)),
                 transform: Transform::from_xyz(0.0, 1.9, 1.84),
                 color: Color::BLACK,
@@ -135,25 +125,20 @@ fn add_shapes(mut commands: Commands) {
             ..Default::default()
         })
         // ------------- Eyes ------------------
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+        .with_children(|face| {
+            face.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Sphere::new(32, 16, 0.1)),
                 transform: Transform::from_xyz(-0.25, 0.07, 0.7),
                 color: Color::BLACK,
                 ..Default::default()
             });
-        })
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+            face.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Sphere::new(32, 16, 0.1)),
                 transform: Transform::from_xyz(0.25, 0.07, 0.7),
                 color: Color::BLACK,
                 ..Default::default()
             });
-        })
-        // ------------- Nose ------------------
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+            face.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Cylinder::new(32, 0.8, 0.15, 0.01)),
                 transform: Transform::from_xyz(0.0, 0.00, 1.0),
                 color: Color::ORANGE_RED,
@@ -172,29 +157,23 @@ fn add_shapes(mut commands: Commands) {
             },
             ..Default::default()
         })
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+        .with_children(|hat| {
+            hat.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Cylinder::new(32, 0.05, 1.1, 1.1)),
                 color: Color::BLACK,
                 ..Default::default()
             });
-        })
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+            hat.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Cylinder::new(32, 2.0, 0.6, 0.6)),
                 color: Color::BLACK,
                 ..Default::default()
             });
-        })
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+            hat.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Cylinder::new(32, 0.5, 0.655, 0.655)),
                 color: Color::BLUE,
                 ..Default::default()
             });
-        })
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+            hat.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Cylinder::new(32, 0.5, 0.655, 0.655)),
                 color: Color::BLUE,
                 ..Default::default()
@@ -211,8 +190,8 @@ fn add_shapes(mut commands: Commands) {
             },
             ..Default::default()
         })
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+        .with_children(|arms| {
+            arms.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Cylinder::new(32, 2.5, 0.08, 0.01)),
                 transform: Transform {
                     translation: vec3(2.2, 0.0, 0.0),
@@ -222,9 +201,7 @@ fn add_shapes(mut commands: Commands) {
                 color: Color::hex("2C1A0B").unwrap(),
                 ..Default::default()
             });
-        })
-        .with_children(|parent| {
-            parent.spawn_bundle(SimpleMeshBundle {
+            arms.spawn_bundle(SimpleMeshBundle {
                 mesh: Box::new(Cylinder::new(32, 2.5, 0.08, 0.01)),
                 transform: Transform {
                     translation: vec3(-2.2, 0.0, 0.0),
@@ -236,29 +213,4 @@ fn add_shapes(mut commands: Commands) {
             });
         });
     });
-}
-
-fn draw_cordinate_system(mut commands: Commands) {
-    let radius = 0.05;
-    for i in 0..5 {
-        let h = i as f32;
-        commands.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cuboid::new(0.9, radius, radius)),
-            transform: Transform::from_xyz(h+0.5, 0.0, 0.0),
-            color: Color::RED,
-            ..Default::default()
-        });
-        commands.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cuboid::new(radius, 0.9, radius)),
-            transform: Transform::from_xyz(0.0, h+0.5, 0.0),
-            color: Color::GREEN,
-            ..Default::default()
-        });
-        commands.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cuboid::new(radius, radius, 0.9)),
-            transform: Transform::from_xyz(0.0, 0.0, h+0.5),
-            color: Color::BLUE,
-            ..Default::default()
-        });
-    }
 }
