@@ -243,30 +243,19 @@ fn draw_cordinate_system(mut commands: Commands) {
     for i in 0..5 {
         let h = i as f32;
         commands.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cylinder::new(4, 0.9, radius, radius)),
-            shaders: Shaders::default(),
-            transform: Transform {
-                translation: vec3(h+0.5, 0.0, 0.0),
-                rotation: Quat::from_rotation_y(FRAC_PI_2),
-                ..Default::default()
-            },
+            mesh: Box::new(Cuboid::new(0.9, radius, radius)),
+            transform: Transform::from_xyz(h+0.5, 0.0, 0.0),
             color: Color::RED,
             ..Default::default()
         });
         commands.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cylinder::new(4, 0.9, radius, radius)),
-            shaders: Shaders::default(),
-            transform: Transform {
-                translation: vec3(0.0, h+0.5, 0.0),
-                rotation: Quat::from_rotation_x(FRAC_PI_2),
-                ..Default::default()
-            },
+            mesh: Box::new(Cuboid::new(radius, 0.9, radius)),
+            transform: Transform::from_xyz(0.0, h+0.5, 0.0),
             color: Color::GREEN,
             ..Default::default()
         });
         commands.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cylinder::new(4, 0.9, radius, radius)),
-            shaders: Shaders::default(),
+            mesh: Box::new(Cuboid::new(radius, radius, 0.9)),
             transform: Transform::from_xyz(0.0, 0.0, h+0.5),
             color: Color::BLUE,
             ..Default::default()
