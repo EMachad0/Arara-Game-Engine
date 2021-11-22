@@ -7,10 +7,10 @@ out vec4 color;
 
 uniform vec3 u_camera_pos;
 uniform vec3 u_light_pos;
-uniform vec3 u_color;
+uniform vec4 u_color;
 
 const float shineness = 32.0;
-const vec3 light_color = vec3(0.3);
+const vec4 light_color = vec4(0.3);
 
 void main() {
     vec3 normal = normalize(v_normal);
@@ -21,9 +21,9 @@ void main() {
     float diffuse = max(dot(normal, light_dir), 0.0);
     float specular = pow(max(dot(normal, half_direction), 0.0), shineness);
 
-    vec3 diffuse_color = u_color * diffuse;
-    vec3 ambient_color = u_color * 0.1;
-    vec3 specular_color = light_color * specular;
+    vec4 diffuse_color = u_color * diffuse;
+    vec4 ambient_color = u_color * 0.1;
+    vec4 specular_color = light_color * specular;
 
-    color = vec4(ambient_color + diffuse_color + specular_color, 1.0); 
+    color = ambient_color + diffuse_color + specular_color; 
 }

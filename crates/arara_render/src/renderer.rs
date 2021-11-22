@@ -41,7 +41,7 @@ pub fn draw(
         let indices = glium::IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, &shape.get_indices()).unwrap();
         let program = glium::Program::from_source(display, shaders.vertex_shader, shaders.fragment_shader, None).unwrap();
         let transform: [[f32; 4]; 4] = global_transform.compute_matrix().to_cols_array_2d();
-        let color: [f32; 3] = color.to_owned().into();
+        let color: [f32; 4] = color.to_owned().into();
         
         let uniforms = uniform! {
             u_pv_matrix: pv_matrix,
