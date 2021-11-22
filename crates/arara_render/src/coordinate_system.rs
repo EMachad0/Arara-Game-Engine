@@ -7,9 +7,9 @@ use arara_transform::Transform;
 use crate::{Color, SimpleMeshBundle};
 
 pub struct CoordinateSystem {
-    count: u32,
-    lenght: f32,
-    radius: f32,
+    pub count: u32,
+    pub lenght: f32,
+    pub radius: f32,
 }
 
 impl Default for CoordinateSystem {
