@@ -7,10 +7,10 @@ fn main() {
     App::builder()
         .add_plugins(DefaultPlugins)
         .add_plugin(FrameTimeDiagnosticPlugin)
-        .add_plugin(EntityCountDiagnosticPlugin)
-        .add_plugin(LogDiagnosticPlugin { wait_duration: Duration::from_secs(3) })
+        .add_plugin(CoordinateSystemPlugin)
+        // .add_plugin(EntityCountDiagnosticPlugin)
+        // .add_plugin(LogDiagnosticPlugin { wait_duration: Duration::from_secs(1) })
         .add_startup_system(add_shapes.system())
-        .add_startup_system(draw_cordinate_system.system())
         .insert_resource(BPLight {
             position: vec3(-2.0, 5.0, 3.0),
         })
@@ -22,6 +22,15 @@ fn main() {
         .build()
         .run()
 }
+
+struct Robot;
+struct LowerLeftLeg;
+struct LowerRightLeg;
+struct UpperLeftLeg;
+struct UpperRightLeg;
+struct Body;
+struct LeftArm;
+struct RightArm;
 
 fn add_shapes(mut commands: Commands) {
     // ------------- Floor ------------------
@@ -35,35 +44,51 @@ fn add_shapes(mut commands: Commands) {
 
     // ------------- Foot ------------------
 
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(0.5, 0.3, 1.)),
-        transform: Transform::from_xyz(-1., 0.2, 0.),
-        color: Color::SILVER,
-        ..Default::default()
-    });
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(0.5, 0.3, 1.)),
-        transform: Transform::from_xyz(1., 0.2, 0.),
-        color: Color::SILVER,
-        ..Default::default()
-    });
+    commands
+        .spawn()
+        .insert(Robot)
+        .insert_bundle(TransformBundle {
+            transform: Transform::default(),
+            global_transform: GlobalTransform::default(),
+        })
+        .with_children(|robot| {
+            robot
+                .spawn()
+                .insert(LowerLeftLeg)
+                .insert_bundle(TransformBundle::default())
+                .with_children(|parent| {
+                    parent.spawn_bundle(SimpleMeshBundle {
+                        mesh: Box::new(Cuboid::new(0.5, 0.3, 1.)),
+                        transform: Transform::from_xyz(-1., 0.2, 0.),
+                        color: Color::SILVER,
+                        ..Default::default()
+                    });
+                    parent.spawn_bundle(SimpleMeshBundle {
+                        mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
+                        transform: Transform::from_xyz(-1., 1., -0.25),
+                        color: Color::SILVER,
+                        ..Default::default()
+                    });
+                });
+            robot.spawn()
+                .insert()
+        })
+        .with_children(|robot| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Cuboid::new(0.5, 0.3, 1.)),
+                transform: Transform::from_xyz(1., 0.2, 0.),
+                color: Color::SILVER,
+                ..Default::default()
+            });
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
+                transform: Transform::from_xyz(1., 1., -0.25),
+                color: Color::SILVER,
+                ..Default::default()
+            });
+        });
 
     // ------------- Legs ------------------
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
-        transform: Transform::from_xyz(-1., 1., -0.25),
-        color: Color::SILVER,
-        ..Default::default()
-    });
-
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
-        transform: Transform::from_xyz(1., 1., -0.25),
-        color: Color::SILVER,
-        ..Default::default()
-    });
 
     commands.spawn_bundle(SimpleMeshBundle {
         mesh: Box::new(Sphere::new(32, 16, 0.45)),
@@ -103,7 +128,7 @@ fn add_shapes(mut commands: Commands) {
     });
 
     // // ------------- Arms ------------------
-    
+
     commands.spawn_bundle(SimpleMeshBundle {
         mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
         transform: Transform::from_xyz(1.6, 5.6, -0.25),
@@ -131,30 +156,4 @@ fn add_shapes(mut commands: Commands) {
         color: Color::DARK_GRAY,
         ..Default::default()
     });
-
-}
-
-fn draw_cordinate_system(mut commands: Commands) {
-    let radius = 0.05;
-    for i in 0..5 {
-        let h = i as f32;
-        commands.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cuboid::new(0.9, radius, radius)),
-            transform: Transform::from_xyz(h+0.5, 0.0, 0.0),
-            color: Color::RED,
-            ..Default::default()
-        });
-        commands.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cuboid::new(radius, 0.9, radius)),
-            transform: Transform::from_xyz(0.0, h+0.5, 0.0),
-            color: Color::GREEN,
-            ..Default::default()
-        });
-        commands.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cuboid::new(radius, radius, 0.9)),
-            transform: Transform::from_xyz(0.0, 0.0, h+0.5),
-            color: Color::BLUE,
-            ..Default::default()
-        });
-    }
 }
