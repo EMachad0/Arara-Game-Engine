@@ -29,9 +29,8 @@ pub fn draw(
             .. Default::default()
         },
         backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockwise,
-        // point_size: Some(2.0),
-        line_width: Some(2.0),
-        polygon_mode: glium::PolygonMode::Line,
+        // line_width: Some(2.0),
+        // polygon_mode: glium::PolygonMode::Line,
         .. Default::default()
     };
 
