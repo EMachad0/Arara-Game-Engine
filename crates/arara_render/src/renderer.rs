@@ -1,4 +1,4 @@
-use glium::Surface;
+use glium::{Surface, uniform};
 use bevy_ecs::prelude::*;
 use crate::{ClearColor, Color, BPLight};
 use arara_camera::FlyCamera;
