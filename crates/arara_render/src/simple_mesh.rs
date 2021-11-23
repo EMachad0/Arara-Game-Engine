@@ -1,29 +1,29 @@
 
 use bevy_ecs::bundle::Bundle;
 use glam::{Vec3, vec3};
+use image::DynamicImage;
 
 use crate::Color;
-use arara_shaders::Shaders;
 use arara_transform::{GlobalTransform, Transform};
 use arara_geometry::{Shape, Sphere};
 
 #[derive(Bundle)]
 pub struct SimpleMeshBundle {
     pub mesh: Box<dyn Shape>,
-    pub shaders: Shaders,
     pub transform: Transform,
     pub global_transform: GlobalTransform,
     pub color: Color,
+    pub image: Option::<DynamicImage>,
 }
 
 impl Default for SimpleMeshBundle {
     fn default() -> Self {
         Self { 
             mesh: Box::new(Sphere::default()),
-            shaders: Default::default(),
             transform: Default::default(),
             global_transform: Default::default(),
-            color: Default::default()
+            color: Default::default(),
+            image: Default::default(),
         }
     }
 }

@@ -3,12 +3,14 @@ mod color;
 mod renderer;
 mod clear_color;
 mod coordinate_system;
+mod texture;
 
 pub use simple_mesh::*;
 pub use color::*;
 pub use renderer::*;
 pub use clear_color::*;
 pub use coordinate_system::*;
+pub use texture::load_texture;
 
 pub mod prelude {
     pub use crate::{
@@ -16,6 +18,7 @@ pub mod prelude {
         simple_mesh::{SimpleMeshBundle, BPLight},
         color::Color,
         clear_color::ClearColor,
+        texture::load_texture,
         coordinate_system::{CoordinateSystem, CoordinateSystemPlugin},
     };
 }
