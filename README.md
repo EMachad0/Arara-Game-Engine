@@ -1,8 +1,8 @@
-# CGR_Glium
+# Arara Game Engine
 
 A game engine written in Rust, based in [glium](https://github.com/glium/glium), [glam](https://github.com/bitshifter/glam-rs) and [bevy-ecs](https://github.com/bevyengine/bevy).
 
-### Running the Examples
+### Examples
 
 This examples can be found at the [examples](./examples) folder.
 
