@@ -1,11 +1,11 @@
 use arara::prelude::*;
-use arara_logger::warn;
-use image::{GenericImageView, imageops};
+use arara_asset::{AssetPlugin, prelude::*};
 
 fn main() {
     logger::init();
     App::builder()
         .add_plugins(DefaultPlugins)
+        .add_plugin(AssetPlugin)
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
         .add_plugin(LogDiagnosticPlugin { wait_duration: Duration::from_secs(1) })
@@ -15,7 +15,13 @@ fn main() {
         .run()
 }
 
-fn add_shapes(mut commands: Commands) {
+fn add_shapes(
+    _asset_server: Res<AssetServer>,
+    mut commands: Commands,
+) {
+
+    // let img0 = asset_server.load("textures/joaozinho.png");
+
     // let img0 = image::open("assets/textures/branco.png").unwrap();
 
     // let img1 = image::open("assets/textures/joaozinho.png").unwrap();

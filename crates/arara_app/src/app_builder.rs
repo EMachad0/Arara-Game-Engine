@@ -30,6 +30,10 @@ impl AppBuilder {
         self
     }
 
+    pub fn world(&self) -> &World {
+        &self.app.world
+    }
+    
     pub fn world_mut(&mut self) -> &mut World {
         &mut self.app.world
     }
@@ -118,6 +122,31 @@ impl AppBuilder {
         self
     }
 
+    pub fn add_stage(&mut self, stage_label: impl StageLabel, stage: impl Stage) -> &mut Self {
+        self.app.schedule.add_stage(stage_label, stage);
+        self
+    }
+
+    pub fn add_stage_after<S: Stage>(
+        &mut self,
+        target: impl StageLabel,
+        label: impl StageLabel,
+        stage: S,
+    ) -> &mut Self {
+        self.app.schedule.add_stage_after(target, label, stage);
+        self
+    }
+
+    pub fn add_stage_before<S: Stage>(
+        &mut self,
+        target: impl StageLabel,
+        label: impl StageLabel,
+        stage: S,
+    ) -> &mut Self {
+        self.app.schedule.add_stage_before(target, label, stage);
+        self
+    }
+
     fn add_core_stages(&mut self) -> &mut Self {
         self.add_stage(CoreStage::First, SystemStage::parallel())
             .add_stage(CoreStage::EventUpdateStage, SystemStage::parallel())
@@ -132,11 +161,6 @@ impl AppBuilder {
             .add_stage(CoreStage::PreUpdate, SystemStage::parallel())
             .add_stage(CoreStage::Update, SystemStage::parallel())
             .add_stage(CoreStage::PostUpdate, SystemStage::parallel())
-    }
-
-    pub fn add_stage(&mut self, stage_label: impl StageLabel, stage: impl Stage) -> &mut Self {
-        self.app.schedule.add_stage(stage_label, stage);
-        self
     }
 
     pub fn add_event<T>(&mut self) -> &mut Self
