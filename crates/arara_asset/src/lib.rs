@@ -11,7 +11,11 @@ mod path;
 mod task_pool;
 
 pub mod prelude {
-    pub use crate::{AddAsset, AssetEvent, AssetServer, Assets, Handle, HandleUntyped};
+    pub use crate::{
+        AddAsset, AssetEvent, AssetServer,
+        Assets, Handle, HandleUntyped,
+        diagnostic::AssetCountDiagnosticsPlugin,
+    };
 }
 
 #[macro_use]

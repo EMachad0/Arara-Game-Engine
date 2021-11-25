@@ -1,14 +1,14 @@
 use glam::*;
-use glium::*;
-use glium::texture::RawImage2d;
+use glium::{Surface, texture::RawImage2d};
 use bevy_ecs::prelude::*;
-use image::DynamicImage;
-use crate::{ClearColor, Color, BPLight};
+use crate::{BPLight, ClearColor, Color, Image};
+use arara_utils::StableHashMap;
 use arara_camera::FlyCamera;
 use arara_geometry::Shape;
 use arara_shaders::Shaders;
 use arara_transform::{Transform, GlobalTransform};
 use arara_window::Window;
+use arara_asset::{Assets, Handle};
 
 #[derive(Copy, Clone)]
 struct Vertex {
@@ -19,15 +19,15 @@ struct Vertex {
     i_tex_id: u32,
 }
 
-implement_vertex!(Vertex, i_position, i_normal, i_color, i_tex_cords, i_tex_id);
-
+glium::implement_vertex!(Vertex, i_position, i_normal, i_color, i_tex_cords, i_tex_id);
 
 pub fn draw(
+    images: Res<Assets<Image>>,
     window: NonSend<Window>,
     clear_color: Res<ClearColor>,
     light: Res<BPLight>,
     mut camera_controller: ResMut<FlyCamera>,
-    query: Query<(&Box<dyn Shape>, &Transform, &GlobalTransform, &Color, &Option::<DynamicImage>)>,
+    query: Query<(&Box<dyn Shape>, &Transform, &GlobalTransform, &Color, &Option::<Handle<Image>>)>,
 ) {
     let display = window.display();
     let clear_color = clear_color.0;
@@ -53,22 +53,31 @@ pub fn draw(
     
     let mut vertices: Vec<Vertex> = Vec::new();
     let mut indices: Vec<u32> = Vec::new();
-    let mut images: Vec<RawImage2d::<u8>> = vec![
-        RawImage2d::from_raw_rgb(vec![255; 3*1*1], (1, 1))
+    let mut textures: Vec<RawImage2d::<u8>> = vec![
+        RawImage2d::from_raw_rgba_reversed(&vec![255; 4*64*64], (64, 64)),
     ];
+
+    let mut textures_index: StableHashMap<Handle<Image>, u32> = StableHashMap::default();
     
-    for (shape, _transform, global_transform, color, dynamic_image) in query.iter() {
+    for (shape, _transform, global_transform, color, handle) in query.iter() {
         let transform = global_transform.compute_matrix();
         let ti_transform = Mat3::from_mat4(global_transform.compute_matrix().inverse().transpose());
         let color: [f32; 4] = color.to_owned().into();
-        let tex_id = match dynamic_image {
-            Some(dynamic_image) => {
-                let image = dynamic_image.to_rgba8();
-                let image_dimensions = image.dimensions();
-                let image = RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
-                images.push(image);
-                images.len() - 1
-            },
+
+        let tex_id = match handle {
+            Some(handle) => match textures_index.get(handle) {
+                    Some(index) => index.to_owned(),
+                    None => match images.get(handle) {
+                        Some(image) => {
+                            let texture = RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
+                            let index = textures.len() as u32;
+                            textures.push(texture);
+                            textures_index.insert(handle.clone(), index);
+                            index
+                        },
+                        None => continue,
+                    }
+                }
             None => 0,
         };
         let offset = vertices.len() as u32;
@@ -83,19 +92,19 @@ pub fn draw(
                 i_normal: normal.into(),
                 i_color: color,
                 i_tex_cords: vertex.tex_coords,
-                i_tex_id: tex_id as u32,
+                i_tex_id: tex_id,
             });
         }
         for idx in shape.get_indices().iter() {
             indices.push(*idx + offset);
         }
     }
-    
-    let texture_array = glium::texture::SrgbTexture2dArray::new(display, images).unwrap();
+
+    let texture_array = glium::texture::SrgbTexture2dArray::new(display, textures).unwrap();
     let vertex_buffer = glium::VertexBuffer::new(display, &vertices).unwrap();
     let index_buffer = glium::IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, &indices).unwrap();
 
-    let uniforms = uniform! {
+    let uniforms = glium::uniform! {
         u_pv_matrix: pv_matrix,
         u_light_pos: light_pos,
         u_camera_pos: camera_pos,

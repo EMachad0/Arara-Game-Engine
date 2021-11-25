@@ -15,9 +15,13 @@ arara_shaders = { path = "../arara_shaders", version = "0.1.0" }
 arara_window = { path = "../arara_window", version = "0.1.0" }
 arara_logger = { path = "../arara_logger", version = "0.1.0" }
 arara_utils = { path = "../arara_utils", version = "0.1.0" }
+arara_asset = { path = "../arara_asset", version = "0.1.0" }
 # other
 bevy_ecs = "*"
+bevy_reflect = "*"
 glium = "*"
 glam = "*"
 hex = "*"
 image = "*"
+thiserror = "*"
+anyhow = "*"

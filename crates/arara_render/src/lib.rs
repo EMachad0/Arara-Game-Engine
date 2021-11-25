@@ -10,7 +10,7 @@ pub use color::*;
 pub use renderer::*;
 pub use clear_color::*;
 pub use coordinate_system::*;
-pub use texture::load_texture;
+pub use texture::*;
 
 pub mod prelude {
     pub use crate::{
@@ -18,8 +18,8 @@ pub mod prelude {
         simple_mesh::{SimpleMeshBundle, BPLight},
         color::Color,
         clear_color::ClearColor,
-        texture::load_texture,
         coordinate_system::{CoordinateSystem, CoordinateSystemPlugin},
+        texture::Image,
     };
 }
 
@@ -50,6 +50,7 @@ impl Plugin for RenderPlugin {
         app_builder
             .init_resource::<ClearColor>()
             .init_resource::<BPLight>()
+            .add_plugin(texture::ImagePlugin)
             .add_startup_system_to_stage(StartupStage::PostStartup, debug_glium_backend_info.system())
             .add_system_to_stage(RenderStage::Draw, draw.system());
     }

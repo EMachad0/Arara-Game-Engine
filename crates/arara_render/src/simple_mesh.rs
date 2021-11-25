@@ -1,9 +1,8 @@
-
 use bevy_ecs::bundle::Bundle;
 use glam::{Vec3, vec3};
-use image::DynamicImage;
 
-use crate::Color;
+use crate::{Color, Image};
+use arara_asset::Handle;
 use arara_transform::{GlobalTransform, Transform};
 use arara_geometry::{Shape, Sphere};
 
@@ -13,7 +12,7 @@ pub struct SimpleMeshBundle {
     pub transform: Transform,
     pub global_transform: GlobalTransform,
     pub color: Color,
-    pub image: Option::<DynamicImage>,
+    pub image: Option::<Handle<Image>>,
 }
 
 impl Default for SimpleMeshBundle {

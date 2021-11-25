@@ -62,3 +62,7 @@ pub mod math {
 pub mod input {
     pub use arara_input::*;
 }
+
+pub mod asset {
+    pub use arara_asset::*;
+}

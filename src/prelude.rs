@@ -12,5 +12,6 @@ pub use crate::{
     diagnostics::prelude::*,
     time::prelude::*,
     input::prelude::*,
+    asset::prelude::*,
     DefaultPlugins,
 };
