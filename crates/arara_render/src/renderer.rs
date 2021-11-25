@@ -1,11 +1,10 @@
 use glam::*;
 use glium::{Surface, texture::RawImage2d};
 use bevy_ecs::prelude::*;
-use crate::{BPLight, ClearColor, Color, Image};
+use crate::{BPLight, ClearColor, Color, Image, Shaders};
 use arara_utils::StableHashMap;
 use arara_camera::FlyCamera;
 use arara_geometry::Shape;
-use arara_shaders::Shaders;
 use arara_transform::{Transform, GlobalTransform};
 use arara_window::Window;
 use arara_asset::{Assets, Handle};

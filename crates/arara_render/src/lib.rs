@@ -4,6 +4,7 @@ mod renderer;
 mod clear_color;
 mod coordinate_system;
 mod texture;
+mod shaders;
 
 pub use simple_mesh::*;
 pub use color::*;
@@ -11,6 +12,7 @@ pub use renderer::*;
 pub use clear_color::*;
 pub use coordinate_system::*;
 pub use texture::*;
+pub use shaders::*;
 
 pub mod prelude {
     pub use crate::{

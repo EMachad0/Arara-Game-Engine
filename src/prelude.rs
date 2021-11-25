@@ -3,7 +3,6 @@ pub use crate::{
     math::*,
     camera::prelude::*,
     geometry::prelude::*,
-    shaders::prelude::*,
     transform::prelude::*,
     ecs::prelude::*,
     app::prelude::*,
