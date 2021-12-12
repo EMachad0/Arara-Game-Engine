@@ -15,7 +15,8 @@ fn main() {
             2.0,
             0.1,
         ))
-        .insert_resource(BPLight { position: vec3(5.0, 5.0, 5.0) })
+        .insert_resource(BPLight { position: vec3(-5.0, 5.0, -5.0) })
+        .insert_resource(ClearColor(Color::WHITE))
         .add_system(rotate_squares.system())
         .build().run();
 }
