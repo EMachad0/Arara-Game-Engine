@@ -27,14 +27,6 @@ fn main() {
 
 fn add_shapes(mut commands: Commands) {
     // ------------- Particle ------------------
-    // commands.spawn_bundle(ParticleSystemBundle {
-    //     particle_system: ParticleSystem {
-    //         lifetime: 5.0,
-    //         quantity: 50,
-    //     },
-    //     transform: Transform::from_xyz(1.0, 1.0, 1.0),
-    //     ..Default::default()
-    // });
 
     commands.spawn_bundle(SimpleMeshBundle {
         mesh: Box::new(Icosphere::new(6, 0.1)),
@@ -44,5 +36,6 @@ fn add_shapes(mut commands: Commands) {
     }).insert(ParticleSystem {
         lifetime: 5.0,
         quantity: 50,
+        .. Default::default()
     });
 }
