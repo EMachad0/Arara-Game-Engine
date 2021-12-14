@@ -25,7 +25,7 @@ impl Default for ParticleSystem {
         Self {
             lifetime: Default::default(),
             quantity: Default::default(),
-            shape: Box::new(Square::new()),
+            shape: Box::new(Square::default()),
         }
     }
 }
@@ -83,7 +83,7 @@ fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)
                     .spawn()
                     .insert(Particle { lifetime: 1.0 })
                     .insert_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Square::new()),
+                        mesh: Box::new(Square::default()),
                         color: Color::WHITE,
                         visibility: Visibility::inactive(),
                         ..Default::default()
