@@ -1,9 +1,12 @@
+use std::f32::consts::FRAC_PI_2;
+
 use arara_app::{AppBuilder, Plugin, StartupStage};
 use arara_geometry::{Shape, Square};
 use arara_render::prelude::*;
 use arara_transform::{BuildChildren, GlobalTransform, Transform};
 use bevy_ecs::prelude::*;
-use glam::vec3;
+use glam::{vec3, Quat, Mat4, Vec3};
+use arara_camera::{FlyCamera};
 
 // #[macro_use]
 // extern crate arara_logger;
@@ -40,7 +43,35 @@ pub struct Particle {
 
 impl Plugin for ParticleSystemPlugin {
     fn build(&self, app_builder: &mut AppBuilder) {
-        app_builder.add_startup_system_to_stage(StartupStage::PostStartup, init_particles.system());
+        app_builder
+            .add_startup_system_to_stage(StartupStage::PostStartup, init_particles.system())
+            .add_system(update_particles.system());
+    }
+}
+
+fn update_particles(mut commands: Commands, fly_camera: Res<FlyCamera>, mut query: Query<(&mut Particle, &mut Visibility, &mut Transform)>) {
+    
+    for (mut particle, mut visibility, mut transform) in query.iter_mut() {
+        if !visibility.active {
+            *transform = Transform {
+                rotation: Quat::from_rotation_x(FRAC_PI_2),
+                ..Default::default()
+            };
+            
+            visibility.active = true;
+        } else {
+            let camera_position = fly_camera.camera.position;
+            let camera_position = vec3(camera_position.x, camera_position.y, camera_position.z).normalize();
+            let rotation = Mat4::look_at_rh(transform.translation,camera_position, Vec3::Y);
+        
+            *transform = Transform {
+                rotation: Quat::from_mat4(&rotation),
+                ..Default::default()
+            };
+        }
+
+
+
     }
 }
 
@@ -50,12 +81,10 @@ fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)
             for _ in 0..particle_system.quantity {
                 parent
                     .spawn()
-                    .insert(Particle {
-                        lifetime: 1.0,
-                    })
+                    .insert(Particle { lifetime: 1.0 })
                     .insert_bundle(SimpleMeshBundle {
                         mesh: Box::new(Square::new()),
-                        color: Color::RED,
+                        color: Color::WHITE,
                         visibility: Visibility::inactive(),
                         ..Default::default()
                     });
