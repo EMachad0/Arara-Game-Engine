@@ -98,7 +98,7 @@ fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)
                         velocity: 0.0,
                     })
                     .insert_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Square::new()),
+                        mesh: Box::new(Square::default()),
                         color: Color::WHITE,
                         visibility: Visibility::inactive(),
                         ..Default::default()
