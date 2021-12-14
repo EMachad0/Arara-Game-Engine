@@ -1,7 +1,7 @@
 use bevy_ecs::bundle::Bundle;
 use glam::{Vec3, vec3};
 
-use crate::{Color, Image};
+use crate::{Color, Image, prelude::Visibility};
 use arara_asset::Handle;
 use arara_transform::{GlobalTransform, Transform};
 use arara_geometry::{Shape, Sphere};
@@ -13,6 +13,7 @@ pub struct SimpleMeshBundle {
     pub global_transform: GlobalTransform,
     pub color: Color,
     pub image: Option::<Handle<Image>>,
+    pub visibility: Visibility,
 }
 
 impl Default for SimpleMeshBundle {
@@ -23,6 +24,7 @@ impl Default for SimpleMeshBundle {
             global_transform: Default::default(),
             color: Default::default(),
             image: Default::default(),
+            visibility: Default::default(),
         }
     }
 }

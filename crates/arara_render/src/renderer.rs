@@ -1,7 +1,7 @@
 use glam::*;
 use glium::{Surface, texture::RawImage2d};
 use bevy_ecs::prelude::*;
-use crate::{BPLight, ClearColor, Color, Image, Shaders};
+use crate::{BPLight, ClearColor, Color, Image, Shaders, visibility::Visibility};
 use arara_utils::StableHashMap;
 use arara_camera::FlyCamera;
 use arara_geometry::Shape;
@@ -26,7 +26,7 @@ pub fn draw(
     clear_color: Res<ClearColor>,
     light: Res<BPLight>,
     mut camera_controller: ResMut<FlyCamera>,
-    query: Query<(&Box<dyn Shape>, &Transform, &GlobalTransform, &Color, &Option::<Handle<Image>>)>,
+    query: Query<(&Box<dyn Shape>, &Transform, &GlobalTransform, &Color, &Option::<Handle<Image>>, &Visibility)>,
 ) {
     let display = window.display();
     let clear_color = clear_color.0;
@@ -58,25 +58,29 @@ pub fn draw(
 
     let mut textures_index: StableHashMap<Handle<Image>, u32> = StableHashMap::default();
     
-    for (shape, _transform, global_transform, color, handle) in query.iter() {
+    for (shape, _transform, global_transform, color, handle, visibility) in query.iter() {
+        if !visibility.active || !visibility.visible {
+            continue;
+        }
+
         let transform = global_transform.compute_matrix();
         let ti_transform = Mat3::from_mat4(global_transform.compute_matrix().inverse().transpose());
         let color: [f32; 4] = color.to_owned().into();
 
         let tex_id = match handle {
             Some(handle) => match textures_index.get(handle) {
-                    Some(index) => index.to_owned(),
-                    None => match images.get(handle) {
-                        Some(image) => {
-                            let texture = RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
-                            let index = textures.len() as u32;
-                            textures.push(texture);
-                            textures_index.insert(handle.clone(), index);
-                            index
-                        },
-                        None => continue,
-                    }
+                Some(index) => index.to_owned(),
+                None => match images.get(handle) {
+                    Some(image) => {
+                        let texture = RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
+                        let index = textures.len() as u32;
+                        textures.push(texture);
+                        textures_index.insert(handle.clone(), index);
+                        index
+                    },
+                    None => continue,
                 }
+            }
             None => 0,
         };
         let offset = vertices.len() as u32;

@@ -5,6 +5,7 @@ mod clear_color;
 mod coordinate_system;
 mod texture;
 mod shaders;
+mod visibility;
 
 pub use simple_mesh::*;
 pub use color::*;
@@ -13,6 +14,7 @@ pub use clear_color::*;
 pub use coordinate_system::*;
 pub use texture::*;
 pub use shaders::*;
+pub use visibility::*;
 
 pub mod prelude {
     pub use crate::{
@@ -22,6 +24,7 @@ pub mod prelude {
         clear_color::ClearColor,
         coordinate_system::{CoordinateSystem, CoordinateSystemPlugin},
         texture::Image,
+        visibility::Visibility,
     };
 }
 
