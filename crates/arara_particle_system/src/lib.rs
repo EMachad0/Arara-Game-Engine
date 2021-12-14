@@ -36,7 +36,6 @@ pub struct ParticleSystemBundle {
 
 pub struct Particle {
     pub lifetime: f32,
-    pub active: bool,
 }
 
 impl Plugin for ParticleSystemPlugin {
@@ -53,11 +52,11 @@ fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)
                     .spawn()
                     .insert(Particle {
                         lifetime: 1.0,
-                        active: false,
                     })
                     .insert_bundle(SimpleMeshBundle {
                         mesh: Box::new(Square::new()),
                         color: Color::RED,
+                        visibility: Visibility::inactive(),
                         ..Default::default()
                     });
             }
