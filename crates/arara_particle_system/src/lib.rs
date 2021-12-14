@@ -1,12 +1,12 @@
-use std::f32::consts::FRAC_PI_2;
+
 
 use arara_app::{AppBuilder, Plugin, StartupStage};
 use arara_camera::FlyCamera;
-use arara_geometry::{Shape, Square};
+use arara_geometry::{Square};
 use arara_render::prelude::*;
 use arara_transform::{BuildChildren, Children, GlobalTransform, Transform};
 use bevy_ecs::prelude::*;
-use glam::{vec3, Mat4, Quat, Vec3};
+use glam::{vec3, Quat, Vec3};
 use rand::{self, Rng};
 
 // #[macro_use]
@@ -55,21 +55,27 @@ fn update_particles(
     mut commands: Commands,
     fly_camera: Res<FlyCamera>,
     particle_system_query: Query<(&ParticleSystem, Option<&Children>)>,
-    mut query: Query<(&mut Particle, &mut Visibility, &mut Transform)>,
+    mut query: Query<(
+        &mut Particle,
+        &mut Visibility,
+        &mut Transform,
+        &GlobalTransform,
+    )>,
 ) {
     let mut rng = rand::thread_rng();
-    
+
     let camera_position = fly_camera.camera.position;
-    let camera_position = vec3(camera_position.x, camera_position.y, camera_position.z).normalize();
+    let camera_position = vec3(camera_position.x, camera_position.y, camera_position.z);
 
     for (particle_system, children) in particle_system_query.iter() {
         if let Some(children) = children {
             for child in children.iter() {
-                let (mut particle, mut visibility, mut transform) = query.get_mut(*child).unwrap();
+                let (mut particle, mut visibility, mut transform, global_transform) =
+                    query.get_mut(*child).unwrap();
 
                 if !visibility.active {
                     *transform = Transform {
-                        rotation: Quat::from_rotation_x(FRAC_PI_2),
+                        // rotation: ,
                         translation: vec3(
                             rng.gen_range(-particle_system.radius..particle_system.radius),
                             rng.gen_range(-particle_system.radius..particle_system.radius),
@@ -82,6 +88,10 @@ fn update_particles(
                     visibility.active = true;
                 } else {
                 }
+                transform.rotation = Quat::from_rotation_arc(
+                    Vec3::Y,
+                    (camera_position - global_transform.translation).normalize(),
+                )
             }
         }
     }
