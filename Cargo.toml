@@ -19,6 +19,7 @@ arara_time = { path = "crates/arara_time", version = "0.1.0" }
 arara_diagnostic = { path = "crates/arara_diagnostic", version = "0.1.0" }
 arara_input = { path = "crates/arara_input", version = "0.1.0" }
 arara_asset = { path = "crates/arara_asset", version = "0.1.0" }
+arara_particle_system = { path = "crates/arara_particle_system", version = "0.1.0" }
 # external
 bevy_ecs = "*"
 glium = "*"
