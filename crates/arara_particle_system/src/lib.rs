@@ -1,12 +1,13 @@
 use std::f32::consts::FRAC_PI_2;
 
 use arara_app::{AppBuilder, Plugin, StartupStage};
+use arara_camera::FlyCamera;
 use arara_geometry::{Shape, Square};
 use arara_render::prelude::*;
-use arara_transform::{BuildChildren, GlobalTransform, Transform};
+use arara_transform::{BuildChildren, Children, GlobalTransform, Transform};
 use bevy_ecs::prelude::*;
-use glam::{vec3, Quat, Mat4, Vec3};
-use arara_camera::{FlyCamera};
+use glam::{vec3, Mat4, Quat, Vec3};
+use rand::{self, Rng};
 
 // #[macro_use]
 // extern crate arara_logger;
@@ -17,7 +18,7 @@ pub struct ParticleSystemPlugin;
 pub struct ParticleSystem {
     pub lifetime: f32,
     pub quantity: u32,
-    pub shape: Box<dyn Shape>,
+    pub radius: f32,
 }
 
 impl Default for ParticleSystem {
@@ -25,7 +26,7 @@ impl Default for ParticleSystem {
         Self {
             lifetime: Default::default(),
             quantity: Default::default(),
-            shape: Box::new(Square::new()),
+            radius: 5.0,
         }
     }
 }
@@ -38,7 +39,8 @@ pub struct ParticleSystemBundle {
 }
 
 pub struct Particle {
-    pub lifetime: f32,
+    pub time_remaining: f32,
+    pub velocity: f32,
 }
 
 impl Plugin for ParticleSystemPlugin {
@@ -49,29 +51,39 @@ impl Plugin for ParticleSystemPlugin {
     }
 }
 
-fn update_particles(mut commands: Commands, fly_camera: Res<FlyCamera>, mut query: Query<(&mut Particle, &mut Visibility, &mut Transform)>) {
+fn update_particles(
+    mut commands: Commands,
+    fly_camera: Res<FlyCamera>,
+    particle_system_query: Query<(&ParticleSystem, Option<&Children>)>,
+    mut query: Query<(&mut Particle, &mut Visibility, &mut Transform)>,
+) {
+    let mut rng = rand::thread_rng();
     
-    for (mut particle, mut visibility, mut transform) in query.iter_mut() {
-        if !visibility.active {
-            *transform = Transform {
-                rotation: Quat::from_rotation_x(FRAC_PI_2),
-                ..Default::default()
-            };
-            
-            visibility.active = true;
-        } else {
-            let camera_position = fly_camera.camera.position;
-            let camera_position = vec3(camera_position.x, camera_position.y, camera_position.z).normalize();
-            let rotation = Mat4::look_at_rh(transform.translation,camera_position, Vec3::Y);
-        
-            *transform = Transform {
-                rotation: Quat::from_mat4(&rotation),
-                ..Default::default()
-            };
+    let camera_position = fly_camera.camera.position;
+    let camera_position = vec3(camera_position.x, camera_position.y, camera_position.z).normalize();
+
+    for (particle_system, children) in particle_system_query.iter() {
+        if let Some(children) = children {
+            for child in children.iter() {
+                let (mut particle, mut visibility, mut transform) = query.get_mut(*child).unwrap();
+
+                if !visibility.active {
+                    *transform = Transform {
+                        rotation: Quat::from_rotation_x(FRAC_PI_2),
+                        translation: vec3(
+                            rng.gen_range(-particle_system.radius..particle_system.radius),
+                            rng.gen_range(-particle_system.radius..particle_system.radius),
+                            0.,
+                        ),
+                        ..Default::default()
+                    };
+
+                    particle.time_remaining = particle_system.lifetime;
+                    visibility.active = true;
+                } else {
+                }
+            }
         }
-
-
-
     }
 }
 
@@ -81,7 +93,10 @@ fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)
             for _ in 0..particle_system.quantity {
                 parent
                     .spawn()
-                    .insert(Particle { lifetime: 1.0 })
+                    .insert(Particle {
+                        time_remaining: 1.0,
+                        velocity: 0.0,
+                    })
                     .insert_bundle(SimpleMeshBundle {
                         mesh: Box::new(Square::new()),
                         color: Color::WHITE,

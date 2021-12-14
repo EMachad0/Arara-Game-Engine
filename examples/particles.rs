@@ -30,7 +30,7 @@ fn add_shapes(mut commands: Commands) {
 
     commands.spawn_bundle(SimpleMeshBundle {
         mesh: Box::new(Icosphere::new(6, 0.1)),
-        transform: Transform::from_xyz(1.0, 1.0, 1.0),
+        transform: Transform::from_xyz(5.0, 5.0, 1.0),
         color: Color::PURPLE,
         ..Default::default()
     }).insert(ParticleSystem {
