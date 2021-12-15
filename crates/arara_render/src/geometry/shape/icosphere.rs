@@ -1,24 +1,24 @@
 use hexasphere::shapes::IcoSphere;
 
-use crate::Vertex;
-use crate::Shape;
+use crate::geometry::{Vertex, Mesh};
 
 pub struct Icosphere {
-    pub vertices: Vec<Vertex>,
-    pub indices: Vec<u32>,
-}
-impl Shape for Icosphere {
-    fn get_vertices(&self) -> &Vec<Vertex> {
-        &self.vertices
-    }
-
-    fn get_indices(&self) -> &Vec<u32> {
-        &self.indices
-    }
+    subdivisions: usize, 
+    radius: f32,
 }
 
 impl Icosphere {
     pub fn new(subdivisions: usize, radius: f32) -> Self {
+        Self {
+            subdivisions,
+            radius,
+        }
+    }
+}
+
+impl From<Icosphere> for Mesh {
+    fn from(icosphere: Icosphere) -> Self {
+        let Icosphere {subdivisions, radius} = icosphere;
         if subdivisions >= 80 {
             /*
             Number of triangles:

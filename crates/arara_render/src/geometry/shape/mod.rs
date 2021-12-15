@@ -6,7 +6,7 @@ mod cuboid;
 // mod cylinder;
 // mod thorus;
 // mod capsule;
-// mod icosphere;
+mod icosphere;
 
 pub use vertex::*;
 pub use square::*;
@@ -16,4 +16,4 @@ pub use cuboid::*;
 // pub use cylinder::*;
 // pub use thorus::*;
 // pub use capsule::*;
-// pub use icosphere::*;
+pub use icosphere::*;
