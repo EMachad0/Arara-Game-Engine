@@ -3,21 +3,11 @@ use std::f32::consts::PI;
 
 use glam::{Vec2, vec2};
 
-use crate::Vertex;
-use crate::Shape;
+use crate::geometry::Vertex;
 
 pub struct Circle {
     pub vertices: Vec<Vertex>,
     pub indices: Vec<u32>,
-}
-impl Shape for Circle {
-    fn get_vertices(&self) -> &Vec<Vertex> {
-        &self.vertices
-    }
-
-    fn get_indices(&self) -> &Vec<u32> {
-        &self.indices
-    }
 }
 
 impl Circle {

@@ -1,36 +1,50 @@
-use super::vertex::Vertex;
-use super::circle;
-use crate::Shape;
 
+use super::vertex::Vertex;
+use crate::geometry::{Mesh, unit_circle_points};
 
 pub struct Cylinder {
-    pub vertices: Vec<Vertex>,
-    pub indices: Vec<u32>,
-}
-impl Shape for Cylinder {
-    fn get_vertices(&self) -> &Vec<Vertex> {
-        &self.vertices
-    }
-
-    fn get_indices(&self) -> &Vec<u32> {
-        &self.indices
-    }
+    pub sector_count: u32,
+    pub height: f32,
+    pub base_radius: f32,
+    pub top_radius: f32,
 }
 
 impl Cylinder {
     pub fn new(sector_count: u32, height: f32, base_radius: f32, top_radius: f32) -> Self {
-        let circle_points = circle::unit_circle_points(sector_count);
+        Self {
+            sector_count,
+            height,
+            base_radius,
+            top_radius,
+        }
+    }
+}
+
+impl From<Cylinder> for Mesh {
+    fn from(cylinder: Cylinder) -> Mesh {
+        let Cylinder {
+            sector_count,
+            height,
+            base_radius,
+            top_radius,
+        } = cylinder;
+
+        let circle_points = unit_circle_points(sector_count);
 
         let mut vertices: Vec<Vertex> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
-        
+
         // Cylinder body
         for (i, vertice) in circle_points.iter().enumerate() {
-            let position = [vertice.x * base_radius, vertice.y * base_radius, -height / 2.0];
+            let position = [
+                vertice.x * base_radius,
+                vertice.y * base_radius,
+                -height / 2.0,
+            ];
             let normal = [vertice.x, vertice.y, 0.0];
             let tex_coords = [i as f32 / sector_count as f32, 0.0];
             vertices.push(Vertex {
-                position, 
+                position,
                 normal,
                 tex_coords,
             });
@@ -41,7 +55,7 @@ impl Cylinder {
             let normal = [vertice.x, vertice.y, 0.0];
             let tex_coords = [i as f32 / sector_count as f32, 1.0];
             vertices.push(Vertex {
-                position, 
+                position,
                 normal,
                 tex_coords,
             });
@@ -52,12 +66,12 @@ impl Cylinder {
 
         for _ in 0..sector_count {
             indices.push(k1);
-            indices.push(k1+1);
+            indices.push(k1 + 1);
             indices.push(k2);
 
             indices.push(k2);
-            indices.push(k1+1);
-            indices.push(k2+1);
+            indices.push(k1 + 1);
+            indices.push(k2 + 1);
 
             k1 += 1;
             k2 += 1;
@@ -73,10 +87,14 @@ impl Cylinder {
         });
 
         for vertice in circle_points.iter() {
-            let position = [vertice.x * base_radius, vertice.y * base_radius, -height / 2.0];
+            let position = [
+                vertice.x * base_radius,
+                vertice.y * base_radius,
+                -height / 2.0,
+            ];
             let tex_coords = [(vertice.x + 1.0) / 2.0, (vertice.y + 1.0) / 2.0];
             vertices.push(Vertex {
-                position, 
+                position,
                 normal: base_normal,
                 tex_coords,
             });
@@ -84,7 +102,11 @@ impl Cylinder {
 
         for i in (base_center_index + 1)..(vertices.len() as u32) {
             indices.push(base_center_index);
-            indices.push(if i+1 == vertices.len() as u32 { base_center_index } else { i+1 });
+            indices.push(if i + 1 == vertices.len() as u32 {
+                base_center_index
+            } else {
+                i + 1
+            });
             indices.push(i);
         }
 
@@ -101,7 +123,7 @@ impl Cylinder {
             let position = [vertice.x * top_radius, vertice.y * top_radius, height / 2.0];
             let tex_coords = [(vertice.x + 1.0) / 2.0, (vertice.y + 1.0) / 2.0];
             vertices.push(Vertex {
-                position, 
+                position,
                 normal: top_normal,
                 tex_coords,
             });
@@ -109,14 +131,14 @@ impl Cylinder {
 
         for i in (top_center_index + 1)..(vertices.len() as u32) {
             indices.push(i);
-            indices.push(if i+1 == vertices.len() as u32 { top_center_index } else { i+1 });
+            indices.push(if i + 1 == vertices.len() as u32 {
+                top_center_index
+            } else {
+                i + 1
+            });
             indices.push(top_center_index);
         }
 
-        Cylinder {
-            vertices,
-            indices,
-        }
+        Mesh { vertices, indices }
     }
-
 }

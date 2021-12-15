@@ -1,22 +1,12 @@
 use std::f32::consts::PI;
 
-use crate::Vertex;
-use crate::Shape;
+use crate::{geometry::Vertex, Mesh};
 
 pub struct Sphere {
-    vertices: Vec<Vertex>,
-    indices: Vec<u32>,
+    sector_count: u32,
+    stack_count: u32,
+    radius: f32,
 }
-impl Shape for Sphere {
-    fn get_vertices(&self) -> &Vec<Vertex> {
-        &self.vertices
-    }
-
-    fn get_indices(&self) -> &Vec<u32> {
-        &self.indices
-    }
-}
-
 
 impl Default for Sphere {
     fn default() -> Self {
@@ -26,17 +16,33 @@ impl Default for Sphere {
 
 impl Sphere {
     pub fn new(sector_count: u32, stack_count: u32, radius: f32) -> Self {
+        Self {
+            sector_count,
+            stack_count,
+            radius,
+        }
+    }
+}
+
+impl From<Sphere> for Mesh {
+    fn from(sphere: Sphere) -> Mesh {
+        let Sphere {
+            sector_count,
+            stack_count,
+            radius,
+        } = sphere;
+
         let sector_step = 2.0 * PI / sector_count as f32;
         let stack_step = PI / stack_count as f32;
 
         let mut vertices: Vec<Vertex> = Vec::new();
 
-        for i in 0..(stack_count+1) {
+        for i in 0..(stack_count + 1) {
             let stack_angle = PI / 2.0 - (i as f32) * stack_step;
             let xy = stack_angle.cos();
             let z = stack_angle.sin();
 
-            for j in 0..(sector_count+1) {
+            for j in 0..(sector_count + 1) {
                 let sector_angle = j as f32 * sector_step;
 
                 let x = xy * sector_angle.cos();
@@ -66,12 +72,12 @@ impl Sphere {
                 if i != 0 {
                     indices.push(k1);
                     indices.push(k2);
-                    indices.push(k1+1);
+                    indices.push(k1 + 1);
                 }
-                if i != stack_count-1 {
-                    indices.push(k1+1);
+                if i != stack_count - 1 {
+                    indices.push(k1 + 1);
                     indices.push(k2);
-                    indices.push(k2+1);
+                    indices.push(k2 + 1);
                 }
 
                 k1 += 1;
@@ -79,9 +85,6 @@ impl Sphere {
             }
         }
 
-        Self {
-            indices,
-            vertices,
-        }
+        Self { indices, vertices }
     }
 }

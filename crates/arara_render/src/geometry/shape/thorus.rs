@@ -2,27 +2,37 @@ use std::f32::consts::PI;
 
 use glam::vec3;
 
-use crate::Vertex;
-use crate::Shape;
+use crate::{geometry::Vertex, Mesh};
 
 pub struct Thorus {
-    pub vertices: Vec<Vertex>,
-    pub indices: Vec<u32>,
-}
-impl Shape for Thorus {
-    fn get_vertices(&self) -> &Vec<Vertex> {
-        &self.vertices
-    }
-
-    fn get_indices(&self) -> &Vec<u32> {
-        &self.indices
-    }
+    subdivisions_segments: u32,
+    subdivisions_sides: u32,
+    radius: f32,
+    ring_radius: f32,
 }
 
 impl Thorus {
-    pub fn new(subdivisions_segments: u32, subdivisions_sides: u32, radius: f32, ring_radius: f32) -> Self {
+    pub fn new(
+        subdivisions_segments: u32,
+        subdivisions_sides: u32,
+        radius: f32,
+        ring_radius: f32,
+    ) -> Self {
+       Self {
+           subdivisions_segments,
+           subdivisions_sides,
+           radius,
+           ring_radius
+       }
+    }
+}
+
+impl From<Thorus> for Mesh {
+    fn from(thorus: Thorus) -> Mesh {
+        let Thorus { subdivisions_segments, subdivisions_sides, radius, ring_radius } = thorus;
+
         let n_vertices = (subdivisions_segments + 1) * (subdivisions_sides + 1);
-        let mut vertices = Vec::with_capacity(n_vertices as usize); 
+        let mut vertices = Vec::with_capacity(n_vertices as usize);
 
         let segment_stride = 2.0 * PI / subdivisions_segments as f32;
         let side_stride = 2.0 * PI / subdivisions_sides as f32;
@@ -31,15 +41,19 @@ impl Thorus {
             let theta = segment_stride * segment as f32;
             // let segment_pos = vec3(theta.cos(), 0.0, theta.sin() * radius);
             let tang = vec3(-theta.sin(), theta.cos(), 0.0);
-            
+
             for side in 0..=subdivisions_sides {
                 let phi = side_stride * side as f32;
-                
+
                 let x = theta.cos() * (radius + ring_radius * phi.cos());
                 let z = theta.sin() * (radius + ring_radius * phi.cos());
                 let y = ring_radius * phi.sin();
-                
-                let stang = vec3(theta.cos() * -phi.sin(), theta.sin() * -phi.sin(), phi.cos());
+
+                let stang = vec3(
+                    theta.cos() * -phi.sin(),
+                    theta.sin() * -phi.sin(),
+                    phi.cos(),
+                );
                 let normal = tang.cross(stang).normalize();
                 let tex_coords = [
                     segment as f32 / subdivisions_segments as f32,
@@ -79,9 +93,6 @@ impl Thorus {
             }
         }
 
-        Self {
-            vertices,
-            indices,
-        }
+        Self { vertices, indices }
     }
 }

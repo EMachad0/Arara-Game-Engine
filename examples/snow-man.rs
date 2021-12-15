@@ -33,10 +33,10 @@ fn move_snowman(
     }
 }
 
-fn add_shapes(mut commands: Commands) {
+fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
     // ------------- Floor ------------------
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 0.1, 4.0, 4.0)),
+        mesh: meshes.add(Mesh::from(Cylinder::new(32, 0.1, 4.0, 4.0))),
         transform: Transform::from_rotation(Quat::from_rotation_x(-FRAC_PI_2)),
         color: Color::MIDNIGHT_BLUE,
         ..Default::default()
@@ -55,7 +55,7 @@ fn add_shapes(mut commands: Commands) {
         .insert_bundle(TransformBundle::default())
         .with_children(|body| {
             body.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Sphere::default()),
+                mesh: meshes.add(Mesh::from(Sphere::default())),
                 transform: Transform {
                     scale: vec3(2.0, 2.0, 2.0),
                     translation: vec3(0.0, 1.2, 0.0),
@@ -65,7 +65,7 @@ fn add_shapes(mut commands: Commands) {
                 ..Default::default()
             });
             body.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Sphere::default()),
+                mesh: meshes.add(Mesh::from(Sphere::default())),
                 transform: Transform {
                     scale: vec3(1.2, 1.2, 1.2),
                     translation: vec3(0.0, 3.3, 0.0),
@@ -75,7 +75,7 @@ fn add_shapes(mut commands: Commands) {
                 ..Default::default()
             });
             body.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Sphere::default()),
+                mesh: meshes.add(Mesh::from(Sphere::default())),
                 transform: Transform {
                     scale: vec3(0.75, 0.75, 0.75),
                     translation: vec3(0.0, 4.75, 0.0),
@@ -92,25 +92,25 @@ fn add_shapes(mut commands: Commands) {
         .insert_bundle(TransformBundle::default())
         .with_children(|clothing| {
             clothing.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Sphere::new(32, 16, 0.09)),
+                mesh: meshes.add(Mesh::from(Sphere::new(32, 16, 0.09))),
                 transform: Transform::from_xyz(0.0, 3.8, 1.055),
                 color: Color::BLACK,
                 ..Default::default()
             });
             clothing.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Sphere::new(32, 16, 0.09)),
+                mesh: meshes.add(Mesh::from(Sphere::new(32, 16, 0.09))),
                 transform: Transform::from_xyz(0.0, 2.4, 1.558),
                 color: Color::BLACK,
                 ..Default::default()
             });
             clothing.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Sphere::new(32, 16, 0.09)),
+                mesh: meshes.add(Mesh::from(Sphere::new(32, 16, 0.09))),
                 transform: Transform::from_xyz(0.0, 3.4, 1.16),
                 color: Color::BLACK,
                 ..Default::default()
             });
             clothing.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Sphere::new(32, 16, 0.09)),
+                mesh: meshes.add(Mesh::from(Sphere::new(32, 16, 0.09))),
                 transform: Transform::from_xyz(0.0, 1.9, 1.84),
                 color: Color::BLACK,
                 ..Default::default()
@@ -127,19 +127,19 @@ fn add_shapes(mut commands: Commands) {
         // ------------- Eyes ------------------
         .with_children(|face| {
             face.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Sphere::new(32, 16, 0.1)),
+                mesh: meshes.add(Mesh::from(Sphere::new(32, 16, 0.1))),
                 transform: Transform::from_xyz(-0.25, 0.07, 0.7),
                 color: Color::BLACK,
                 ..Default::default()
             });
             face.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Sphere::new(32, 16, 0.1)),
+                mesh: meshes.add(Mesh::from(Sphere::new(32, 16, 0.1))),
                 transform: Transform::from_xyz(0.25, 0.07, 0.7),
                 color: Color::BLACK,
                 ..Default::default()
             });
             face.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Cylinder::new(32, 0.8, 0.15, 0.01)),
+                mesh: meshes.add(Mesh::from(Cylinder::new(32, 0.8, 0.15, 0.01))),
                 transform: Transform::from_xyz(0.0, 0.00, 1.0),
                 color: Color::ORANGE_RED,
                 ..Default::default()
@@ -159,22 +159,22 @@ fn add_shapes(mut commands: Commands) {
         })
         .with_children(|hat| {
             hat.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Cylinder::new(32, 0.05, 1.1, 1.1)),
+                mesh: meshes.add(Mesh::from(Cylinder::new(32, 0.05, 1.1, 1.1))),
                 color: Color::BLACK,
                 ..Default::default()
             });
             hat.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Cylinder::new(32, 2.0, 0.6, 0.6)),
+                mesh: meshes.add(Mesh::from(Cylinder::new(32, 2.0, 0.6, 0.6))),
                 color: Color::BLACK,
                 ..Default::default()
             });
             hat.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Cylinder::new(32, 0.5, 0.655, 0.655)),
+                mesh: meshes.add(Mesh::from(Cylinder::new(32, 0.5, 0.655, 0.655))),
                 color: Color::BLUE,
                 ..Default::default()
             });
             hat.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Cylinder::new(32, 0.5, 0.655, 0.655)),
+                mesh: meshes.add(Mesh::from(Cylinder::new(32, 0.5, 0.655, 0.655))),
                 color: Color::BLUE,
                 ..Default::default()
             });
@@ -192,7 +192,7 @@ fn add_shapes(mut commands: Commands) {
         })
         .with_children(|arms| {
             arms.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Cylinder::new(32, 2.5, 0.08, 0.01)),
+                mesh: meshes.add(Mesh::from(Cylinder::new(32, 2.5, 0.08, 0.01))),
                 transform: Transform {
                     translation: vec3(2.2, 0.0, 0.0),
                     rotation: Quat::from_euler(EulerRot::ZYX, FRAC_PI_6, FRAC_PI_2, 0.0),
@@ -202,7 +202,7 @@ fn add_shapes(mut commands: Commands) {
                 ..Default::default()
             });
             arms.spawn_bundle(SimpleMeshBundle {
-                mesh: Box::new(Cylinder::new(32, 2.5, 0.08, 0.01)),
+                mesh: meshes.add(Mesh::from(Cylinder::new(32, 2.5, 0.08, 0.01))),
                 transform: Transform {
                     translation: vec3(-2.2, 0.0, 0.0),
                     rotation: Quat::from_euler(EulerRot::ZYX, -FRAC_PI_6, -FRAC_PI_2, 0.0),

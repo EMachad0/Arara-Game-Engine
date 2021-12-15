@@ -1,11 +1,14 @@
-use crate::Vertex;
-use crate::Shape;
+use crate::{geometry::Vertex, Mesh};
 
 use glam::Vec2;
 
 pub struct Capsule {
-    pub vertices: Vec<Vertex>,
-    pub indices: Vec<u32>,
+    radius: f32,
+    depth: f32,
+    rings: usize,
+    latitudes: usize,
+    longitudes: usize,
+    uv_profile: CapsuleUvProfile,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -27,7 +30,36 @@ impl Default for CapsuleUvProfile {
 }
 
 impl Capsule {
-    pub fn new(radius: f32, depth: f32, rings: usize, latitudes: usize, longitudes: usize, uv_profile: CapsuleUvProfile) -> Self {
+    pub fn new(
+        radius: f32,
+        depth: f32,
+        rings: usize,
+        latitudes: usize,
+        longitudes: usize,
+        uv_profile: CapsuleUvProfile,
+    ) -> Self {
+        Self {
+            radius,
+            depth,
+            rings,
+            latitudes,
+            longitudes,
+            uv_profile,
+        }
+    }
+}
+
+impl From<Capsule> for Mesh {
+    fn from(capsule: Capsule) -> Mesh {
+        let Capsule {
+            radius,
+            depth,
+            rings,
+            latitudes,
+            longitudes,
+            uv_profile,
+        } = capsule;
+
         let calc_middle = rings > 0;
         let half_lats = latitudes / 2;
         let half_latsn1 = half_lats - 1;
@@ -52,11 +84,14 @@ impl Capsule {
 
         // Initialize arrays.
         let vert_len = vert_offset_south_cap + longitudes;
-        let mut vertices = vec![Vertex { 
-            position: [0.0, 0.0, 0.0],
-            normal: [0.0, 0.0, 0.0],
-            tex_coords: [0.0, 0.0],
-        }; vert_len];
+        let mut vertices = vec![
+            Vertex {
+                position: [0.0, 0.0, 0.0],
+                normal: [0.0, 0.0, 0.0],
+                tex_coords: [0.0, 0.0],
+            };
+            vert_len
+        ];
 
         let to_theta = 2.0 * std::f32::consts::PI / longitudes as f32;
         let to_phi = std::f32::consts::PI / latitudes as f32;
@@ -170,7 +205,11 @@ impl Capsule {
                 // North hemisphere.
                 let idxn = vert_curr_lat_north + j;
                 vertices[idxn] = Vertex {
-                    position: [rho_cos_phi_north * tc.x, z_offset_north, -rho_cos_phi_north * tc.y],
+                    position: [
+                        rho_cos_phi_north * tc.x,
+                        z_offset_north,
+                        -rho_cos_phi_north * tc.y,
+                    ],
                     normal: [cos_phi_north * tc.x, -sin_phi_north, -cos_phi_north * tc.y],
                     tex_coords: [s_texture, t_tex_north],
                 };
@@ -178,7 +217,11 @@ impl Capsule {
                 // South hemisphere.
                 let idxs = vert_curr_lat_south + j;
                 vertices[idxs] = Vertex {
-                    position: [rho_cos_phi_south * tc.x, z_offset_sout, -rho_cos_phi_south * tc.y],
+                    position: [
+                        rho_cos_phi_south * tc.x,
+                        z_offset_sout,
+                        -rho_cos_phi_south * tc.y,
+                    ],
                     normal: [cos_phi_south * tc.x, -sin_phi_south, -cos_phi_south * tc.y],
                     tex_coords: [s_texture, t_tex_south],
                 };
@@ -334,9 +377,6 @@ impl Capsule {
             i += 1;
         }
 
-        Self {
-            vertices,
-            indices,
-        }
+        Mesh { vertices, indices }
     }
 }
