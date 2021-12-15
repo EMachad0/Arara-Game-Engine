@@ -6,7 +6,7 @@ mod shaders;
 mod visibility;
 mod geometry;
 mod render_phase;
-mod draw_phase;
+// mod draw_phase;
 // mod prepare_phase;
 mod core_pipeline;
 
@@ -17,7 +17,7 @@ pub use texture::*;
 pub use shaders::*;
 pub use visibility::*;
 pub use geometry::*;
-use draw_phase::*;
+// use draw_phase::*;
 // use prepare_phase::*;
 pub use core_pipeline::*;
 
@@ -36,16 +36,34 @@ pub mod prelude {
 
 #[macro_use]
 extern crate arara_logger;
-use glium::*;
-use arara_window::Window;
 
 use bevy_ecs::prelude::*;
-use arara_app::{AppBuilder, CoreStage, Plugin, StartupStage};
+use arara_app::{AppBuilder, CoreStage, Plugin};
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
 pub enum RenderStage {
+    /// Extract data from the "app world" and insert it into the "render world".
+    /// This step should be kept as short as possible to increase the "pipelining potential" for
+    /// running the next frame while rendering the current frame.
+    Extract,
+
+    /// Prepare render resources from the extracted data for the GPU.
     Prepare,
-    Draw,
+
+    /// Create [`BindGroups`](crate::render_resource::BindGroup) that depend on
+    /// [`Prepare`](RenderStage::Prepare) data and queue up draw calls to run during the
+    /// [`Render`](RenderStage::Render) stage.
+    Queue,
+
+    /// Sort the [`RenderPhases`](crate::render_phase::RenderPhase) here.
+    PhaseSort,
+
+    /// Actual rendering happens here.
+    /// In most cases, only the render backend should insert resources here.
+    Render,
+
+    /// Cleanup render resources here.
+    Cleanup,
 }
 
 #[derive(Default)]
@@ -53,62 +71,20 @@ pub struct RenderPlugin;
 
 impl Plugin for RenderPlugin {
     fn build(&self, app_builder: &mut AppBuilder) {
-        app_builder.app.schedule.add_stage_before(
-            CoreStage::Update,
-            RenderStage::Draw,
-            SystemStage::parallel(),
-        );
+        app_builder.app.schedule
+            .add_stage_before(CoreStage::PreUpdate, RenderStage::Extract, SystemStage::parallel())
+            .add_stage_after(RenderStage::Extract, RenderStage::Prepare, SystemStage::parallel())
+            .add_stage_after(RenderStage::Prepare, RenderStage::Queue, SystemStage::parallel())
+            .add_stage_after(RenderStage::Queue, RenderStage::PhaseSort, SystemStage::parallel())
+            .add_stage_after(
+                RenderStage::PhaseSort, RenderStage::Render,
+                SystemStage::parallel().with_system(main_pass.exclusive_system().at_end().label("MainPass"))
+            )
+            .add_stage_after(RenderStage::Render, RenderStage::Cleanup, SystemStage::parallel());
         
         app_builder
-            .init_resource::<ClearColor>()
-            .init_resource::<BPLight>()
             .add_plugin(geometry::MeshPlugin)
             .add_plugin(texture::ImagePlugin)
-            .add_startup_system_to_stage(StartupStage::PostStartup, debug_glium_backend_info.system())
-            .add_system_to_stage(RenderStage::Draw, main_pass.system().label("MainPass"));
-            // .add_system_to_stage(RenderStage::Draw, translucent_pass.system().after("MainPass"));
+            .add_plugin(core_pipeline::CorePipelinePlugin);
     }
-}
-
-
-fn debug_glium_backend_info(window: NonSend<Window>) {
-    let display = window.display();
-
-    let version = *display.get_opengl_version();
-    let api = match version {
-        Version(Api::Gl, _, _) => "OpenGL",
-        Version(Api::GlEs, _, _) => "OpenGL ES"
-    };
-
-    info!("{} context version: {}", api, display.get_opengl_version_string());
-
-    info!("{} context flags:", api);
-    if display.is_forward_compatible() {
-        info!("\tforward-compatible");
-    }
-    if display.is_debug() {
-        info!("\tdebug");
-    }
-    if display.is_robust() {
-        info!("\trobustness");
-    }
-
-    if version >= Version(Api::Gl, 3, 2) {
-        info!("{} profile mask: {}", api,
-            match display.get_opengl_profile() {
-                Some(Profile::Core) => "core",
-                Some(Profile::Compatibility) => "compatibility",
-                None => "unknown"
-            });
-    }
-
-    info!("{} robustness strategy: {}", api,
-        if display.is_context_loss_possible() {
-            "lose"
-        } else {
-            "none"
-        });
-
-    info!("{} context vendor: {}", api, display.get_opengl_vendor_string());
-    info!("{} context renderer: {}", api, display.get_opengl_renderer_string());
 }

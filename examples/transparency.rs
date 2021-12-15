@@ -8,7 +8,6 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(CoordinateSystemPlugin)
         .add_plugin(ParticleSystemPlugin)
-        .insert_resource(CoordinateSystem::default())
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
         .add_plugin(LogDiagnosticPlugin { wait_duration: Duration::from_secs(3) })
@@ -37,15 +36,6 @@ fn add_shapes(mut commands: Commands, asset_server: Res<AssetServer>, mut meshes
         },
         ..Default::default()
     }).with_children(|parent| {
-        // panel
-        parent.spawn_bundle(SimpleMeshBundle {
-            mesh: meshes.add(Mesh::from(Square::new(5., 5.))),
-            transform: Transform::from_xyz(0., -3., 0.),
-            color: Color::rgba(0.1, 0.1, 0.5, 1.0),
-            image: Some(img0.clone()),
-            ..Default::default()
-        });
-        
         parent.spawn_bundle(SimpleMeshBundle {
             mesh: meshes.add(Mesh::from(Square::default())),
             transform: Transform::from_xyz(0., 0., 0.),
@@ -68,6 +58,15 @@ fn add_shapes(mut commands: Commands, asset_server: Res<AssetServer>, mut meshes
             mesh: meshes.add(Mesh::from(Square::default())),
             transform: Transform::from_xyz(1., 0., 1.),
             color: Color::rgba(0.5, 0.1, 0.5, 0.3),
+            ..Default::default()
+        });
+
+        // panel
+        parent.spawn_bundle(SimpleMeshBundle {
+            mesh: meshes.add(Mesh::from(Square::new(5., 5.))),
+            transform: Transform::from_xyz(0., -3., 0.),
+            color: Color::rgba(0.1, 0.1, 0.5, 1.0),
+            image: Some(img0.clone()),
             ..Default::default()
         });
     });

@@ -1,5 +1,5 @@
 // use crate::render_phase::draw::DrawFunctionId;
-use bevy_ecs::prelude::Query;
+use bevy_ecs::prelude::ResMut;
 
 /// An item which will be drawn to the screen. A phase item should be queued up for rendering
 /// during the [`RenderStage::Queue`](crate::RenderStage::Queue) stage.
@@ -40,8 +40,6 @@ impl<I: PhaseItem> RenderPhase<I> {
 }
 
 /// This system sorts all [`RenderPhases`](RenderPhase) for the [`PhaseItem`] type.
-pub fn sort_phase_system<I: PhaseItem>(mut render_phases: Query<&mut RenderPhase<I>>) {
-    for mut phase in render_phases.iter_mut() {
-        phase.sort();
-    }
+pub fn sort_phase_system<I: PhaseItem>(mut render_phase: ResMut<RenderPhase<I>>) {
+    render_phase.sort();
 }
