@@ -40,31 +40,32 @@ fn color_squares(
     }
 }
 
-fn add_cubes(mut commands: Commands) {
+fn add_cubes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
+    let cuboid = meshes.add(Mesh::from(Cuboid::default()));
     commands.spawn().insert(Pivot)
     .insert_bundle(TransformBundle::default())
     .with_children(|parent| {
         parent.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cuboid::new(1.0, 1.0, 1.0)),
+            mesh: cuboid.clone(),
             transform: Transform::from_xyz(0.0, 0.0, 2.0),
             ..Default::default()
         }).insert(Square);
         parent.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cuboid::new(1.0, 1.0, 1.0)),
+            mesh: cuboid.clone(),
             ..Default::default()
         }).insert(Square);
         parent.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cuboid::new(1.0, 1.0, 1.0)),
+            mesh: cuboid.clone(),
             transform: Transform::from_xyz(0.0, 0.0, -2.0),
             ..Default::default()
         }).insert(Square);
         parent.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cuboid::new(1.0, 1.0, 1.0)),
+            mesh: cuboid.clone(),
             transform: Transform::from_xyz(0.0, 2.0, 0.0),
             ..Default::default()
         }).insert(Square);
         parent.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Cuboid::new(1.0, 1.0, 1.0)),
+            mesh: cuboid,
             transform: Transform::from_xyz(0.0, -2.0, 0.0),
             ..Default::default()
         }).insert(Square);

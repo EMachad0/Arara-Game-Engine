@@ -26,7 +26,7 @@ fn main() {
         .run()
 }
 
-fn add_shapes(asset_server: Res<AssetServer>, mut commands: Commands) {
+fn add_shapes(mut commands: Commands, asset_server: Res<AssetServer>, mut meshes: ResMut<Assets<Mesh>>) {
     let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
 
     commands.spawn_bundle(TransformBundle {
@@ -39,7 +39,7 @@ fn add_shapes(asset_server: Res<AssetServer>, mut commands: Commands) {
     }).with_children(|parent| {
         // panel
         parent.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Square::new(5., 5.)),
+            mesh: meshes.add(Mesh::from(Square::new(5., 5.))),
             transform: Transform::from_xyz(0., -3., 0.),
             color: Color::rgba(0.1, 0.1, 0.5, 1.0),
             image: Some(img0.clone()),
@@ -47,25 +47,25 @@ fn add_shapes(asset_server: Res<AssetServer>, mut commands: Commands) {
         });
         
         parent.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Square::default()),
+            mesh: meshes.add(Mesh::from(Square::default())),
             transform: Transform::from_xyz(0., 0., 0.),
             image: Some(img0.clone()),
             ..Default::default()
         });
         parent.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Square::default()),
+            mesh: meshes.add(Mesh::from(Square::default())),
             transform: Transform::from_xyz(1., 0., 0.),
             image: Some(img0.clone()),
             ..Default::default()
         });
         parent.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Square::default()),
+            mesh: meshes.add(Mesh::from(Square::default())),
             transform: Transform::from_xyz(0., 0., 1.),
             image: Some(img0.clone()),
             ..Default::default()
         });
         parent.spawn_bundle(SimpleMeshBundle {
-            mesh: Box::new(Square::default()),
+            mesh: meshes.add(Mesh::from(Square::default())),
             transform: Transform::from_xyz(1., 0., 1.),
             color: Color::rgba(0.5, 0.1, 0.5, 0.3),
             ..Default::default()

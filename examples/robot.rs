@@ -37,13 +37,13 @@ struct LeftArm;
 struct RightArm;
 struct Head;
 
-fn add_shapes(mut commands: Commands) {
+fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
     let sector_count = 32;
     let stack_count = 16;
     // ------------- Floor ------------------
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Cylinder::new(32, 0.1, 4., 4.)),
+        mesh: meshes.add(Mesh::from(Cylinder::new(32, 0.1, 4., 4.))),
         transform: Transform::from_rotation(Quat::from_rotation_x(-FRAC_PI_2)),
         color: Color::BLACK,
         ..Default::default()
@@ -79,13 +79,13 @@ fn add_shapes(mut commands: Commands) {
                         .insert_bundle(TransformBundle::default())
                         .with_children(|lower_right_leg| {
                             lower_right_leg.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cuboid::new(0.5, 0.3, 1.)),
+                                mesh: meshes.add(Mesh::from(Cuboid::new(0.5, 0.3, 1.))),
                                 transform: Transform::from_xyz(0., 0.2, 0.25),
                                 color: Color::SILVER,
                                 ..Default::default()
                             });
                             lower_right_leg.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
+                                mesh: meshes.add(Mesh::from(Cuboid::new(0.5, 2., 0.5))),
                                 transform: Transform::from_xyz(0., 1., 0.),
                                 color: Color::SILVER,
                                 ..Default::default()
@@ -97,13 +97,13 @@ fn add_shapes(mut commands: Commands) {
                         .insert_bundle(TransformBundle::default())
                         .with_children(|upper_right_leg| {
                             upper_right_leg.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Sphere::new(sector_count, stack_count, 0.45)),
+                                mesh: meshes.add(Mesh::from(Sphere::new(sector_count, stack_count, 0.45))),
                                 transform: Transform::from_xyz(0., 2.1, 0.),
                                 color: Color::DARK_GRAY,
                                 ..Default::default()
                             });
                             upper_right_leg.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cuboid::new(0.5, 1.8, 0.5)),
+                                mesh: meshes.add(Mesh::from(Cuboid::new(0.5, 1.8, 0.5))),
                                 transform: Transform::from_xyz(0., 3., 0.),
                                 color: Color::SILVER,
                                 ..Default::default()
@@ -127,13 +127,13 @@ fn add_shapes(mut commands: Commands) {
                         .insert_bundle(TransformBundle::default())
                         .with_children(|lower_left_leg| {
                             lower_left_leg.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cuboid::new(0.5, 0.3, 1.)),
+                                mesh: meshes.add(Mesh::from(Cuboid::new(0.5, 0.3, 1.))),
                                 transform: Transform::from_xyz(0., 0.2, 0.25),
                                 color: Color::SILVER,
                                 ..Default::default()
                             });
                             lower_left_leg.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
+                                mesh: meshes.add(Mesh::from(Cuboid::new(0.5, 2., 0.5))),
                                 transform: Transform::from_xyz(0., 1., 0.),
                                 color: Color::SILVER,
                                 ..Default::default()
@@ -145,13 +145,13 @@ fn add_shapes(mut commands: Commands) {
                         .insert_bundle(TransformBundle::default())
                         .with_children(|upper_left_leg| {
                             upper_left_leg.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Sphere::new(sector_count, stack_count, 0.45)),
+                                mesh: meshes.add(Mesh::from(Sphere::new(sector_count, stack_count, 0.45))),
                                 transform: Transform::from_xyz(0., 2.1, 0.),
                                 color: Color::DARK_GRAY,
                                 ..Default::default()
                             });
                             upper_left_leg.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cuboid::new(0.5, 1.8, 0.5)),
+                                mesh: meshes.add(Mesh::from(Cuboid::new(0.5, 1.8, 0.5))),
                                 transform: Transform::from_xyz(0., 3., 0.),
                                 color: Color::SILVER,
                                 ..Default::default()
@@ -171,56 +171,56 @@ fn add_shapes(mut commands: Commands) {
                 .with_children(|body| {
                     // trunk
                     body.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(2.55, 3.2, 1.)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(2.55, 3.2, 1.))),
                         transform: Transform::from_xyz(0., 0., 0.),
                         color: Color::SILVER,
                         ..Default::default()
                     });
                     // muscles
                     body.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.9, 0.9, 0.1)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.9, 0.9, 0.1))),
                         transform: Transform::from_xyz(0.5, 0.9, 0.5),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     body.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.9, 0.9, 0.1)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.9, 0.9, 0.1))),
                         transform: Transform::from_xyz(-0.5, 0.9, 0.5),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     body.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.4, 0.45, 0.1)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.4, 0.45, 0.1))),
                         transform: Transform::from_xyz(-0.25, -0.1, 0.5),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     body.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.4, 0.45, 0.1)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.4, 0.45, 0.1))),
                         transform: Transform::from_xyz(0.25, -0.1, 0.5),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     body.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.4, 0.45, 0.1)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.4, 0.45, 0.1))),
                         transform: Transform::from_xyz(-0.25, -0.6, 0.5),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     body.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.4, 0.45, 0.1)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.4, 0.45, 0.1))),
                         transform: Transform::from_xyz(0.25, -0.6, 0.5),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     body.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.4, 0.45, 0.1)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.4, 0.45, 0.1))),
                         transform: Transform::from_xyz(-0.25, -1.1, 0.5),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     body.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.4, 0.45, 0.1)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.4, 0.45, 0.1))),
                         transform: Transform::from_xyz(0.25, -1.1, 0.5),
                         color: Color::DARK_GRAY,
                         ..Default::default()
@@ -237,7 +237,7 @@ fn add_shapes(mut commands: Commands) {
                         })
                         .with_children(|head| {
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cylinder::new(sector_count, 0.3, 0.3, 0.3)),
+                                mesh: meshes.add(Mesh::from(Cylinder::new(sector_count, 0.3, 0.3, 0.3))),
                                 transform: Transform {
                                     translation: vec3(0., -0.7, 0.),
                                     rotation: Quat::from_rotation_x(FRAC_PI_2),
@@ -247,43 +247,43 @@ fn add_shapes(mut commands: Commands) {
                                 ..Default::default()
                             });
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cuboid::new(1.4, 1.2, 0.7)),
+                                mesh: meshes.add(Mesh::from(Cuboid::new(1.4, 1.2, 0.7))),
                                 transform: Transform::from_xyz(0., 0., 0.),
                                 color: Color::SILVER,
                                 ..Default::default()
                             });
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cylinder::new(sector_count, 0.33, 0.05, 0.05)),
+                                mesh: meshes.add(Mesh::from(Cylinder::new(sector_count, 0.33, 0.05, 0.05))),
                                 transform: Transform::from_xyz(-0.25, 0.3, 0.35),
                                 color: Color::SILVER,
                                 ..Default::default()
                             });
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cylinder::new(sector_count, 0.33, 0.05, 0.05)),
+                                mesh: meshes.add(Mesh::from(Cylinder::new(sector_count, 0.33, 0.05, 0.05))),
                                 transform: Transform::from_xyz(0.25, 0.3, 0.35),
                                 color: Color::SILVER,
                                 ..Default::default()
                             });
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cylinder::new(sector_count, 0.33, 0.05, 0.05)),
+                                mesh: meshes.add(Mesh::from(Cylinder::new(sector_count, 0.33, 0.05, 0.05))),
                                 transform: Transform::from_xyz(0.25, 0.3, 0.35),
                                 color: Color::SILVER,
                                 ..Default::default()
                             });
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cylinder::new(sector_count, 0.3, 0.1, 0.1)),
+                                mesh: meshes.add(Mesh::from(Cylinder::new(sector_count, 0.3, 0.1, 0.1))),
                                 transform: Transform::from_xyz(-0.25, 0.3, 0.35),
                                 color: Color::DARK_GRAY,
                                 ..Default::default()
                             });
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cylinder::new(sector_count, 0.3, 0.1, 0.1)),
+                                mesh: meshes.add(Mesh::from(Cylinder::new(sector_count, 0.3, 0.1, 0.1))),
                                 transform: Transform::from_xyz(0.25, 0.3, 0.35),
                                 color: Color::DARK_GRAY,
                                 ..Default::default()
                             });
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: Box::new(Cuboid::new(0.5, 0.2, 0.1)),
+                                mesh: meshes.add(Mesh::from(Cuboid::new(0.5, 0.2, 0.1))),
                                 transform: Transform::from_xyz(0.0, -0.2, 0.35),
                                 color: Color::DARK_GRAY,
                                 ..Default::default()
@@ -302,37 +302,37 @@ fn add_shapes(mut commands: Commands) {
                 })
                 .with_children(|right_arm| {
                     right_arm.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.5, 2., 0.5))),
                         transform: Transform::from_xyz(0., 5.6, 0.),
                         color: Color::SILVER,
                         ..Default::default()
                     });
                     right_arm.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Sphere::new(sector_count, stack_count, 0.45)),
+                        mesh: meshes.add(Mesh::from(Sphere::new(sector_count, stack_count, 0.45))),
                         transform: Transform::from_xyz(0., 6.6, 0.),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     right_arm.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Sphere::new(sector_count, stack_count, 0.45)),
+                        mesh: meshes.add(Mesh::from(Sphere::new(sector_count, stack_count, 0.45))),
                         transform: Transform::from_xyz(0., 4.5, 0.),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     right_arm.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.5, 1.3, 0.5)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.5, 1.3, 0.5))),
                         transform: Transform::from_xyz(0., 3.7, 0.),
                         color: Color::SILVER,
                         ..Default::default()
                     });
                     right_arm.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.4, 0.55, 0.35)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.4, 0.55, 0.35))),
                         transform: Transform::from_xyz(0., 3., 0.3),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     right_arm.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.4, 0.55, 0.35)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.4, 0.55, 0.35))),
                         transform: Transform::from_xyz(0., 3., -0.3),
                         color: Color::DARK_GRAY,
                         ..Default::default()
@@ -350,37 +350,37 @@ fn add_shapes(mut commands: Commands) {
                 })
                 .with_children(|left_arm| {
                     left_arm.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.5, 2., 0.5)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.5, 2., 0.5))),
                         transform: Transform::from_xyz(0., 5.6, 0.),
                         color: Color::SILVER,
                         ..Default::default()
                     });
                     left_arm.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Sphere::new(sector_count, stack_count, 0.45)),
+                        mesh: meshes.add(Mesh::from(Sphere::new(sector_count, stack_count, 0.45))),
                         transform: Transform::from_xyz(0., 6.6, 0.),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     left_arm.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Sphere::new(sector_count, stack_count, 0.45)),
+                        mesh: meshes.add(Mesh::from(Sphere::new(sector_count, stack_count, 0.45))),
                         transform: Transform::from_xyz(0., 4.5, 0.),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     left_arm.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.5, 1.3, 0.5)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.5, 1.3, 0.5))),
                         transform: Transform::from_xyz(0., 3.7, 0.),
                         color: Color::SILVER,
                         ..Default::default()
                     });
                     left_arm.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.4, 0.55, 0.35)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.4, 0.55, 0.35))),
                         transform: Transform::from_xyz(0., 3., 0.3),
                         color: Color::DARK_GRAY,
                         ..Default::default()
                     });
                     left_arm.spawn_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Cuboid::new(0.4, 0.55, 0.35)),
+                        mesh: meshes.add(Mesh::from(Cuboid::new(0.4, 0.55, 0.35))),
                         transform: Transform::from_xyz(0., 3., -0.3),
                         color: Color::DARK_GRAY,
                         ..Default::default()
