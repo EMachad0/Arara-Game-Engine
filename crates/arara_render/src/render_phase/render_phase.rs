@@ -1,4 +1,4 @@
-use crate::render_phase::draw::DrawFunctionId;
+// use crate::render_phase::draw::DrawFunctionId;
 use bevy_ecs::prelude::Query;
 
 /// An item which will be drawn to the screen. A phase item should be queued up for rendering
@@ -11,8 +11,8 @@ pub trait PhaseItem: Send + Sync + 'static {
     type SortKey: Ord;
     /// Determines the order in which the items are drawn during the corresponding [`RenderPhase`].
     fn sort_key(&self) -> Self::SortKey;
-    /// Specifies the [`Draw`] function used to render the item.
-    fn draw_function(&self) -> DrawFunctionId;
+    // Specifies the [`Draw`] function used to render the item.
+    // fn draw_function(&self) -> DrawFunctionId;
 }
 
 /// A resource to collect and sort draw requests for specific [`PhaseItems`](PhaseItem).

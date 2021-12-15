@@ -1,20 +1,31 @@
-pub struct Opaque3d {
+use arara_utils::FloatOrd;
+use bevy_ecs::prelude::Entity;
+use crate::render_phase::PhaseItem;
+
+pub struct Opaque {
     pub distance: f32,
-    pub pipeline: CachedPipelineId,
     pub entity: Entity,
-    pub draw_function: DrawFunctionId,
 }
 
-impl PhaseItem for Opaque3d {
+impl PhaseItem for Opaque {
     type SortKey = FloatOrd;
 
     #[inline]
     fn sort_key(&self) -> Self::SortKey {
         FloatOrd(self.distance)
     }
+}
+
+pub struct Transparent {
+    pub distance: f32,
+    pub entity: Entity,
+}
+
+impl PhaseItem for Transparent {
+    type SortKey = FloatOrd;
 
     #[inline]
-    fn draw_function(&self) -> DrawFunctionId {
-        self.draw_function
+    fn sort_key(&self) -> Self::SortKey {
+        FloatOrd(self.distance)
     }
 }
