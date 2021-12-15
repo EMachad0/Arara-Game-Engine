@@ -20,7 +20,7 @@ pub struct ParticleSystem {
     pub timer: Timer,
     pub buffer_quantity: u32,
     pub spawn_quantity: u32,
-    pub particle_shape: Handle<Mesh>,
+    pub particle_mesh: Handle<Mesh>,
     pub particle_color: Color,
     pub particle_velocity: Value,
 }
@@ -33,7 +33,7 @@ impl Default for ParticleSystem {
             spawn_quantity: 1,
             radius: 5.0,
             timer: Timer::default(),
-            particle_shape: Default::default(),
+            particle_mesh: Default::default(),
             particle_color: Color::WHITE,
             particle_velocity: Value::Constant(2.0)
         }
@@ -141,7 +141,7 @@ fn update_particles(
 }
 
 fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)>, mut meshes: ResMut<Assets<Mesh>>) {
-    let square = meshes.add(Mesh::from(Square::default()));
+    
     for (entity, particle_system) in query.iter() {
         commands.entity(entity).with_children(|parent| {
             for _ in 0..particle_system.buffer_quantity {
@@ -152,7 +152,7 @@ fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)
                         velocity: 0.0,
                     })
                     .insert_bundle(SimpleMeshBundle {
-                        mesh: square.clone(),
+                        mesh: particle_system.particle_mesh.clone(),
                         color: Color::WHITE,
                         visibility: Visibility::inactive(),
                         ..Default::default()
