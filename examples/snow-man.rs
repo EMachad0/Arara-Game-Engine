@@ -1,4 +1,5 @@
 use arara::prelude::*;
+use arara_particle_system::{ParticleSystem, Value, ParticleSystemPlugin};
 
 fn main() {
     logger::init();
@@ -7,7 +8,8 @@ fn main() {
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
         .add_plugin(LogDiagnosticPlugin::default())
-        .add_plugin(CoordinateSystemPlugin::default())
+        .add_plugin(ParticleSystemPlugin)
+        // .add_plugin(CoordinateSystemPlugin::default())
         .add_startup_system(add_shapes.system())
         .init_resource::<Timer>()
         .insert_resource(BPLight::new(-2.0, 5.0, 3.0))
@@ -27,10 +29,10 @@ fn move_snowman(
     time: Res<Time>,
     mut query: Query<(&mut Transform, With<SnowMan>)>,
 ) {
-    for transform in query.iter_mut() {
-        let mut tr = transform.0;
-        tr.rotate(Quat::from_rotation_y(FRAC_PI_2 * time.delta_seconds()));
-    }
+    // for transform in query.iter_mut() {
+    //     let mut tr = transform.0;
+    //     tr.rotate(Quat::from_rotation_y(FRAC_PI_2 * time.delta_seconds()));
+    // }
 }
 
 fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
@@ -213,4 +215,23 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
             });
         });
     });
+
+    commands
+        .spawn_bundle(SimpleMeshBundle {
+            mesh: meshes.add(Mesh::from(Icosphere::new(6, 0.1))),
+            transform: Transform::from_xyz(0., 7.0, 0.0),
+            color: Color::PURPLE,
+            ..Default::default()
+        })
+        .insert(ParticleSystem {
+            lifetime: 5.0,
+            buffer_quantity: 1000,
+            spawn_quantity: 1,
+            radius: 6.0,
+            particle_color: Color::BLUE,
+            particle_velocity: Value::Range(2.0, 4.0),
+            particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
+            timer: Timer::from_seconds( 0.05, true),
+            ..Default::default()
+        });
 }

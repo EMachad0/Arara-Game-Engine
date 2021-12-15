@@ -1,5 +1,5 @@
 use arara::prelude::*;
-use arara_particle_system::*;
+use arara_particle_system::{self, Value, ParticleSystem, ParticleSystemPlugin};
 use cgmath::Deg;
 
 fn main() {
@@ -39,7 +39,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
             lifetime: 5.0,
             buffer_quantity: 1000,
             spawn_quantity: 50,
-            radius: 10.0,
+            radius: 5.0,
             particle_color: Color::BLUE,
             particle_velocity: Value::Range(2.0, 4.0),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
