@@ -1,4 +1,3 @@
-mod simple_mesh;
 mod color;
 mod clear_color;
 mod coordinate_system;
@@ -6,10 +5,11 @@ mod texture;
 mod shaders;
 mod visibility;
 mod geometry;
+mod render_phase;
 mod draw_phase;
 // mod prepare_phase;
+mod core_pipeline;
 
-pub use simple_mesh::*;
 pub use color::*;
 pub use clear_color::*;
 pub use coordinate_system::*;
@@ -19,11 +19,12 @@ pub use visibility::*;
 pub use geometry::*;
 use draw_phase::*;
 // use prepare_phase::*;
+pub use core_pipeline::*;
 
 pub mod prelude {
     pub use crate::{
         RenderPlugin,
-        simple_mesh::{SimpleMeshBundle, BPLight},
+        core_pipeline::{SimpleMeshBundle, BPLight},
         geometry::*,
         color::Color,
         clear_color::ClearColor,
