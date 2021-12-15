@@ -1,7 +1,7 @@
 use arara_app::{AppBuilder, Plugin, StartupStage};
+use arara_asset::{Assets, Handle};
 use arara_camera::FlyCamera;
-use arara_geometry::{Square, Shape};
-use arara_render::prelude::*;
+use arara_render::{Visibility, Mesh, SimpleMeshBundle, Color, Square};
 use arara_time::{Time, Timer};
 use arara_transform::{BuildChildren, Children, GlobalTransform, Transform};
 use bevy_ecs::prelude::*;
@@ -20,7 +20,7 @@ pub struct ParticleSystem {
     pub timer: Timer,
     pub buffer_quantity: u32,
     pub spawn_quantity: u32,
-    pub particle_shape: Box<dyn Shape>,
+    pub particle_shape: Handle<Mesh>,
     pub particle_color: Color,
     pub particle_velocity: Value,
 }
@@ -33,7 +33,7 @@ impl Default for ParticleSystem {
             spawn_quantity: 1,
             radius: 5.0,
             timer: Timer::default(),
-            particle_shape: Box::new(Square::default()),
+            particle_shape: Default::default(),
             particle_color: Color::WHITE,
             particle_velocity: Value::Constant(2.0)
         }
@@ -79,7 +79,7 @@ impl Plugin for ParticleSystemPlugin {
 }
 
 fn update_particles(
-    mut commands: Commands,
+    // mut commands: Commands,
     fly_camera: Res<FlyCamera>,
     time: Res<Time>,
     mut particle_system_query: Query<(&mut ParticleSystem, Option<&Children>)>,
@@ -140,7 +140,8 @@ fn update_particles(
     }
 }
 
-fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)>) {
+fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)>, mut meshes: ResMut<Assets<Mesh>>) {
+    let square = meshes.add(Mesh::from(Square::default()));
     for (entity, particle_system) in query.iter() {
         commands.entity(entity).with_children(|parent| {
             for _ in 0..particle_system.buffer_quantity {
@@ -151,7 +152,7 @@ fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)
                         velocity: 0.0,
                     })
                     .insert_bundle(SimpleMeshBundle {
-                        mesh: particle_system.particle_shape,
+                        mesh: square.clone(),
                         color: Color::WHITE,
                         visibility: Visibility::inactive(),
                         ..Default::default()

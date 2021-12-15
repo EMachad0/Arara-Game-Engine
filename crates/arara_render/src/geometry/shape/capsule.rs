@@ -7,15 +7,6 @@ pub struct Capsule {
     pub vertices: Vec<Vertex>,
     pub indices: Vec<u32>,
 }
-impl Shape for Capsule {
-    fn get_vertices(&self) -> &Vec<Vertex> {
-        &self.vertices
-    }
-
-    fn get_indices(&self) -> &Vec<u32> {
-        &self.indices
-    }
-}
 
 #[derive(Debug, Clone, Copy)]
 /// Manner in which UV coordinates are distributed vertically.

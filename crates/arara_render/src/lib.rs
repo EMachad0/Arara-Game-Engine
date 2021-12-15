@@ -1,25 +1,30 @@
 mod simple_mesh;
 mod color;
-mod renderer;
 mod clear_color;
 mod coordinate_system;
 mod texture;
 mod shaders;
 mod visibility;
+mod geometry;
+mod draw_phase;
+// mod prepare_phase;
 
 pub use simple_mesh::*;
 pub use color::*;
-pub use renderer::*;
 pub use clear_color::*;
 pub use coordinate_system::*;
 pub use texture::*;
 pub use shaders::*;
 pub use visibility::*;
+pub use geometry::*;
+use draw_phase::*;
+// use prepare_phase::*;
 
 pub mod prelude {
     pub use crate::{
         RenderPlugin,
         simple_mesh::{SimpleMeshBundle, BPLight},
+        geometry::*,
         color::Color,
         clear_color::ClearColor,
         coordinate_system::{CoordinateSystem, CoordinateSystemPlugin},
@@ -38,6 +43,7 @@ use arara_app::{AppBuilder, CoreStage, Plugin, StartupStage};
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
 pub enum RenderStage {
+    Prepare,
     Draw,
 }
 
@@ -55,9 +61,11 @@ impl Plugin for RenderPlugin {
         app_builder
             .init_resource::<ClearColor>()
             .init_resource::<BPLight>()
+            .add_plugin(geometry::MeshPlugin)
             .add_plugin(texture::ImagePlugin)
             .add_startup_system_to_stage(StartupStage::PostStartup, debug_glium_backend_info.system())
-            .add_system_to_stage(RenderStage::Draw, draw.system());
+            .add_system_to_stage(RenderStage::Draw, main_pass.system().label("MainPass"));
+            // .add_system_to_stage(RenderStage::Draw, translucent_pass.system().after("MainPass"));
     }
 }
 
