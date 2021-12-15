@@ -13,8 +13,9 @@ fn main() {
         .add_plugin(EntityCountDiagnosticPlugin)
         .add_plugin(LogDiagnosticPlugin { wait_duration: Duration::from_secs(3) })
         .add_startup_system(add_shapes.system())
+        // .insert_resource(ClearColor(Color::RED))
         .insert_resource(BPLight {
-            position: vec3(0.0, 10.0, 0.0),
+            position: vec3(0.0, 5.0, 5.0),
         })
         .insert_resource(FlyCamera::from_camera(
             Camera::new((0.0, 5.0, 5.0), Deg(-90.0), Deg(-30.0)),
@@ -25,11 +26,49 @@ fn main() {
         .run()
 }
 
-fn add_shapes(mut commands: Commands) {
-    commands.spawn_bundle(SimpleMeshBundle {
-        mesh: Box::new(Square::default()),
-        transform: Transform::from_xyz(1.0, 1.0, 1.0),
-        color: Color::PURPLE,
+fn add_shapes(asset_server: Res<AssetServer>, mut commands: Commands) {
+    let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
+
+    commands.spawn_bundle(TransformBundle {
+        transform: Transform {
+            translation: vec3(0.5, 0.5, 0.0),
+            rotation: Quat::from_euler(EulerRot::ZYX, PI, 0., FRAC_PI_2),
+            ..Default::default()
+        },
         ..Default::default()
+    }).with_children(|parent| {
+        // panel
+        parent.spawn_bundle(SimpleMeshBundle {
+            mesh: Box::new(Square::new(5., 5.)),
+            transform: Transform::from_xyz(0., -3., 0.),
+            color: Color::rgba(0.1, 0.1, 0.5, 1.0),
+            image: Some(img0.clone()),
+            ..Default::default()
+        });
+        
+        parent.spawn_bundle(SimpleMeshBundle {
+            mesh: Box::new(Square::default()),
+            transform: Transform::from_xyz(0., 0., 0.),
+            image: Some(img0.clone()),
+            ..Default::default()
+        });
+        parent.spawn_bundle(SimpleMeshBundle {
+            mesh: Box::new(Square::default()),
+            transform: Transform::from_xyz(1., 0., 0.),
+            image: Some(img0.clone()),
+            ..Default::default()
+        });
+        parent.spawn_bundle(SimpleMeshBundle {
+            mesh: Box::new(Square::default()),
+            transform: Transform::from_xyz(0., 0., 1.),
+            image: Some(img0.clone()),
+            ..Default::default()
+        });
+        parent.spawn_bundle(SimpleMeshBundle {
+            mesh: Box::new(Square::default()),
+            transform: Transform::from_xyz(1., 0., 1.),
+            color: Color::rgba(0.5, 0.1, 0.5, 0.3),
+            ..Default::default()
+        });
     });
 }

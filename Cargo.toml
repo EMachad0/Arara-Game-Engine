@@ -8,7 +8,6 @@ edition = "2021"
 [dependencies]
 # internal
 arara_camera = { path = "crates/arara_camera", version = "0.1.0" }
-arara_geometry = { path = "crates/arara_geometry", version = "0.1.0" }
 arara_transform = { path = "crates/arara_transform", version = "0.1.0" }
 arara_app = { path = "crates/arara_app", version = "0.1.0" }
 arara_window = { path = "crates/arara_window", version = "0.1.0" }

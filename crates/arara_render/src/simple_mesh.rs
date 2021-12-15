@@ -1,32 +1,18 @@
 use bevy_ecs::bundle::Bundle;
 use glam::{Vec3, vec3};
 
-use crate::{Color, Image, prelude::Visibility};
+use crate::{Color, Image, prelude::Visibility, geometry::Mesh};
 use arara_asset::Handle;
 use arara_transform::{GlobalTransform, Transform};
-use arara_geometry::{Shape, Sphere};
 
-#[derive(Bundle)]
+#[derive(Bundle, Default)]
 pub struct SimpleMeshBundle {
-    pub mesh: Box<dyn Shape>,
+    pub mesh: Handle<Mesh>,
     pub transform: Transform,
     pub global_transform: GlobalTransform,
     pub color: Color,
     pub image: Option::<Handle<Image>>,
     pub visibility: Visibility,
-}
-
-impl Default for SimpleMeshBundle {
-    fn default() -> Self {
-        Self { 
-            mesh: Box::new(Sphere::default()),
-            transform: Default::default(),
-            global_transform: Default::default(),
-            color: Default::default(),
-            image: Default::default(),
-            visibility: Default::default(),
-        }
-    }
 }
 
 pub struct BPLight {

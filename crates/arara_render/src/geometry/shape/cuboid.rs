@@ -1,18 +1,9 @@
-use crate::Vertex;
-use crate::Shape;
+use crate::geometry::{Vertex, Mesh};
 
 pub struct Cuboid {
-    vertices: Vec<Vertex>,
-    indices: Vec<u32>,
-}
-impl Shape for Cuboid {
-    fn get_vertices(&self) -> &Vec<Vertex> {
-        &self.vertices
-    }
-
-    fn get_indices(&self) -> &Vec<u32> {
-        &self.indices
-    }
+    x_length: f32,
+    y_length: f32,
+    z_length: f32,
 }
 
 struct Cords {
@@ -26,6 +17,24 @@ struct Cords {
 
 impl Cuboid {
     pub fn new(x_length: f32, y_length: f32, z_length: f32) -> Self {
+        Self {
+            x_length,
+            y_length,
+            z_length,
+        }
+    }
+}
+
+impl Default for Cuboid {
+    fn default() -> Self {
+        Self::new(1., 1., 1.)
+    }
+}
+
+impl From<Cuboid> for Mesh {
+    fn from(cuboid: Cuboid) -> Self {
+        let Cuboid {x_length, y_length, z_length} = cuboid;
+
         let sp = Cords {
             max_x: x_length / 2.0,
             min_x: -x_length / 2.0,
@@ -78,24 +87,3 @@ impl Cuboid {
         }
     }
 }
-
-/* faces:
-      0--1
-     /|  |
-    4 2--3
-    |/  /
-    6--7
-        
-      0--1
-     /  /|
-    4--5 3
-    |  |/
-    6--7
-
-    2 3 1 0
-    2 0 4 6
-    2 6 7 3
-    5 4 6 7
-    5 1 0 4
-    5 7 3 1
-*/

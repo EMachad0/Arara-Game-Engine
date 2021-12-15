@@ -1,9 +1,7 @@
-
-
 use arara_app::{AppBuilder, Plugin, StartupStage};
+use arara_asset::Assets;
 use arara_camera::FlyCamera;
-use arara_geometry::{Square};
-use arara_render::prelude::*;
+use arara_render::{Visibility, Mesh, SimpleMeshBundle, Color, Square};
 use arara_transform::{BuildChildren, Children, GlobalTransform, Transform};
 use bevy_ecs::prelude::*;
 use glam::{vec3, Quat, Vec3};
@@ -52,7 +50,7 @@ impl Plugin for ParticleSystemPlugin {
 }
 
 fn update_particles(
-    mut commands: Commands,
+    // mut commands: Commands,
     fly_camera: Res<FlyCamera>,
     particle_system_query: Query<(&ParticleSystem, Option<&Children>)>,
     mut query: Query<(
@@ -97,7 +95,8 @@ fn update_particles(
     }
 }
 
-fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)>) {
+fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)>, mut meshes: ResMut<Assets<Mesh>>) {
+    let square = meshes.add(Mesh::from(Square::default()));
     for (entity, particle_system) in query.iter() {
         commands.entity(entity).with_children(|parent| {
             for _ in 0..particle_system.quantity {
@@ -108,7 +107,7 @@ fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSystem)
                         velocity: 0.0,
                     })
                     .insert_bundle(SimpleMeshBundle {
-                        mesh: Box::new(Square::default()),
+                        mesh: square.clone(),
                         color: Color::WHITE,
                         visibility: Visibility::inactive(),
                         ..Default::default()
