@@ -1,12 +1,11 @@
 use std::f32::consts::PI;
 
 use arara_asset::Handle;
-use arara_camera::FlyCamera;
-use arara_render::{Color, Mesh, SimpleMeshBundle, Visibility, Image};
+use arara_render::{Color, Mesh, SimpleMeshBundle, Visibility, Image, Billboard};
 use arara_time::{Time, Timer};
 use arara_transform::{BuildChildren, Children, GlobalTransform, Transform};
 use bevy_ecs::prelude::{Bundle, Commands, Entity, Query, Res};
-use glam::{vec3, Mat3, Quat, Vec3};
+use glam::{vec3, Vec3};
 
 use crate::{Particle, Value};
 
@@ -19,6 +18,7 @@ pub struct ParticleSystem {
     pub buffer_quantity: u32,
     pub spawn_quantity: u32,
     pub image: Option::<Handle<Image>>,
+    pub billboard: Option::<Billboard>,
     pub particle_mesh: Handle<Mesh>,
     pub particle_color: Color,
     pub particle_velocity: Value,
@@ -31,11 +31,12 @@ impl Default for ParticleSystem {
             buffer_quantity: 100,
             spawn_quantity: 1,
             spawn_shape: SpawnShape::Circle(1.0),
-            timer: Timer::default(),
+            timer: Default::default(),
             particle_mesh: Default::default(),
             particle_color: Color::WHITE,
             particle_velocity: Value::Constant(2.0),
-            image: None
+            image: Default::default(),
+            billboard: Default::default(),
         }
     }
 }
@@ -48,58 +49,27 @@ pub struct ParticleSystemBundle {
 }
 
 pub fn update_particles(
-    // mut commands: Commands,
-    fly_camera: Res<FlyCamera>,
     time: Res<Time>,
     mut particle_system_query: Query<(&mut ParticleSystem, Option<&Children>)>,
     mut query: Query<(
         &mut Particle,
         &mut Visibility,
         &mut Transform,
-        &GlobalTransform,
     )>,
 ) {
-    let camera_position = fly_camera.camera.position;
-    let _camera_position = vec3(camera_position.x, camera_position.y, camera_position.z);
-
-    // view-plane billboard
-    let u = Vec3::Y;
-    let n = vec3(
-        fly_camera.camera.yaw.0.cos(),
-        fly_camera.camera.pitch.0.sin(),
-        fly_camera.camera.yaw.0.sin(),
-    );
-    let r = u.cross(n).normalize();
-    let u_linha = n.cross(r).normalize();
-    let mat = Mat3::from_cols(r, u_linha, n);
-    let rotation = Quat::from_mat3(&mat);
-
-    // axial-locked view-plane billboard
-    // let u = Vec3::Y;
-    // let n = vec3(fly_camera.camera.yaw.0.cos(), fly_camera.camera.pitch.0.sin(), fly_camera.camera.yaw.0.sin());
-    // let r = u.cross(n).normalize();
-    // let n_linha = r.cross(u).normalize();
-    // let mat = Mat3::from_cols(r, u, n_linha);
-    // let rotation = Quat::from_mat3(&mat);
-
     for (mut particle_system, children) in particle_system_query.iter_mut() {
         particle_system.timer.tick(time.delta());
         let mut spawn_count = 0;
 
         if let Some(children) = children {
             for child in children.iter() {
-                let (mut particle, mut visibility, mut transform, _global_transform) =
-                    query.get_mut(*child).unwrap();
+                let (mut particle, mut visibility, mut transform) = query.get_mut(*child).unwrap();
 
                 if !visibility.active
                     && spawn_count < particle_system.spawn_quantity
                     && particle_system.timer.finished()
                 {
-                    *transform = Transform {
-                        // rotation: Quat::from_rotation_x(FRAC_PI_2),
-                        translation: particle_system.spawn_shape.gen_random_translation(),
-                        ..Default::default()
-                    };
+                    *transform = Transform::from_translation(particle_system.spawn_shape.gen_random_translation());
 
                     particle.time_remaining = particle_system.lifetime;
                     particle.velocity = particle_system.particle_velocity.get();
@@ -115,23 +85,6 @@ pub fn update_particles(
                             particle.direction * time.delta_seconds() * particle.velocity;
                     }
                 }
-
-                // view-point billboard
-                // let u = Vec3::Y;
-                // let n = -(_camera_position - _global_transform.translation).normalize();
-                // let r = u.cross(n).normalize();
-                // let u_linha = n.cross(r).normalize();
-                // let mat = Mat3::from_cols(r, u_linha, n);
-                // let rotation = Quat::from_mat3(&mat);
-
-                // axial-locked view-point billboard
-                // let u = Vec3::Y;
-                // let n = -(_camera_position - _global_transform.translation).normalize();
-                // let r = u.cross(n).normalize();
-                // let n_linha = r.cross(u).normalize();
-                // let mat = Mat3::from_cols(r, u, n_linha);
-                // let rotation = Quat::from_mat3(&mat);
-                transform.rotation = rotation;
             }
         }
     }
@@ -141,9 +94,8 @@ pub fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSys
     for (entity, particle_system) in query.iter() {
         commands.entity(entity).with_children(|parent| {
             for _ in 0..particle_system.buffer_quantity {
-                parent
-                    .spawn()
-                    .insert(Particle {
+                let mut child = parent.spawn();
+                child.insert(Particle {
                         time_remaining: particle_system.lifetime,
                         velocity: 0.0,
                         direction: vec3(0.0, 0.0, 0.0),
@@ -155,6 +107,9 @@ pub fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSys
                         visibility: Visibility::inactive(),
                         ..Default::default()
                     });
+                if particle_system.billboard.is_some() {
+                    child.insert(particle_system.billboard.unwrap());
+                }
             }
         });
     }

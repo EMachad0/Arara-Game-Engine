@@ -8,6 +8,7 @@ mod visibility;
 mod geometry;
 mod render_phase;
 mod core_pipeline;
+mod billboard;
 
 pub use color::*;
 pub use clear_color::*;
@@ -17,6 +18,7 @@ pub use shader::*;
 pub use visibility::*;
 pub use geometry::*;
 pub use core_pipeline::*;
+pub use billboard::*;
 
 pub mod prelude {
     pub use crate::{
@@ -28,6 +30,7 @@ pub mod prelude {
         coordinate_system::{CoordinateSystem, CoordinateSystemPlugin},
         texture::Image,
         visibility::Visibility,
+        billboard::Billboard,
     };
 }
 
@@ -83,6 +86,7 @@ impl Plugin for RenderPlugin {
             .add_plugin(shader::ShaderPlugin)
             .add_plugin(geometry::MeshPlugin)
             .add_plugin(texture::ImagePlugin)
-            .add_plugin(core_pipeline::CorePipelinePlugin);
+            .add_plugin(core_pipeline::CorePipelinePlugin)
+            .add_plugin(billboard::BillboardPlugin);
     }
 }
