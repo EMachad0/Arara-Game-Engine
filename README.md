@@ -32,3 +32,23 @@ The code of this examples can be found at the [examples](./examples) folder, and
         <summary>Castle ScreenShot</summary>
         <img src="./docs/castle.png">
     </details>
+
+#### Examples with particles:
+
+* **Snowman Exemple**
+    ```shell
+    cargo run -- example snow-man
+    ```
+    <details>
+        <summary>Snowman GIF</summary>
+        <img src="./docs/snowman_snow.gif">
+    </details>
+
+* **Fire**
+    ```shell
+    cargo run -- example fire
+    ```
+    <details>
+        <summary>Fire GIF</summary>
+        <img src="./docs/fire.gif">
+    </details>
