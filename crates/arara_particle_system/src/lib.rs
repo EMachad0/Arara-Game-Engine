@@ -1,7 +1,8 @@
+use glam::Vec3;
 use rand::{self, Rng};
 
-mod particle_system;
 mod particle_plugin;
+mod particle_system;
 
 pub use particle_plugin::*;
 pub use particle_system::*;
@@ -30,5 +31,5 @@ impl Value {
 pub struct Particle {
     pub time_remaining: f32,
     pub velocity: f32,
+    pub direction: Vec3,
 }
-
