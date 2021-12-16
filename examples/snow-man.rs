@@ -1,5 +1,5 @@
 use arara::prelude::*;
-use arara_particle_system::{ParticleSystem, Value, ParticleSystemPlugin};
+use arara_particle_system::{ParticleSystem, Value, ParticleSystemPlugin, SpawnShape};
 
 fn main() {
     logger::init();
@@ -29,10 +29,10 @@ fn move_snowman(
     time: Res<Time>,
     mut query: Query<(&mut Transform, With<SnowMan>)>,
 ) {
-    // for transform in query.iter_mut() {
-    //     let mut tr = transform.0;
-    //     tr.rotate(Quat::from_rotation_y(FRAC_PI_2 * time.delta_seconds()));
-    // }
+    for transform in query.iter_mut() {
+        let mut tr = transform.0;
+        tr.rotate(Quat::from_rotation_y(FRAC_PI_2 * time.delta_seconds()));
+    }
 }
 
 fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
@@ -227,9 +227,9 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
             lifetime: 5.0,
             buffer_quantity: 1000,
             spawn_quantity: 1,
-            radius: 6.0,
+            spawn_shape: SpawnShape::Circle(5.0),
             particle_color: Color::BLUE,
-            particle_velocity: Value::Range(2.0, 4.0),
+            particle_velocity: Value::Range(-2.0, -4.0),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
             timer: Timer::from_seconds( 0.05, true),
             ..Default::default()

@@ -1,5 +1,5 @@
 use arara::prelude::*;
-use arara_particle_system::{self, Value, ParticleSystem, ParticleSystemPlugin};
+use arara_particle_system::{self, Value, ParticleSystem, ParticleSystemPlugin, SpawnShape};
 use cgmath::Deg;
 
 fn main() {
@@ -7,8 +7,9 @@ fn main() {
     App::builder()
         .add_plugins(DefaultPlugins)
         .add_plugin(ParticleSystemPlugin)
+        .add_plugin(CoordinateSystemPlugin)
         .add_plugin(FrameTimeDiagnosticPlugin)
-        .add_plugin(EntityCountDiagnosticPlugin)
+        .add_plugin(EntityCountDiagnosticPlugin::default())
         .add_plugin(LogDiagnosticPlugin {
             wait_duration: Duration::from_secs(3),
         })
@@ -31,17 +32,17 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
     commands
         .spawn_bundle(SimpleMeshBundle {
             mesh: meshes.add(Mesh::from(Icosphere::new(6, 0.1))),
-            transform: Transform::from_xyz(5.0, 5.0, 1.0),
+            transform: Transform::from_xyz(0.0, 0.0, 0.0),
             color: Color::PURPLE,
             ..Default::default()
         })
         .insert(ParticleSystem {
             lifetime: 5.0,
             buffer_quantity: 1000,
-            spawn_quantity: 50,
-            radius: 5.0,
+            spawn_quantity: 100,
             particle_color: Color::BLUE,
-            particle_velocity: Value::Range(2.0, 4.0),
+            particle_velocity: Value::Constant(2.0),
+            spawn_shape: SpawnShape::Rectangle(5., 5.),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
             timer: Timer::from_seconds( 0.5, true),
             ..Default::default()
