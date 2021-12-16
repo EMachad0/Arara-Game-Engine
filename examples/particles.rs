@@ -35,7 +35,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
     commands
         .spawn_bundle(SimpleMeshBundle {
             mesh: meshes.add(Mesh::from(Icosphere::new(6, 0.1))),
-            transform: Transform::from_xyz(5.0, 5.0, 5.0),
+            transform: Transform::from_xyz(0.0, 0.0, 0.0),
             color: Color::PURPLE,
             ..Default::default()
         })
@@ -49,6 +49,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
             particle_color: Color::RED,
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
             timer: Timer::from_seconds( 0.5, true),
+            billboard: Some(Billboard::ViewPlane),
             ..Default::default()
         });
 }

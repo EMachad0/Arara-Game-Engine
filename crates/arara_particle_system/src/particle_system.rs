@@ -1,7 +1,8 @@
 use std::f32::consts::PI;
 
 use arara_asset::Handle;
-use arara_render::{Color, Mesh, SimpleMeshBundle, Visibility, Image, Billboard};
+use arara_logger::debug;
+use arara_render::{Billboard, Color, Image, Mesh, SimpleMeshBundle, Visibility};
 use arara_time::{Time, Timer};
 use arara_transform::{BuildChildren, Children, GlobalTransform, Transform};
 use bevy_ecs::prelude::{Bundle, Commands, Entity, Query, Res};
@@ -17,8 +18,8 @@ pub struct ParticleSystem {
     pub spawn_shape: SpawnShape,
     pub buffer_quantity: u32,
     pub spawn_quantity: u32,
-    pub image: Option::<Handle<Image>>,
-    pub billboard: Option::<Billboard>,
+    pub image: Option<Handle<Image>>,
+    pub billboard: Option<Billboard>,
     pub particle_mesh: Handle<Mesh>,
     pub particle_color: Color,
     pub particle_velocity: Value,
@@ -36,7 +37,7 @@ impl Default for ParticleSystem {
             particle_color: Color::WHITE,
             particle_velocity: Value::Constant(2.0),
             image: Default::default(),
-            billboard: Default::default(),
+            billboard: Some(Billboard::ViewPlane),
         }
     }
 }
@@ -49,42 +50,56 @@ pub struct ParticleSystemBundle {
 }
 
 pub fn update_particles(
+    mut commands: Commands,
     time: Res<Time>,
-    mut particle_system_query: Query<(&mut ParticleSystem, Option<&Children>)>,
-    mut query: Query<(
-        &mut Particle,
-        &mut Visibility,
-        &mut Transform,
-    )>,
+    mut particle_system_query: Query<(Entity, &mut ParticleSystem, Option<&Children>)>,
+    mut query: Query<(&mut Particle, &mut Visibility, &mut Transform)>,
 ) {
-    for (mut particle_system, children) in particle_system_query.iter_mut() {
+    for (particle_system_entity, mut particle_system, children) in particle_system_query.iter_mut()
+    {
         particle_system.timer.tick(time.delta());
         let mut spawn_count = 0;
+        let mut all_particles_inactive = true;
 
         if let Some(children) = children {
             for child in children.iter() {
-                let (mut particle, mut visibility, mut transform) = query.get_mut(*child).unwrap();
+                if let Ok((mut particle, mut visibility, mut transform)) = query.get_mut(*child) {
+                    if !visibility.active
+                        && spawn_count < particle_system.spawn_quantity
+                        && particle_system.timer.just_finished()
+                    {
+                        *transform = Transform::from_translation(
+                            particle_system.spawn_shape.gen_random_translation(),
+                        );
 
-                if !visibility.active
-                    && spawn_count < particle_system.spawn_quantity
-                    && particle_system.timer.finished()
-                {
-                    *transform = Transform::from_translation(particle_system.spawn_shape.gen_random_translation());
-
-                    particle.time_remaining = particle_system.lifetime;
-                    particle.velocity = particle_system.particle_velocity.get();
-                    particle.direction = particle_system.spawn_shape.get_direction();
-                    visibility.active = true;
-                    spawn_count += 1;
-                } else {
-                    if particle.time_remaining <= 0.0 {
-                        visibility.active = false;
+                        particle.time_remaining = particle_system.lifetime;
+                        particle.velocity = particle_system.particle_velocity.get();
+                        particle.direction = particle_system.spawn_shape.get_direction();
+                        visibility.active = true;
+                        spawn_count += 1;
                     } else {
-                        particle.time_remaining -= time.delta_seconds();
-                        transform.translation +=
-                            particle.direction * time.delta_seconds() * particle.velocity;
+                        all_particles_inactive = false;
+
+                        if particle.time_remaining <= 0.0 {
+                            visibility.active = false;
+                        } else {
+                            particle.time_remaining -= time.delta_seconds();
+                            transform.translation +=
+                                particle.direction * time.delta_seconds() * particle.velocity;
+                        }
+                    }
+
+                    if !visibility.active
+                        && particle_system.timer.finished()
+                        && !particle_system.timer.repeating()
+                    {
+                        commands.entity(*child).despawn();
                     }
                 }
+            }
+
+            if all_particles_inactive {
+                commands.entity(particle_system_entity).despawn();
             }
         }
     }
@@ -95,7 +110,8 @@ pub fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSys
         commands.entity(entity).with_children(|parent| {
             for _ in 0..particle_system.buffer_quantity {
                 let mut child = parent.spawn();
-                child.insert(Particle {
+                child
+                    .insert(Particle {
                         time_remaining: particle_system.lifetime,
                         velocity: 0.0,
                         direction: vec3(0.0, 0.0, 0.0),
@@ -139,12 +155,12 @@ impl SpawnShape {
             }
             Self::Circle(r) => {
                 let radius = r * rng.gen::<f32>().sqrt();
-                let theta= rng.gen::<f32>() * 2.0 * PI;
+                let theta = rng.gen::<f32>() * 2.0 * PI;
 
                 let x = radius * theta.cos();
                 let y = radius * theta.sin();
                 return vec3(x, 0., y);
-            },
+            }
             _ => vec3(0., 0., 0.),
             // Self::Cone(a, y) => {
             //     let radius = r * rng.gen::<f32>().sqrt();
@@ -157,20 +173,25 @@ impl SpawnShape {
         }
     }
 
-    fn get_direction(&self) -> Vec3 {        
+    fn get_direction(&self) -> Vec3 {
         match self {
             Self::Rectangle(_x, _y) => vec3(0., 1., 0.),
             Self::Circle(_) => vec3(0., 1., 0.),
             Self::Sphere(_) => {
                 let mut rng = rand::thread_rng();
 
-                vec3(rng.gen::<f32>() * 2.0 - 1.0, rng.gen::<f32>() * 2.0 - 1.0, rng.gen::<f32>() * 2.0 - 1.0).normalize()
-            },
+                vec3(
+                    rng.gen::<f32>() * 2.0 - 1.0,
+                    rng.gen::<f32>() * 2.0 - 1.0,
+                    rng.gen::<f32>() * 2.0 - 1.0,
+                )
+                .normalize()
+            }
             Self::Cone(r) => {
                 let mut rng = rand::thread_rng();
 
                 let radius = r * rng.gen::<f32>().sqrt();
-                let theta= rng.gen::<f32>() * 2.0 * PI;
+                let theta = rng.gen::<f32>() * 2.0 * PI;
 
                 let x = radius * theta.cos();
                 let y = radius * theta.sin();

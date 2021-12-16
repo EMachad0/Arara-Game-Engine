@@ -29,9 +29,8 @@ fn main() {
         .run()
 }
 
-fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_server: Res<AssetServer>) {
+fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
     // ------------- Particle ------------------
-    let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
 
     commands
         .spawn_bundle(SimpleMeshBundle {
@@ -41,17 +40,31 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
         .insert(ParticleSystem {
             lifetime: 1.0,
             buffer_quantity: 1000,
-            spawn_quantity: 10,
-            image: Some(img0),
+            spawn_quantity: 50,
             particle_velocity: Value::Range(3.0, 5.0),
-            spawn_shape: SpawnShape::Cone(0.1),
-            particle_color: Color::BLACK,
-            particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
-            timer: Timer::from_seconds( 0.1, true),
+            spawn_shape: SpawnShape::Sphere(0.1),
+            particle_color: Color::RED,
+            particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.2))),
+            timer: Timer::from_seconds( 1., false),
             ..Default::default()
         });
-
-    let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
+    
+    commands
+        .spawn_bundle(SimpleMeshBundle {
+            transform: Transform::from_xyz(0.0, 0.0, 0.0),
+            ..Default::default()
+        })
+        .insert(ParticleSystem {
+            lifetime: 1.0,
+            buffer_quantity: 1000,
+            spawn_quantity: 50,
+            particle_velocity: Value::Range(3.0, 5.0),
+            spawn_shape: SpawnShape::Sphere(0.1),
+            particle_color: Color::RED,
+            particle_mesh: meshes.add(Mesh::from(Square::new(0.1, 0.1))),
+            timer: Timer::from_seconds( 1., true),
+            ..Default::default()
+        });
 
     commands
         .spawn_bundle(SimpleMeshBundle {
@@ -59,37 +72,17 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
             ..Default::default()
         })
         .insert(ParticleSystem {
-            lifetime: 0.5,
-            buffer_quantity: 100,
-            spawn_quantity: 10,
-            image: Some(img0),
-            particle_velocity: Value::Range(1.0, 2.0),
-            spawn_shape: SpawnShape::Cone(0.3),
-            particle_color: Color::YELLOW,
-            particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
-            timer: Timer::from_seconds( 3., false),
+            lifetime: 1.1,
+            buffer_quantity: 1000,
+            spawn_quantity: 20,
+            particle_velocity: Value::Range(3.0, 5.0),
+            spawn_shape: SpawnShape::Sphere(0.1),
+            particle_color: Color::GREEN,
+            particle_mesh: meshes.add(Mesh::from(Square::new(0.1, 0.1))),
+            timer: Timer::from_seconds( 1.01, true),
             ..Default::default()
         });
-    
-    let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
-    
-    commands
-        .spawn_bundle(SimpleMeshBundle {
-            transform: Transform::from_xyz(0.0, 0.5, 0.0),
-            ..Default::default()
-        })
-        .insert(ParticleSystem {
-            lifetime: 1.0,
-            buffer_quantity: 100,
-            spawn_quantity: 10,
-            image: Some(img0),
-            particle_velocity: Value::Range(1.0, 2.0),
-            spawn_shape: SpawnShape::Cone(0.4),
-            particle_color: Color::RED,
-            particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
-            timer: Timer::from_seconds( 0.3, true),
-            ..Default::default()
-        });
+
 }
 
 fn add_color_only_shader(mut commands: Commands, asset_server: Res<AssetServer>) {
