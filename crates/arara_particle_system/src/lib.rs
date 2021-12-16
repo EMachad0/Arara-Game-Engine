@@ -19,10 +19,7 @@ impl Value {
             Value::Range(a, b) => {
                 let mut rng = rand::thread_rng();
 
-                if *a < 0.0 && *b < 0.0 {
-                    return rng.gen_range(*b..*a);
-                }
-                rng.gen_range(*b..*a)
+                rng.gen_range(*a..*b)
             }
         }
     }

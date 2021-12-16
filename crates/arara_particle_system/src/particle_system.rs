@@ -119,6 +119,7 @@ pub enum SpawnShape {
     Rectangle(f32, f32),
     Circle(f32),
     Sphere(f32),
+    Cone(f32),
 }
 
 impl SpawnShape {
@@ -142,13 +143,21 @@ impl SpawnShape {
 
                 let x = radius * theta.cos();
                 let y = radius * theta.sin();
-                return vec3(x, 2., y);
-            }
-            Self::Sphere(_) => vec3(0., 0., 0.),
+                return vec3(x, 0., y);
+            },
+            _ => vec3(0., 0., 0.),
+            // Self::Cone(a, y) => {
+            //     let radius = r * rng.gen::<f32>().sqrt();
+            //     let theta= rng.gen::<f32>() * 2.0 * PI;
+
+            //     let x = radius * theta.cos();
+            //     let y = radius * theta.sin();
+            //     return vec3(x, 0., y);
+            // }
         }
     }
 
-    fn get_direction(&self) -> Vec3 {
+    fn get_direction(&self) -> Vec3 {        
         match self {
             Self::Rectangle(_x, _y) => vec3(0., 1., 0.),
             Self::Circle(_) => vec3(0., 1., 0.),
@@ -156,6 +165,16 @@ impl SpawnShape {
                 let mut rng = rand::thread_rng();
 
                 vec3(rng.gen::<f32>() * 2.0 - 1.0, rng.gen::<f32>() * 2.0 - 1.0, rng.gen::<f32>() * 2.0 - 1.0).normalize()
+            },
+            Self::Cone(r) => {
+                let mut rng = rand::thread_rng();
+
+                let radius = r * rng.gen::<f32>().sqrt();
+                let theta= rng.gen::<f32>() * 2.0 * PI;
+
+                let x = radius * theta.cos();
+                let y = radius * theta.sin();
+                return vec3(x, 1., y).normalize();
             }
         }
     }

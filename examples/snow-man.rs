@@ -12,7 +12,7 @@ fn main() {
         // .add_plugin(CoordinateSystemPlugin::default())
         .add_startup_system(add_shapes.system())
         .init_resource::<Timer>()
-        .insert_resource(BPLight::new(-2.0, 5.0, 3.0))
+        .insert_resource(BPLight::new(0.0, 10.0, 6.0))
         .add_system(move_snowman.system())
         .build()
         .run()
@@ -35,12 +35,64 @@ fn move_snowman(
     }
 }
 
-fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
+fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_server: Res<AssetServer>) {
+
+    let snow_img: Handle<Image> = asset_server.load("textures/snow.png");
+
+    commands
+        .spawn_bundle(SimpleMeshBundle {
+            // mesh: meshes.add(Mesh::from(Icosphere::new(6, 0.1))),
+            transform: Transform::from_xyz(0., 6.5, 0.0),
+            color: Color::PURPLE,
+            ..Default::default()
+        })
+        .insert(ParticleSystem {
+            lifetime: 4.0,
+            buffer_quantity: 100,
+            spawn_quantity: 3,
+            spawn_shape: SpawnShape::Circle(3.5),
+            image: Some(snow_img),
+            particle_velocity: Value::Range(-2.0, -1.0),
+            particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.2))),
+            timer: Timer::from_seconds( 0.3, true),
+            ..Default::default()
+        });
+    
+    commands
+        .spawn_bundle(SimpleMeshBundle {
+            // mesh: meshes.add(Mesh::from(Icosphere::new(6, 0.1))),
+            transform: Transform::from_xyz(0., 7., 0.0),
+            color: Color::PURPLE,
+            ..Default::default()
+        })
+        .insert(ParticleSystem {
+            lifetime: 3.5,
+            buffer_quantity: 500,
+            spawn_quantity: 5,
+            spawn_shape: SpawnShape::Circle(3.5),
+            // image: Some(snow_img),
+            particle_velocity: Value::Range(-2.5, -1.0),
+            particle_mesh: meshes.add(Mesh::from(Circle::new(8, 0.1))),
+            timer: Timer::from_seconds( 0.1, true),
+            ..Default::default()
+        });
+
+
     // ------------- Floor ------------------
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: meshes.add(Mesh::from(Cylinder::new(32, 0.1, 4.0, 4.0))),
+        mesh: meshes.add(Mesh::from(Cylinder::new(32, 0.5, 4.4, 4.0))),
         transform: Transform::from_rotation(Quat::from_rotation_x(-FRAC_PI_2)),
         color: Color::MIDNIGHT_BLUE,
+        ..Default::default()
+    });
+
+    commands.spawn_bundle(SimpleMeshBundle {
+        mesh: meshes.add(Mesh::from(Icosphere::new(32, 5.))),
+        transform: Transform {
+            translation: vec3(0.0, 3.2, 0.0),
+            ..Default::default()
+        },
+        color: Color::rgba(1., 1., 1., 0.1),
         ..Default::default()
     });
 
@@ -215,23 +267,4 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
             });
         });
     });
-
-    commands
-        .spawn_bundle(SimpleMeshBundle {
-            mesh: meshes.add(Mesh::from(Icosphere::new(6, 0.1))),
-            transform: Transform::from_xyz(0., 7.0, 0.0),
-            color: Color::PURPLE,
-            ..Default::default()
-        })
-        .insert(ParticleSystem {
-            lifetime: 5.0,
-            buffer_quantity: 1000,
-            spawn_quantity: 1,
-            spawn_shape: SpawnShape::Sphere(5.0),
-            particle_color: Color::BLUE,
-            particle_velocity: Value::Range(-2.0, -4.0),
-            particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
-            timer: Timer::from_seconds( 0.05, true),
-            ..Default::default()
-        });
 }

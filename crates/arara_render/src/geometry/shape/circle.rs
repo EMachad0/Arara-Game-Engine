@@ -26,12 +26,12 @@ impl From<Circle> for Mesh {
         } = circle;
 
         let circle = unit_circle_points(sector_count);
-        let normal = [0.0, 1.0, 0.0];
+        let normal = [0.0, 0.0, -1.0];
 
         let mut vertices: Vec<Vertex> = Vec::new();
 
         for vertice in circle.iter() {
-            let position = [vertice.x * radius, 0.0, vertice.y * radius];
+            let position = [vertice.x * radius, vertice.y * radius, 0.0];
             let tex_coords = [(vertice.x + 1.0) / 2.0, (vertice.y + 1.0) / 2.0];
             vertices.push(Vertex {
                 position,
