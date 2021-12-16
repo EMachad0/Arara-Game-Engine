@@ -22,6 +22,8 @@ impl Plugin for CorePipelinePlugin {
         app_builder
             .init_resource::<ClearColor>()
             .init_resource::<BPLight>()
+            .init_resource::<DefaultShader>()
+            .add_startup_system_to_stage(StartupStage::PreStartup, load_default_shader.system())
             .add_startup_system_to_stage(StartupStage::PostStartup, debug_glium_backend_info.system())
             .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_camera_phases.system())
             .add_system_to_stage(RenderStage::Prepare, prepare_core_pass.system())

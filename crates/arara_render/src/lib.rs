@@ -2,23 +2,20 @@ mod color;
 mod clear_color;
 mod coordinate_system;
 mod texture;
+mod shader;
 mod shaders;
 mod visibility;
 mod geometry;
 mod render_phase;
-// mod draw_phase;
-// mod prepare_phase;
 mod core_pipeline;
 
 pub use color::*;
 pub use clear_color::*;
 pub use coordinate_system::*;
 pub use texture::*;
-pub use shaders::*;
+pub use shader::*;
 pub use visibility::*;
 pub use geometry::*;
-// use draw_phase::*;
-// use prepare_phase::*;
 pub use core_pipeline::*;
 
 pub mod prelude {
@@ -83,6 +80,7 @@ impl Plugin for RenderPlugin {
             .add_stage_after(RenderStage::Render, RenderStage::Cleanup, SystemStage::parallel());
         
         app_builder
+            .add_plugin(shader::ShaderPlugin)
             .add_plugin(geometry::MeshPlugin)
             .add_plugin(texture::ImagePlugin)
             .add_plugin(core_pipeline::CorePipelinePlugin);
