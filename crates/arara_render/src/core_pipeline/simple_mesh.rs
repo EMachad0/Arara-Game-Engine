@@ -1,8 +1,8 @@
-use bevy_ecs::bundle::Bundle;
+use bevy_ecs::prelude::*;
 use glam::{Vec3, vec3};
 
-use crate::{Color, Image, prelude::Visibility, geometry::Mesh};
-use arara_asset::Handle;
+use crate::{Color, Image, prelude::Visibility, geometry::Mesh, Shader};
+use arara_asset::{Handle, AssetServer};
 use arara_transform::{GlobalTransform, Transform};
 
 #[derive(Bundle, Default)]
@@ -31,3 +31,17 @@ impl BPLight {
     }
 }
 
+#[derive(Default)]
+pub struct DefaultShader {
+    pub vertex_shader: Handle<Shader>,
+    pub fragment_shader: Handle<Shader>,
+}
+
+pub fn load_default_shader(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let vertex_shader = asset_server.load("shaders/vertex_shader_src.vert");
+    let fragment_shader = asset_server.load("shaders/fragment_shader_src.frag");
+    commands.insert_resource(DefaultShader {
+        vertex_shader,
+        fragment_shader,
+    });
+}

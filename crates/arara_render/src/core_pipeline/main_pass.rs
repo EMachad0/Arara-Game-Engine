@@ -1,7 +1,7 @@
 use glam::*;
 use glium::{Surface, texture::RawImage2d};
 use bevy_ecs::prelude::*;
-use crate::{BPLight, ClearColor, Color, Image, Shaders, geometry::Mesh, render_phase::RenderPhase, Opaque, Transparent};
+use crate::{BPLight, ClearColor, Color, Image, geometry::Mesh, render_phase::RenderPhase, Opaque, Transparent, Shader, DefaultShader};
 use arara_utils::StableHashMap;
 use arara_camera::FlyCamera;
 use arara_transform::GlobalTransform;
@@ -24,8 +24,10 @@ pub fn main_pass(
     clear_color: Res<ClearColor>,
     light: Res<BPLight>,
     mut fly_camera: ResMut<FlyCamera>,
+    default_shader: Res<DefaultShader>,
     images: Res<Assets<Image>>,
     meshes: Res<Assets<Mesh>>,
+    shaders: Res<Assets<Shader>>,
     opaques: Res<RenderPhase::<Opaque>>,
     transparents: Res<RenderPhase::<Transparent>>,
     query: Query<(&Handle<Mesh>, &GlobalTransform, &Color, &Option::<Handle<Image>>)>,
@@ -38,8 +40,13 @@ pub fn main_pass(
     let camera_pos: [f32; 3] = fly_camera.camera.position.into();
     let light_pos: [f32; 3] = light.position.into();
 
-    let shaders = Shaders::default();
-    let program = glium::Program::from_source(display, shaders.vertex_shader, shaders.fragment_shader, None).unwrap();
+    let DefaultShader { vertex_shader, fragment_shader } = &*default_shader;
+    let vertex_shader = shaders.get(vertex_shader);
+    let fragment_shader = shaders.get(fragment_shader);
+    if vertex_shader.is_none() || fragment_shader.is_none() {
+        return;
+    }
+    let program = glium::Program::from_source(display, vertex_shader.unwrap().source(), fragment_shader.unwrap().source(), None).unwrap();
 
     // Start Frame
     let mut frame = display.draw();

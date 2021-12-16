@@ -1,5 +1,6 @@
 use arara::prelude::*;
 use arara_particle_system::{self, Value, ParticleSystem, ParticleSystemPlugin, SpawnShape};
+use arara_render::DefaultShader;
 use cgmath::Deg;
 
 fn main() {
@@ -13,6 +14,7 @@ fn main() {
         .add_plugin(LogDiagnosticPlugin {
             wait_duration: Duration::from_secs(3),
         })
+        .add_startup_system(add_color_only_shader.system())
         .add_startup_system(add_shapes.system())
         .insert_resource(BPLight {
             position: vec3(10.0, 10.0, 0.0),
@@ -49,4 +51,13 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
             timer: Timer::from_seconds( 0.5, true),
             ..Default::default()
         });
+}
+
+fn add_color_only_shader(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let vertex_shader = asset_server.load("shaders/vertex_shader_src.vert");
+    let fragment_shader = asset_server.load("shaders/fragment_shader_no_light_src.frag");
+    commands.insert_resource(DefaultShader {
+        vertex_shader,
+        fragment_shader,
+    });
 }
