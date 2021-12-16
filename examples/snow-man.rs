@@ -227,7 +227,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
             lifetime: 5.0,
             buffer_quantity: 1000,
             spawn_quantity: 1,
-            spawn_shape: SpawnShape::Circle(5.0),
+            spawn_shape: SpawnShape::Sphere(5.0),
             particle_color: Color::BLUE,
             particle_velocity: Value::Range(-2.0, -4.0),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),

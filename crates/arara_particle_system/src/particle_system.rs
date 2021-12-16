@@ -2,11 +2,11 @@ use std::f32::consts::PI;
 
 use arara_asset::Handle;
 use arara_camera::FlyCamera;
-use arara_render::{Color, Mesh, SimpleMeshBundle, Visibility};
+use arara_render::{Color, Mesh, SimpleMeshBundle, Visibility, Image};
 use arara_time::{Time, Timer};
 use arara_transform::{BuildChildren, Children, GlobalTransform, Transform};
 use bevy_ecs::prelude::{Bundle, Commands, Entity, Query, Res};
-use glam::{vec3, vec4, Mat4, Quat, Vec3, Mat3};
+use glam::{vec3, Mat3, Quat, Vec3};
 
 use crate::{Particle, Value};
 
@@ -18,6 +18,7 @@ pub struct ParticleSystem {
     pub spawn_shape: SpawnShape,
     pub buffer_quantity: u32,
     pub spawn_quantity: u32,
+    pub image: Option::<Handle<Image>>,
     pub particle_mesh: Handle<Mesh>,
     pub particle_color: Color,
     pub particle_velocity: Value,
@@ -34,6 +35,7 @@ impl Default for ParticleSystem {
             particle_mesh: Default::default(),
             particle_color: Color::WHITE,
             particle_velocity: Value::Constant(2.0),
+            image: None
         }
     }
 }
@@ -61,20 +63,24 @@ pub fn update_particles(
     let _camera_position = vec3(camera_position.x, camera_position.y, camera_position.z);
 
     // view-plane billboard
+    let u = Vec3::Y;
+    let n = vec3(
+        fly_camera.camera.yaw.0.cos(),
+        fly_camera.camera.pitch.0.sin(),
+        fly_camera.camera.yaw.0.sin(),
+    );
+    let r = u.cross(n).normalize();
+    let u_linha = n.cross(r).normalize();
+    let mat = Mat3::from_cols(r, u_linha, n);
+    let rotation = Quat::from_mat3(&mat);
+
+    // axial-locked view-plane billboard
     // let u = Vec3::Y;
     // let n = vec3(fly_camera.camera.yaw.0.cos(), fly_camera.camera.pitch.0.sin(), fly_camera.camera.yaw.0.sin());
     // let r = u.cross(n).normalize();
-    // let u_linha = n.cross(r).normalize();
-    // let mat = Mat3::from_cols(r, u_linha, n);
+    // let n_linha = r.cross(u).normalize();
+    // let mat = Mat3::from_cols(r, u, n_linha);
     // let rotation = Quat::from_mat3(&mat);
-
-    // axial-locked view-plane billboard
-    let u = Vec3::Y;
-    let n = vec3(fly_camera.camera.yaw.0.cos(), fly_camera.camera.pitch.0.sin(), fly_camera.camera.yaw.0.sin());
-    let r = u.cross(n).normalize();
-    let n_linha = r.cross(u).normalize();
-    let mat = Mat3::from_cols(r, u, n_linha);
-    let rotation = Quat::from_mat3(&mat);
 
     for (mut particle_system, children) in particle_system_query.iter_mut() {
         particle_system.timer.tick(time.delta());
@@ -97,6 +103,7 @@ pub fn update_particles(
 
                     particle.time_remaining = particle_system.lifetime;
                     particle.velocity = particle_system.particle_velocity.get();
+                    particle.direction = particle_system.spawn_shape.get_direction();
                     visibility.active = true;
                     spawn_count += 1;
                 } else {
@@ -104,7 +111,8 @@ pub fn update_particles(
                         visibility.active = false;
                     } else {
                         particle.time_remaining -= time.delta_seconds();
-                        transform.translation.y += time.delta_seconds() * particle.velocity;
+                        transform.translation +=
+                            particle.direction * time.delta_seconds() * particle.velocity;
                     }
                 }
 
@@ -138,10 +146,12 @@ pub fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSys
                     .insert(Particle {
                         time_remaining: particle_system.lifetime,
                         velocity: 0.0,
+                        direction: vec3(0.0, 0.0, 0.0),
                     })
                     .insert_bundle(SimpleMeshBundle {
                         mesh: particle_system.particle_mesh.clone(),
-                        color: Color::WHITE,
+                        color: particle_system.particle_color,
+                        image: particle_system.image.clone(),
                         visibility: Visibility::inactive(),
                         ..Default::default()
                     });
@@ -153,6 +163,7 @@ pub fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSys
 pub enum SpawnShape {
     Rectangle(f32, f32),
     Circle(f32),
+    Sphere(f32),
 }
 
 impl SpawnShape {
@@ -164,61 +175,33 @@ impl SpawnShape {
                 let x_size = x / 2.0;
                 let y_size = y / 2.0;
 
-                return vec3(rng.gen_range(-x_size..x_size), 0., rng.gen_range(-y_size..y_size));
+                return vec3(
+                    rng.gen_range(-x_size..x_size),
+                    0.,
+                    rng.gen_range(-y_size..y_size),
+                );
             }
             Self::Circle(r) => {
-                let rand_1: f32 = rng.gen();
-                let rand_2: f32 = rng.gen();
-
-                let radius = r * rand_1.sqrt();
-                let theta: f32 = rand_2 * 2.0 * PI;
+                let radius = r * rng.gen::<f32>().sqrt();
+                let theta= rng.gen::<f32>() * 2.0 * PI;
 
                 let x = radius * theta.cos();
                 let y = radius * theta.sin();
                 return vec3(x, 2., y);
             }
+            Self::Sphere(_) => vec3(0., 0., 0.),
         }
     }
-}
 
-pub fn target_to(eye: &Vec3, target: &Vec3, up: &Vec3) -> Mat4 {
-    let eyex = eye[0];
-    let eyey = eye[1];
-    let eyez = eye[2];
-    let upx = up[0];
-    let upy = up[1];
-    let upz = up[2];
+    fn get_direction(&self) -> Vec3 {
+        match self {
+            Self::Rectangle(_x, _y) => vec3(0., 1., 0.),
+            Self::Circle(_) => vec3(0., 1., 0.),
+            Self::Sphere(_) => {
+                let mut rng = rand::thread_rng();
 
-    let mut z0 = eyex - target[0];
-    let mut z1 = eyey - target[1];
-    let mut z2 = eyez - target[2];
-
-    let mut len = z0 * z0 + z1 * z1 + z2 * z2;
-    if len > 0_f32 {
-        len = 1. / f32::sqrt(len);
-        z0 *= len;
-        z1 *= len;
-        z2 *= len;
+                vec3(rng.gen::<f32>() * 2.0 - 1.0, rng.gen::<f32>() * 2.0 - 1.0, rng.gen::<f32>() * 2.0 - 1.0).normalize()
+            }
+        }
     }
-
-    let mut x0 = upy * z2 - upz * z1;
-    let mut x1 = upz * z0 - upx * z2;
-    let mut x2 = upx * z1 - upy * z0;
-
-    len = x0 * x0 + x1 * x1 + x2 * x2;
-    if len > 0_f32 {
-        len = 1. / f32::sqrt(len);
-        x0 *= len;
-        x1 *= len;
-        x2 *= len;
-    }
-
-    let out = Mat4::from_cols(
-        vec4(x0, x1, x2, 0.),
-        vec4(z1 * x2 - z2 * x1, z2 * x0 - z0 * x2, z0 * x1 - z1 * x0, 0.),
-        vec4(z0, z1, z2, 0.),
-        vec4(eyex, eyey, eyez, 1.),
-    );
-
-    out
 }

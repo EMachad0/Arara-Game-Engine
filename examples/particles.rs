@@ -26,8 +26,9 @@ fn main() {
         .run()
 }
 
-fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
+fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_server: Res<AssetServer>) {
     // ------------- Particle ------------------
+    let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
 
     commands
         .spawn_bundle(SimpleMeshBundle {
@@ -40,9 +41,9 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
             lifetime: 5.0,
             buffer_quantity: 1000,
             spawn_quantity: 100,
-            particle_color: Color::BLUE,
+            image: Some(img0),
             particle_velocity: Value::Constant(2.0),
-            spawn_shape: SpawnShape::Rectangle(5., 5.),
+            spawn_shape: SpawnShape::Sphere(5.),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
             timer: Timer::from_seconds( 0.5, true),
             ..Default::default()
