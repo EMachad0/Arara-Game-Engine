@@ -2,7 +2,7 @@ use crate::geometry::{Vertex, Mesh};
 
 pub struct Square {
     x_lenght: f32,
-    z_lenght: f32,
+    y_lenght: f32,
 }
 
 impl Default for Square {
@@ -12,10 +12,10 @@ impl Default for Square {
 }
 
 impl Square {
-    pub fn new(x_lenght: f32, z_lenght: f32) -> Self {
+    pub fn new(x_lenght: f32, y_lenght: f32) -> Self {
         Self {
             x_lenght,
-            z_lenght,
+            y_lenght,
         }
     }
 }
@@ -23,14 +23,14 @@ impl Square {
 impl From<Square> for Mesh {
     fn from(square: Square) -> Self {
         let hx = square.x_lenght / 2.;
-        let hz = square.z_lenght / 2.;
+        let hy = square.y_lenght / 2.;
         let normal = [0.0, 1.0, 0.0];
 
         let vertices = vec![
-            Vertex { position: [-hx, 0.0, -hz], tex_coords: [0.0, 0.0], normal },
-            Vertex { position: [-hx, 0.0,  hz], tex_coords: [0.0, 1.0], normal },
-            Vertex { position: [ hx, 0.0,  hz], tex_coords: [1.0, 1.0], normal },
-            Vertex { position: [ hx, 0.0, -hz], tex_coords: [1.0, 0.0], normal },
+            Vertex { position: [-hx, -hy, 0.0], tex_coords: [0.0, 0.0], normal },
+            Vertex { position: [-hx,  hy, 0.0], tex_coords: [0.0, 1.0], normal },
+            Vertex { position: [ hx,  hy, 0.0], tex_coords: [1.0, 1.0], normal },
+            Vertex { position: [ hx, -hy, 0.0], tex_coords: [1.0, 0.0], normal },
         ];
 
         let indices = vec![
