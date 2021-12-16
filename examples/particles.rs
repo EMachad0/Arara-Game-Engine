@@ -46,7 +46,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
             image: Some(img0),
             particle_velocity: Value::Constant(1.0),
             spawn_shape: SpawnShape::Cone(0.5),
-            particle_color: Color::RED,
+            particle_color: ColorOrGradient::Color(Color::RED),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
             timer: Timer::from_seconds( 0.5, true),
             billboard: Some(Billboard::ViewPlane),

@@ -25,7 +25,7 @@ pub mod prelude {
         RenderPlugin,
         core_pipeline::{SimpleMeshBundle, BPLight},
         geometry::*,
-        color::Color,
+        color::*,
         clear_color::ClearColor,
         coordinate_system::{CoordinateSystem, CoordinateSystemPlugin},
         texture::Image,

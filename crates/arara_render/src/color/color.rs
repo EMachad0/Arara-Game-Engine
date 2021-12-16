@@ -145,6 +145,16 @@ impl Color {
 
         Err(HexColorError::Length)
     }
+
+    /// Blend this color with the other one, in the RGB color-space. `t` in the range [0..1].
+    pub fn interpolate_rgb(&self, other: &Color, t: f32) -> Color {
+        Color::Rgba {
+            r: self.r() + t * (other.r() - self.r()),
+            g: self.g() + t * (other.g() - self.g()),
+            b: self.b() + t * (other.b() - self.b()),
+            a: self.a() + t * (other.a() - self.a()),
+        }
+    }
 }
 
 impl From<Color> for [f32; 4] {

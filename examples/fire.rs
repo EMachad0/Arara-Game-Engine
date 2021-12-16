@@ -45,7 +45,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
             image: Some(img0),
             particle_velocity: Value::Range(3.0, 5.0),
             spawn_shape: SpawnShape::Cone(0.1),
-            particle_color: Color::BLACK,
+            particle_color: ColorOrGradient::Color(Color::BLACK),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
             timer: Timer::from_seconds( 0.1, true),
             ..Default::default()
@@ -65,7 +65,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
             image: Some(img0),
             particle_velocity: Value::Range(1.0, 2.0),
             spawn_shape: SpawnShape::Cone(0.3),
-            particle_color: Color::YELLOW,
+            particle_color: ColorOrGradient::Color(Color::YELLOW),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
             timer: Timer::from_seconds( 3., false),
             ..Default::default()
@@ -85,7 +85,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
             image: Some(img0),
             particle_velocity: Value::Range(1.0, 2.0),
             spawn_shape: SpawnShape::Cone(0.4),
-            particle_color: Color::RED,
+            particle_color: ColorOrGradient::Color(Color::RED),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
             timer: Timer::from_seconds( 0.3, true),
             ..Default::default()

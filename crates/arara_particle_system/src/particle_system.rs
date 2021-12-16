@@ -1,8 +1,7 @@
 use std::f32::consts::PI;
 
 use arara_asset::Handle;
-use arara_logger::debug;
-use arara_render::{Billboard, Color, Image, Mesh, SimpleMeshBundle, Visibility};
+use arara_render::{Billboard, Color, Image, Mesh, SimpleMeshBundle, Visibility, ColorOrGradient};
 use arara_time::{Time, Timer};
 use arara_transform::{BuildChildren, Children, GlobalTransform, Transform};
 use bevy_ecs::prelude::{Bundle, Commands, Entity, Query, Res};
@@ -21,7 +20,7 @@ pub struct ParticleSystem {
     pub image: Option<Handle<Image>>,
     pub billboard: Option<Billboard>,
     pub particle_mesh: Handle<Mesh>,
-    pub particle_color: Color,
+    pub particle_color: ColorOrGradient,
     pub particle_velocity: Value,
 }
 
@@ -34,7 +33,7 @@ impl Default for ParticleSystem {
             spawn_shape: SpawnShape::Circle(1.0),
             timer: Default::default(),
             particle_mesh: Default::default(),
-            particle_color: Color::WHITE,
+            particle_color: ColorOrGradient::Color(Color::WHITE),
             particle_velocity: Value::Constant(2.0),
             image: Default::default(),
             billboard: Some(Billboard::ViewPlane),
@@ -53,7 +52,7 @@ pub fn update_particles(
     mut commands: Commands,
     time: Res<Time>,
     mut particle_system_query: Query<(Entity, &mut ParticleSystem, Option<&Children>)>,
-    mut query: Query<(&mut Particle, &mut Visibility, &mut Transform)>,
+    mut query: Query<(&mut Particle, &mut Visibility, &mut Color, &mut Transform)>,
 ) {
     for (particle_system_entity, mut particle_system, children) in particle_system_query.iter_mut()
     {
@@ -63,7 +62,7 @@ pub fn update_particles(
 
         if let Some(children) = children {
             for child in children.iter() {
-                if let Ok((mut particle, mut visibility, mut transform)) = query.get_mut(*child) {
+                if let Ok((mut particle, mut visibility, mut color, mut transform)) = query.get_mut(*child) {
                     if !visibility.active
                         && spawn_count < particle_system.spawn_quantity
                         && particle_system.timer.just_finished()
@@ -75,6 +74,7 @@ pub fn update_particles(
                         particle.time_remaining = particle_system.lifetime;
                         particle.velocity = particle_system.particle_velocity.get();
                         particle.direction = particle_system.spawn_shape.get_direction();
+                        *color = particle_system.particle_color.get_color();
                         visibility.active = true;
                         spawn_count += 1;
                     } else {
@@ -86,6 +86,10 @@ pub fn update_particles(
                             particle.time_remaining -= time.delta_seconds();
                             transform.translation +=
                                 particle.direction * time.delta_seconds() * particle.velocity;
+                            if let ColorOrGradient::Gradient(gradient) = &particle_system.particle_color {
+                                let t = 1. - particle.time_remaining / particle_system.lifetime;
+                                *color = gradient.at(t);
+                            }
                         }
                     }
 
@@ -118,7 +122,7 @@ pub fn init_particles(mut commands: Commands, query: Query<(Entity, &ParticleSys
                     })
                     .insert_bundle(SimpleMeshBundle {
                         mesh: particle_system.particle_mesh.clone(),
-                        color: particle_system.particle_color,
+                        color: particle_system.particle_color.get_color(),
                         image: particle_system.image.clone(),
                         visibility: Visibility::inactive(),
                         ..Default::default()
