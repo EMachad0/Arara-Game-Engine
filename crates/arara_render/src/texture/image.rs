@@ -7,12 +7,13 @@ use thiserror::Error;
 pub struct Image {
     pub data: Vec<u8>,
     pub dimensions: (u32, u32),
+    pub translucent: bool,
 }
 
 impl Default for Image {
     fn default() -> Self {
         let data = vec![255; 4];
-        Self::new(data, (1, 1))
+        Self::new(data, (1, 1), false)
     }
 }
 
@@ -25,10 +26,12 @@ impl Image {
     pub fn new(
         data: Vec<u8>,
         dimensions: (u32, u32),
+        translucent: bool,
     ) -> Self {
         Self {
             data,
             dimensions,
+            translucent,
         }
     }
 

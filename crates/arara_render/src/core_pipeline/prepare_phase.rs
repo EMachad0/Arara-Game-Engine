@@ -23,10 +23,7 @@ pub fn prepare_core_pass(
 
         let mut transparent = match image_handle {
             Some(handle) => match images.get(handle) {
-                Some(_) => {
-                    // TODO: Verify if image contains any type of transparence
-                    true
-                },
+                Some(image) => image.translucent,
                 None => continue,
             }
             None => false,
