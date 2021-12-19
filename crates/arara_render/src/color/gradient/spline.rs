@@ -1,5 +1,5 @@
 use crate::{
-    gradient::{linspace, BlendMode, Gradient, GradientBase, Interpolation},
+    gradient::{BlendMode, Gradient, GradientBase, Interpolation},
     Color,
 };
 
@@ -8,7 +8,7 @@ trait Interpolator {
 }
 
 // Adapted from https://qroph.github.io/2018/07/30/smooth-paths-using-catmull-rom-splines.html
-
+#[derive(Clone)]
 struct CatmullRomInterpolator {
     segments: Vec<[f32; 4]>,
     pos: Vec<f32>,
@@ -93,6 +93,7 @@ fn basis(t1: f32, v0: f32, v1: f32, v2: f32, v3: f32) -> f32 {
         / 6.0
 }
 
+#[derive(Clone)]
 struct BasisInterpolator {
     values: Vec<f32>,
     pos: Vec<f32>,
@@ -136,8 +137,8 @@ impl Interpolator for BasisInterpolator {
     }
 }
 
-#[derive(Debug)]
-struct SplineGradient<T: Interpolator> {
+#[derive(Debug, Clone)]
+struct SplineGradient<T: Interpolator + Clone> {
     a: T,
     b: T,
     c: T,
@@ -147,7 +148,7 @@ struct SplineGradient<T: Interpolator> {
     mode: BlendMode,
 }
 
-impl<T: Interpolator> GradientBase for SplineGradient<T> {
+impl<T: Interpolator + Clone> GradientBase for SplineGradient<T> {
     fn at(&self, t: f32) -> Color {
         if t.is_nan() {
             return Color::rgb(0.0, 0.0, 0.0);
@@ -227,17 +228,4 @@ pub(crate) fn spline_gradient(
             }
         }
     }
-}
-
-pub(crate) fn preset_spline(html_colors: &[&str]) -> Gradient {
-    let mut colors = Vec::new();
-
-    for s in html_colors {
-        if let Ok(c) = Color::hex(s) {
-            colors.push(c);
-        }
-    }
-
-    let pos = linspace(0.0, 1.0, colors.len());
-    spline_gradient(&colors, &pos, BlendMode::Rgb, Interpolation::Basis)
 }

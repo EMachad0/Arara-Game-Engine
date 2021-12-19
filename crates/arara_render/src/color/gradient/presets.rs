@@ -1,7 +1,9 @@
 use std::f32::consts::{FRAC_PI_3, PI};
 
 use crate::{
-    gradient::{spline::preset_spline, Gradient, GradientBase},
+    gradient::{
+        linspace, spline::spline_gradient, BlendMode, Gradient, GradientBase, Interpolation,
+    },
     Color,
 };
 
@@ -19,8 +21,21 @@ macro_rules! preset_fn {
     };
 }
 
-// Sinebow
+pub(crate) fn preset_spline(html_colors: &[&str]) -> Gradient {
+    let mut colors = Vec::new();
 
+    for s in html_colors {
+        if let Ok(c) = Color::hex(s) {
+            colors.push(c);
+        }
+    }
+
+    let pos = linspace(0.0, 1.0, colors.len());
+    spline_gradient(&colors, &pos, BlendMode::Rgb, Interpolation::Basis)
+}
+
+// Sinebow
+#[derive(Clone)]
 struct SinebowGradient {}
 
 impl GradientBase for SinebowGradient {
@@ -37,7 +52,7 @@ impl GradientBase for SinebowGradient {
 preset_fn!(sinebow; SinebowGradient{});
 
 // Turbo
-
+#[derive(Clone)]
 struct TurboGradient {}
 
 impl GradientBase for TurboGradient {
@@ -62,7 +77,7 @@ impl GradientBase for TurboGradient {
 preset_fn!(turbo; TurboGradient{});
 
 // Cividis
-
+#[derive(Clone)]
 struct CividisGradient {}
 
 impl GradientBase for CividisGradient {
@@ -87,7 +102,7 @@ preset_fn!(cividis; CividisGradient{});
 
 // Cubehelix
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Cubehelix {
     h: f32,
     s: f32,
@@ -121,7 +136,7 @@ impl Cubehelix {
 
 // Cubehelix gradient
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct CubehelixGradient {
     start: Cubehelix,
     end: Cubehelix,
@@ -175,7 +190,7 @@ preset_fn!(cool; CubehelixGradient {
 });
 
 // Rainbow
-
+#[derive(Clone)]
 struct RainbowGradient {}
 
 impl GradientBase for RainbowGradient {

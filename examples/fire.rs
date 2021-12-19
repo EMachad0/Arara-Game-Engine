@@ -65,22 +65,11 @@ fn add_shapes(
             particle_velocity: Value::Range(1., 2.),
             spawn_shape: SpawnShape::Cone(0.2),
             billboard: Some(Billboard::AxialViewPlane),
-            particle_color: ColorOrGradient::Gradient(fire_gradient),
+            particle_color: ColorOrGradient::Gradient(fire_gradient.clone()),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.5, 0.5))),
             timer: Timer::from_seconds(0.3, true),
             ..Default::default()
         });
-
-    let fire_gradient = gradient::CustomGradient::new()
-        .colors(&[
-            Color::hex("69696900").unwrap(),
-            Color::hex("FFD800F0").unwrap(),
-            Color::hex("FF5033F0").unwrap(),
-            Color::hex("33000010").unwrap(),
-        ])
-        .domain(&[0., 0.15, 0.30, 1.])
-        .build()
-        .unwrap();
 
     commands
         .spawn_bundle(SimpleMeshBundle {
@@ -95,22 +84,11 @@ fn add_shapes(
             particle_velocity: Value::Range(1., 2.),
             spawn_shape: SpawnShape::Cone(0.2),
             billboard: Some(Billboard::AxialViewPlane),
-            particle_color: ColorOrGradient::Gradient(fire_gradient),
+            particle_color: ColorOrGradient::Gradient(fire_gradient.clone()),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.5, 0.5))),
             timer: Timer::from_seconds(0.3, true),
             ..Default::default()
         });
-
-    let fire_gradient = gradient::CustomGradient::new()
-        .colors(&[
-            Color::hex("69696900").unwrap(),
-            Color::hex("FFD800FA").unwrap(),
-            Color::hex("FF5033FF").unwrap(),
-            Color::hex("82000000").unwrap(),
-        ])
-        .domain(&[0., 0.15, 0.30, 1.])
-        .build()
-        .unwrap();
 
     commands
         .spawn_bundle(SimpleMeshBundle {

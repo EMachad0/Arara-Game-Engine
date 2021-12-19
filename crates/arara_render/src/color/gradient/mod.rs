@@ -125,6 +125,7 @@ mod spline;
 use std::{error, fmt};
 
 use crate::Color;
+use dyn_clone::DynClone;
 pub use presets::*;
 use spline::*;
 
@@ -174,11 +175,14 @@ impl fmt::Display for CustomGradientError {
 
 impl error::Error for CustomGradientError {}
 
-pub trait GradientBase {
+pub trait GradientBase: DynClone {
     fn at(&self, t: f32) -> Color;
 }
 
-/// The gradient
+dyn_clone::clone_trait_object!(GradientBase);
+
+/// Color gradient
+#[derive(Clone)]
 pub struct Gradient {
     pub gradient: Box<dyn GradientBase + Send + Sync>,
     pub dmin: f32,
@@ -263,7 +267,7 @@ impl Gradient {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct LinearGradient {
     colors: Vec<Color>,
     pos: Vec<f32>,
@@ -301,7 +305,7 @@ impl GradientBase for LinearGradient {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct SharpGradient {
     colors: Vec<Color>,
     pos: Vec<f32>,
@@ -348,7 +352,7 @@ fn sharp_gradient(grad: &Gradient, n: usize) -> Gradient {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct SharpGradientX {
     colors: Vec<Color>,
     pos: Vec<f32>,
