@@ -1,7 +1,7 @@
 use arara_asset::Assets;
 use arara_ecs::prelude::*;
 
-use arara_app::Plugin;
+use arara_app::{App, Plugin};
 use arara_transform::Transform;
 
 use crate::{
@@ -29,7 +29,7 @@ impl Default for CoordinateSystem {
 pub struct CoordinateSystemPlugin;
 
 impl Plugin for CoordinateSystemPlugin {
-    fn build(&self, app_builder: &mut arara_app::AppBuilder) {
+    fn build(&self, app_builder: &mut App) {
         app_builder
             .init_resource::<CoordinateSystem>()
             .add_startup_system(draw_cordinate_system.system());

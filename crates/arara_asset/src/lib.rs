@@ -26,7 +26,7 @@ pub use info::*;
 pub use loader::*;
 pub use path::*;
 
-use arara_app::{prelude::Plugin, AppBuilder};
+use arara_app::{App, Plugin};
 use arara_ecs::{
     schedule::{StageLabel, SystemStage},
     system::IntoSystem,
@@ -61,25 +61,25 @@ impl Default for AssetServerSettings {
 ///
 /// This is useful when providing a custom `AssetIo` instance that needs to
 /// delegate to the default `AssetIo` for the platform.
-pub fn create_platform_default_asset_io(app: &mut AppBuilder) -> Box<dyn AssetIo> {
+pub fn create_platform_default_asset_io(app: &mut App) -> Box<dyn AssetIo> {
     let settings = app
-        .world_mut()
+        .world
         .get_resource_or_insert_with(AssetServerSettings::default);
     let source = FileAssetIo::new(&settings.asset_folder);
     Box::new(source)
 }
 
 impl Plugin for AssetPlugin {
-    fn build(&self, app: &mut AppBuilder) {
-        app.world_mut()
+    fn build(&self, app: &mut App) {
+        app.world
             .get_resource::<task_pool::DefaultTaskPoolOptions>()
             .cloned()
             .unwrap_or_else(task_pool::DefaultTaskPoolOptions::default)
-            .create_default_pools(app.world_mut());
+            .create_default_pools(&mut app.world);
 
-        if app.world().get_resource::<AssetServer>().is_none() {
+        if app.world.get_resource::<AssetServer>().is_none() {
             let task_pool = app
-                .world()
+                .world
                 .get_resource::<IoTaskPool>()
                 .expect("`IoTaskPool` resource not found.")
                 .0

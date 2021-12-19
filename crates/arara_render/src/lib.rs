@@ -34,7 +34,7 @@ pub mod prelude {
     };
 }
 
-use arara_app::{AppBuilder, CoreStage, Plugin};
+use arara_app::{App, CoreStage, Plugin};
 use arara_ecs::prelude::*;
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
@@ -67,9 +67,8 @@ pub enum RenderStage {
 pub struct RenderPlugin;
 
 impl Plugin for RenderPlugin {
-    fn build(&self, app_builder: &mut AppBuilder) {
+    fn build(&self, app_builder: &mut App) {
         app_builder
-            .app
             .schedule
             .add_stage_before(
                 CoreStage::PreUpdate,

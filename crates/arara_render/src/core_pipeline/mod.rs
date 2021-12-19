@@ -22,7 +22,7 @@ use crate::{
 pub struct CorePipelinePlugin;
 
 impl Plugin for CorePipelinePlugin {
-    fn build(&self, app_builder: &mut AppBuilder) {
+    fn build(&self, app_builder: &mut App) {
         app_builder
             .init_resource::<ClearColor>()
             .init_resource::<BPLight>()

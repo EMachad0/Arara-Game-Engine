@@ -1,10 +1,9 @@
 use arara::prelude::*;
 
 fn main() {
-    App::builder()
+    App::new()
         .add_plugin(GreetPeoplePlugin)
         .add_startup_system(hello_world)
-        .build()
         .run();
 }
 
@@ -15,7 +14,7 @@ fn hello_world() {
 pub struct GreetPeoplePlugin;
 
 impl Plugin for GreetPeoplePlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.add_startup_system(add_people).add_system(greet_people);
     }
 }

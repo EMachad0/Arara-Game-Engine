@@ -2,7 +2,7 @@ use arara::prelude::*;
 use cgmath::Deg;
 
 fn main() {
-    App::builder()
+    App::new()
         .add_plugins(DefaultPlugins)
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
@@ -18,7 +18,6 @@ fn main() {
             20.0,
             0.5,
         ))
-        .build()
         .run()
 }
 

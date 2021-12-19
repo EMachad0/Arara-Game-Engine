@@ -4,7 +4,7 @@ use arara_render::DefaultShader;
 use cgmath::Deg;
 
 fn main() {
-    App::builder()
+    App::new()
         .add_plugins(DefaultPlugins)
         .add_plugin(ParticleSystemPlugin)
         .add_plugin(CoordinateSystemPlugin)
@@ -23,7 +23,6 @@ fn main() {
             20.0,
             0.5,
         ))
-        .build()
         .run()
 }
 

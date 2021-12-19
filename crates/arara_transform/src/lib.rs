@@ -26,7 +26,7 @@ pub enum TransformSystem {
 }
 
 impl Plugin for TransformPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         // add transform systems to startup so the first update is "correct"
         app.add_startup_system_to_stage(
             StartupStage::PostStartup,

@@ -8,7 +8,7 @@ pub use arara_utils::tracing::{
     Level,
 };
 
-use arara_app::{AppBuilder, Plugin};
+use arara_app::{App, Plugin};
 use tracing_log::LogTracer;
 #[cfg(feature = "tracing-chrome")]
 use tracing_subscriber::fmt::{format::DefaultFields, FormattedFields};
@@ -86,16 +86,14 @@ impl LogSettings {
 }
 
 impl Plugin for LoggerPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         LogTracer::init().unwrap();
-        let filter_layer = match app.world_mut().get_resource::<LogSettings>() {
+        let filter_layer = match app.world.get_resource::<LogSettings>() {
             Some(settings) => EnvFilter::try_new(&settings.get_filter())
                 .expect("Failed on parsing [`LogSettings`]"),
             None => EnvFilter::try_from_default_env()
                 .or_else(|_| {
-                    let settings = app
-                        .world_mut()
-                        .get_resource_or_insert_with(LogSettings::default);
+                    let settings = app.world.get_resource_or_insert_with(LogSettings::default);
                     EnvFilter::try_new(&settings.get_filter())
                 })
                 .unwrap(),
@@ -119,7 +117,7 @@ impl Plugin for LoggerPlugin {
                     }
                 }))
                 .build();
-            app.world_mut().insert_non_send(guard);
+            app.world.insert_non_send(guard);
             chrome_layer
         };
 

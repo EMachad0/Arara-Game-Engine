@@ -15,7 +15,7 @@ pub mod prelude {
     };
 }
 
-use arara_app::{AppBuilder, CoreStage, Plugin};
+use arara_app::{App, CoreStage, Plugin};
 use arara_ecs::prelude::*;
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, SystemLabel)]
@@ -28,7 +28,7 @@ pub enum CoreSystem {
 pub struct TimePlugin;
 
 impl Plugin for TimePlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.init_resource::<Time>().add_system_to_stage(
             CoreStage::First,
             update_time.exclusive_system().label(CoreSystem::Time),

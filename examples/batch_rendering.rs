@@ -2,7 +2,7 @@ use arara::prelude::*;
 use cgmath::Deg;
 
 fn main() {
-    App::builder()
+    App::new()
         .add_plugins(DefaultPlugins)
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
@@ -21,7 +21,6 @@ fn main() {
         })
         .insert_resource(ClearColor(Color::WHITE))
         .add_system(rotate_squares.system())
-        .build()
         .run();
 }
 

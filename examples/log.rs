@@ -4,7 +4,7 @@ use arara::prelude::*;
 fn main() {
     // The log level defaults to Warning
     // Use the RUST_LOG enviroment variable to overide the default behavior
-    App::builder()
+    App::new()
         // Uncomment this to change the log settings:
         // .insert_resource(arara::logger::LogSettings {
         //     level: arara::logger::Level::DEBUG,
@@ -12,7 +12,6 @@ fn main() {
         // })
         .add_plugins(DefaultPlugins)
         .add_startup_system(log_system.system())
-        .build()
         .run();
 }
 

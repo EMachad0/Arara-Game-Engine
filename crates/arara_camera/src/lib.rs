@@ -17,7 +17,7 @@ use arara_ecs::prelude::IntoSystem;
 pub struct FlyCameraPlugin;
 
 impl Plugin for FlyCameraPlugin {
-    fn build(&self, app_builder: &mut AppBuilder) {
+    fn build(&self, app_builder: &mut App) {
         app_builder
             .init_resource::<FlyCamera>()
             .add_system(process_mouse_motion.system())

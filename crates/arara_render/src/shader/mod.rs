@@ -1,7 +1,7 @@
 mod shader;
 mod shader_loader;
 
-use arara_app::{AppBuilder, Plugin};
+use arara_app::{App, Plugin};
 use arara_asset::AddAsset;
 pub use shader::Shader;
 pub use shader_loader::ShaderLoader;
@@ -10,7 +10,7 @@ pub use shader_loader::ShaderLoader;
 pub struct ShaderPlugin;
 
 impl Plugin for ShaderPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.init_asset_loader::<ShaderLoader>()
             .add_asset::<Shader>();
     }

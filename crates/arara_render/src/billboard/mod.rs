@@ -1,4 +1,4 @@
-use arara_app::{CoreStage, Plugin};
+use arara_app::{App, CoreStage, Plugin};
 use arara_camera::FlyCamera;
 use arara_ecs::prelude::*;
 use arara_transform::{GlobalTransform, Transform};
@@ -7,7 +7,7 @@ use glam::{vec3, Mat3, Quat, Vec3};
 pub struct BillboardPlugin;
 
 impl Plugin for BillboardPlugin {
-    fn build(&self, app: &mut arara_app::AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.add_system_to_stage(CoreStage::PostUpdate, rotate_billboards.system());
     }
 }

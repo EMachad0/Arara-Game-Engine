@@ -2,7 +2,7 @@ use arara::prelude::*;
 use cgmath::Deg;
 
 fn main() {
-    App::builder()
+    App::new()
         .add_plugins(DefaultPlugins)
         .add_startup_system(add_cubes.system())
         .insert_resource(FlyCamera::from_camera(
@@ -15,7 +15,6 @@ fn main() {
         })
         .add_system(rotate_squares.system())
         .add_system(color_squares.system())
-        .build()
         .run();
 }
 

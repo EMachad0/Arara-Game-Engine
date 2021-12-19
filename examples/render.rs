@@ -1,7 +1,7 @@
 use arara::prelude::*;
 
 fn main() {
-    App::builder()
+    App::new()
         .add_plugins(DefaultPlugins)
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
@@ -11,7 +11,6 @@ fn main() {
         })
         .add_startup_system(add_shapes.system())
         .insert_resource(BPLight::new(-5.0, 10.0, 0.0))
-        .build()
         .run()
 }
 

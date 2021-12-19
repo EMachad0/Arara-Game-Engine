@@ -13,7 +13,7 @@ pub struct FrameTimeDiagnosticsCounter {
 }
 
 impl Plugin for FrameTimeDiagnosticPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.add_startup_system(Self::setup_system.system())
             .insert_resource(FrameTimeDiagnosticsCounter { frame_count: 0.0 })
             .add_system(Self::diagnostic_system.system());

@@ -23,7 +23,7 @@ impl Default for LogDiagnosticPlugin {
 }
 
 impl Plugin for LogDiagnosticPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.insert_resource(LogDiagnosticsTimer {
             timer: Timer::new(self.wait_duration, true),
         })

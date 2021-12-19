@@ -1,4 +1,4 @@
-use arara_app::{AppBuilder, Plugin};
+use arara_app::{App, Plugin};
 use arara_ecs::{
     system::{IntoExclusiveSystem, ResMut},
     world::World,
@@ -12,8 +12,8 @@ use crate::{Diagnostic, Diagnostics};
 pub struct EntityCountDiagnosticPlugin;
 
 impl Plugin for EntityCountDiagnosticPlugin {
-    fn build(&self, app: &mut AppBuilder) {
-        if !app.app.world.contains_resource::<Diagnostics>() {
+    fn build(&self, app: &mut App) {
+        if !app.world.contains_resource::<Diagnostics>() {
             warn!("Tring to add a DiagnosticsPlugin without the [Diagnostics] resource!");
             return;
         };

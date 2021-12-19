@@ -15,14 +15,14 @@ pub mod prelude {
     pub use crate::{event::*, window::Window, window_props::WindowProps, WindowPlugin};
 }
 
-use arara_app::{AppBuilder, AppExit, Plugin};
+use arara_app::{App, AppExit, Plugin};
 use arara_ecs::event::{EventReader, EventWriter};
 
 #[derive(Default)]
 pub struct WindowPlugin;
 
 impl Plugin for WindowPlugin {
-    fn build(&self, app_builder: &mut AppBuilder) {
+    fn build(&self, app_builder: &mut App) {
         app_builder
             .add_event::<WindowResized>()
             .add_event::<WindowCreated>()

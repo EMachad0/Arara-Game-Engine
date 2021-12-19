@@ -3,7 +3,7 @@ mod image;
 mod image_texture_loader;
 
 pub use self::image::*;
-use arara_app::{AppBuilder, Plugin};
+use arara_app::{App, Plugin};
 use arara_asset::AddAsset;
 pub use image_texture_loader::*;
 
@@ -11,7 +11,7 @@ pub use image_texture_loader::*;
 pub struct ImagePlugin;
 
 impl Plugin for ImagePlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.init_asset_loader::<ImageTextureLoader>()
             .add_asset::<Image>();
     }

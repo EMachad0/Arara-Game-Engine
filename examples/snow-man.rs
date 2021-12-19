@@ -2,7 +2,7 @@ use arara::prelude::*;
 use arara_particle_system::{ParticleSystem, ParticleSystemPlugin, SpawnShape, Value};
 
 fn main() {
-    App::builder()
+    App::new()
         .add_plugins(DefaultPlugins)
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
@@ -13,7 +13,6 @@ fn main() {
         .init_resource::<Timer>()
         .insert_resource(BPLight::new(0.0, 10.0, 6.0))
         .add_system(move_snowman.system())
-        .build()
         .run()
 }
 
