@@ -9,8 +9,8 @@ use crate::{
     path::{AssetPath, AssetPathId},
     Asset, Assets,
 };
+use arara_ecs::{prelude::Component, reflect::ReflectComponent};
 use arara_utils::Uuid;
-use bevy_ecs::reflect::ReflectComponent;
 use bevy_reflect::{Reflect, ReflectDeserialize};
 use crossbeam_channel::{Receiver, Sender};
 use serde::{Deserialize, Serialize};
@@ -58,7 +58,7 @@ impl HandleId {
 ///
 /// Handles contain a unique id that corresponds to a specific asset in the [Assets](crate::Assets)
 /// collection.
-#[derive(Reflect)]
+#[derive(Component, Reflect)]
 #[reflect(Component)]
 pub struct Handle<T>
 where

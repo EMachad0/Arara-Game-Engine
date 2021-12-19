@@ -35,7 +35,7 @@ pub mod prelude {
 }
 
 use arara_app::{AppBuilder, CoreStage, Plugin};
-use bevy_ecs::prelude::*;
+use arara_ecs::prelude::*;
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
 pub enum RenderStage {

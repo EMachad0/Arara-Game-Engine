@@ -17,11 +17,17 @@ fn main() {
         .run()
 }
 
+#[derive(Component)]
 struct SnowMan;
+#[derive(Component)]
 struct Body;
+#[derive(Component)]
 struct Clothing;
+#[derive(Component)]
 struct Face;
+#[derive(Component)]
 struct Hat;
+#[derive(Component)]
 struct Arms;
 
 fn move_snowman(time: Res<Time>, mut query: Query<(&mut Transform, With<SnowMan>)>) {
@@ -50,7 +56,7 @@ fn add_shapes(
             buffer_quantity: 100,
             spawn_quantity: 3,
             spawn_shape: SpawnShape::Circle(3.5),
-            image: Some(snow_img),
+            image: snow_img,
             particle_velocity: Value::Range(-2.0, -1.0),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.2))),
             timer: Timer::from_seconds(0.3, true),

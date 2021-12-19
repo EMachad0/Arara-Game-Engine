@@ -34,7 +34,7 @@ fn add_shapes(
         mesh: meshes.add(Mesh::from(Sphere::new(32, 16, 1.0))),
         transform: Transform::from_translation(Vec3::new(-2.0, 1.5, -1.0)),
         color: Color::PURPLE,
-        image: Some(img0.clone()),
+        image: img0.clone(),
         ..Default::default()
     });
 
@@ -42,7 +42,7 @@ fn add_shapes(
         mesh: meshes.add(Mesh::from(Icosphere::new(4, 1.0))),
         transform: Transform::from_translation(Vec3::new(0.0, 3.0, 3.0)),
         color: Color::PURPLE,
-        image: Some(img1.clone()),
+        image: img1.clone(),
         ..Default::default()
     });
 
@@ -50,7 +50,7 @@ fn add_shapes(
         mesh: meshes.add(Mesh::from(Cylinder::new(32, 1.0, 10.0, 8.0))),
         transform: Transform::from_rotation(Quat::from_rotation_x(75.0 / 180.0 * PI)),
         color: Color::DARK_GREEN,
-        image: Some(img0.clone()),
+        image: img0.clone(),
         ..Default::default()
     });
 
@@ -61,7 +61,7 @@ fn add_shapes(
             ..Default::default()
         },
         color: Color::MIDNIGHT_BLUE,
-        image: Some(img1.clone()),
+        image: img1.clone(),
         ..Default::default()
     });
 

@@ -23,16 +23,27 @@ fn main() {
         .run()
 }
 
+#[derive(Component)]
 struct Robot;
+#[derive(Component)]
 struct LeftLeg;
+#[derive(Component)]
 struct RightLeg;
+#[derive(Component)]
 struct LowerLeftLeg;
+#[derive(Component)]
 struct LowerRightLeg;
+#[derive(Component)]
 struct UpperLeftLeg;
+#[derive(Component)]
 struct UpperRightLeg;
+#[derive(Component)]
 struct Body;
+#[derive(Component)]
 struct LeftArm;
+#[derive(Component)]
 struct RightArm;
+#[derive(Component)]
 struct Head;
 
 fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {

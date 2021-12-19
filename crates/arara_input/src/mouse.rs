@@ -1,6 +1,5 @@
 use crate::{ElementState, Input};
-use arara_app::prelude::EventReader;
-use bevy_ecs::system::ResMut;
+use arara_ecs::{event::EventReader, system::ResMut};
 
 /// A mouse button input event
 #[derive(Debug, Clone)]

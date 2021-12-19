@@ -1,18 +1,17 @@
 use crate::components::*;
-use arara_utils::HashMap;
-use bevy_ecs::{
+use arara_ecs::{
     entity::Entity,
+    prelude::Changed,
     query::Without,
     system::{Commands, Query},
 };
+use arara_utils::HashMap;
 use smallvec::SmallVec;
 
 pub fn parent_update_system(
     mut commands: Commands,
     removed_parent_query: Query<(Entity, &PreviousParent), Without<Parent>>,
-    // The next query could be run with a Changed<Parent> filter. However, this would mean that
-    // modifications later in the frame are lost. See issue 891: https://github.com/bevyengine/bevy/issues/891
-    mut parent_query: Query<(Entity, &Parent, Option<&mut PreviousParent>)>,
+    mut parent_query: Query<(Entity, &Parent, Option<&mut PreviousParent>), Changed<Parent>>,
     mut children_query: Query<&mut Children>,
 ) {
     // Entities with a missing `Parent` (ie. ones that have a `PreviousParent`), remove
@@ -73,9 +72,9 @@ pub fn parent_update_system(
 }
 #[cfg(test)]
 mod test {
-    use bevy_ecs::{
+    use arara_ecs::{
         schedule::{Schedule, Stage, SystemStage},
-        system::{CommandQueue, IntoSystem},
+        system::CommandQueue,
         world::World,
     };
 
@@ -87,8 +86,8 @@ mod test {
         let mut world = World::default();
 
         let mut update_stage = SystemStage::parallel();
-        update_stage.add_system(parent_update_system.system());
-        update_stage.add_system(transform_propagate_system.system());
+        update_stage.add_system(parent_update_system);
+        update_stage.add_system(transform_propagate_system);
 
         let mut schedule = Schedule::default();
         schedule.add_stage("update", update_stage);

@@ -1,6 +1,7 @@
+use arara_ecs::prelude::Component;
 use glam::{Vec3, Vec4};
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Component)]
 pub enum Color {
     Rgba { r: f32, g: f32, b: f32, a: f32 },
 }

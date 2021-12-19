@@ -1,0 +1,9 @@
+[package]
+name = "macro_utils"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cargo-manifest = "0.2.6"
+syn = "1.0"
+quote = "1.0"

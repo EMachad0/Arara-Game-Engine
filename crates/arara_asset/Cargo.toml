@@ -12,9 +12,9 @@ filesystem_watcher = ["notify"]
 arara_app = { path = "../arara_app", version = "0.1.0" }
 arara_diagnostic = { path = "../arara_diagnostic", version = "0.1.0" }
 arara_utils = { path = "../arara_utils", version = "0.1.0" }
+arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
 # other
 bevy_tasks = "0.5.0"
-bevy_ecs = "0.5.0"
 bevy_reflect = "0.5.0"
 serde = { version = "1", features = ["derive"] }
 ron = "*"

@@ -1,5 +1,4 @@
 use arara::prelude::*;
-use arara_utils::tracing::debug;
 use cgmath::Deg;
 
 fn main() {
@@ -20,7 +19,9 @@ fn main() {
         .run();
 }
 
+#[derive(Component)]
 struct Pivot;
+#[derive(Component)]
 struct Square;
 
 fn rotate_squares(time: Res<Time>, mut query: Query<(&mut Transform, With<Pivot>)>) {

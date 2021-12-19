@@ -7,7 +7,8 @@ edition = "2021"
 # arara
 arara_utils = { path = "../arara_utils", version = "0.1.0" }
 arara_app = { path = "../arara_app", version = "0.1.0" }
+arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
 # other
-glam = "*"
-bevy_ecs = "*"
+bevy_reflect = "*"
 smallvec = { version = "1.4", features = ["serde"] }
+glam = "*"

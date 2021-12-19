@@ -4,9 +4,9 @@ mod prepare_phase;
 mod simple_mesh;
 
 use arara_app::prelude::*;
+use arara_ecs::prelude::*;
 use arara_utils::tracing::info;
 use arara_window::Window;
-use bevy_ecs::prelude::*;
 use glium::{Api, Profile, Version};
 pub use main_pass::main_pass;
 pub use phase_items::*;

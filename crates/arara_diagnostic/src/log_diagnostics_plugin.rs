@@ -1,8 +1,8 @@
 use super::{Diagnostic, Diagnostics};
 use arara_app::prelude::*;
+use arara_ecs::prelude::*;
 use arara_time::{Duration, Time, Timer};
 use arara_utils::tracing::info;
-use bevy_ecs::prelude::*;
 
 /// An App Plugin that logs diagnostics to the console
 pub struct LogDiagnosticPlugin {

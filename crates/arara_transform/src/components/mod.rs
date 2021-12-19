@@ -3,7 +3,7 @@ mod global_transform;
 mod parent;
 mod transform;
 
-use bevy_ecs::prelude::Bundle;
+use arara_ecs::prelude::Bundle;
 pub use children::Children;
 pub use global_transform::*;
 pub use parent::{Parent, PreviousParent};

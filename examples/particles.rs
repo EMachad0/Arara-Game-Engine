@@ -46,7 +46,7 @@ fn add_shapes(
             lifetime: 5.0,
             buffer_quantity: 100,
             spawn_quantity: 5,
-            image: Some(img0),
+            image: img0,
             particle_velocity: Value::Constant(1.0),
             spawn_shape: SpawnShape::Cone(0.5),
             particle_color: ColorOrGradient::Color(Color::RED),

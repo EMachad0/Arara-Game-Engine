@@ -15,8 +15,8 @@ pub mod prelude {
     pub use crate::{event::*, window::Window, window_props::WindowProps, WindowPlugin};
 }
 
-use arara_app::{AppBuilder, AppExit, EventReader, EventWriter, Plugin};
-use bevy_ecs::prelude::IntoSystem;
+use arara_app::{AppBuilder, AppExit, Plugin};
+use arara_ecs::event::{EventReader, EventWriter};
 
 #[derive(Default)]
 pub struct WindowPlugin;
@@ -37,7 +37,7 @@ impl Plugin for WindowPlugin {
             .add_event::<WindowMoved>()
             .init_non_send_resource::<EventLoop>()
             .init_non_send_resource::<Window>()
-            .add_system(exit_on_window_close.system())
+            .add_system(exit_on_window_close)
             .set_runnable(run);
     }
 }

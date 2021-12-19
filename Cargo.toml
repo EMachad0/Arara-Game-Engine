@@ -3,7 +3,9 @@ name = "arara"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+# logging
+trace = ["arara_ecs/trace", "arara_app/trace", "arara_logger/tracing-chrome"]
 
 [dependencies]
 # internal
@@ -11,7 +13,7 @@ arara_camera = { path = "crates/arara_camera", version = "0.1.0" }
 arara_transform = { path = "crates/arara_transform", version = "0.1.0" }
 arara_app = { path = "crates/arara_app", version = "0.1.0" }
 arara_window = { path = "crates/arara_window", version = "0.1.0" }
-# arara_logger = { path = "crates/arara_logger", version = "0.1.0" }
+arara_logger = { path = "crates/arara_logger", version = "0.1.0" }
 arara_render = { path = "crates/arara_render", version = "0.1.0" }
 arara_utils = { path = "crates/arara_utils", version = "0.1.0" }
 arara_time = { path = "crates/arara_time", version = "0.1.0" }
@@ -19,8 +21,8 @@ arara_diagnostic = { path = "crates/arara_diagnostic", version = "0.1.0" }
 arara_input = { path = "crates/arara_input", version = "0.1.0" }
 arara_asset = { path = "crates/arara_asset", version = "0.1.0" }
 arara_particle_system = { path = "crates/arara_particle_system", version = "0.1.0" }
+arara_ecs = { path = "crates/arara_ecs", version = "0.1.0" }
 # external
-bevy_ecs = "*"
 glium = "*"
 image = "*"
 glam = "*"

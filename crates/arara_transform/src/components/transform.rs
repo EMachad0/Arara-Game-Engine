@@ -1,6 +1,6 @@
-use glam::{Mat3, Mat4, Quat, Vec3};
-
 use super::GlobalTransform;
+use arara_ecs::component::Component;
+use glam::{Mat3, Mat4, Quat, Vec3};
 use std::ops::Mul;
 
 /// Describe the position of an entity. If the entity has a parent, the position is relative
@@ -33,7 +33,7 @@ use std::ops::Mul;
 /// This system runs in stage [`CoreStage::PostUpdate`](crate::CoreStage::PostUpdate). If you
 /// update the[`Transform`] of an entity in this stage or after, you will notice a 1 frame lag
 /// before the [`GlobalTransform`] is updated.
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Component, Debug, PartialEq, Clone, Copy)]
 pub struct Transform {
     /// Position of the entity. In 2d, the last value of the `Vec3` is used for z-ordering.
     pub translation: Vec3,
@@ -68,6 +68,7 @@ impl Transform {
     #[inline]
     pub fn from_matrix(matrix: Mat4) -> Self {
         let (scale, rotation, translation) = matrix.to_scale_rotation_translation();
+
         Transform {
             translation,
             rotation,
@@ -98,19 +99,9 @@ impl Transform {
     /// Creates a new [`Transform`], with `scale`. Translation will be 0 and rotation 0 on
     /// all axes.
     #[inline]
-    pub fn from_nonuniform_scale(scale: Vec3) -> Self {
+    pub fn from_scale(scale: Vec3) -> Self {
         Transform {
             scale,
-            ..Default::default()
-        }
-    }
-
-    /// Creates a new [`Transform`], with `scale`. Translation will be 0 and rotation 0 on
-    /// all axes.
-    #[inline]
-    pub fn from_scale(scale: f32) -> Self {
-        Transform {
-            scale: Vec3::new(scale, scale, scale),
             ..Default::default()
         }
     }
@@ -121,6 +112,27 @@ impl Transform {
     #[inline]
     pub fn looking_at(mut self, target: Vec3, up: Vec3) -> Self {
         self.look_at(target, up);
+        self
+    }
+
+    /// Returns this [`Transform`] with a new translation.
+    #[inline]
+    pub fn with_translation(mut self, translation: Vec3) -> Self {
+        self.translation = translation;
+        self
+    }
+
+    /// Returns this [`Transform`] with a new rotation.
+    #[inline]
+    pub fn with_rotation(mut self, rotation: Quat) -> Self {
+        self.rotation = rotation;
+        self
+    }
+
+    /// Returns this [`Transform`] with a new scale.
+    #[inline]
+    pub fn with_scale(mut self, scale: Vec3) -> Self {
+        self.scale = scale;
         self
     }
 
@@ -137,10 +149,34 @@ impl Transform {
         self.rotation * Vec3::X
     }
 
+    /// Equivalent to -local_x()
+    #[inline]
+    pub fn left(&self) -> Vec3 {
+        -self.local_x()
+    }
+
+    /// Equivalent to local_x()
+    #[inline]
+    pub fn right(&self) -> Vec3 {
+        self.local_x()
+    }
+
     /// Get the unit vector in the local y direction.
     #[inline]
     pub fn local_y(&self) -> Vec3 {
         self.rotation * Vec3::Y
+    }
+
+    /// Equivalent to local_y()
+    #[inline]
+    pub fn up(&self) -> Vec3 {
+        self.local_y()
+    }
+
+    /// Equivalent to -local_y()
+    #[inline]
+    pub fn down(&self) -> Vec3 {
+        -self.local_y()
     }
 
     /// Get the unit vector in the local z direction.
@@ -149,10 +185,22 @@ impl Transform {
         self.rotation * Vec3::Z
     }
 
+    /// Equivalent to -local_z()
+    #[inline]
+    pub fn forward(&self) -> Vec3 {
+        -self.local_z()
+    }
+
+    /// Equivalent to local_z()
+    #[inline]
+    pub fn back(&self) -> Vec3 {
+        self.local_z()
+    }
+
     /// Rotates the transform by the given rotation.
     #[inline]
     pub fn rotate(&mut self, rotation: Quat) {
-        self.rotation *= rotation;
+        self.rotation = rotation * self.rotation;
     }
 
     /// Multiplies `self` with `transform` component by component, returning the

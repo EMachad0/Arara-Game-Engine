@@ -1,4 +1,4 @@
-use bevy_ecs::world::{FromWorld, World};
+use arara_ecs::world::{FromWorld, World};
 use glium::{
     self,
     glutin::{self, dpi},

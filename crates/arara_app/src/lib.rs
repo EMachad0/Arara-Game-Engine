@@ -1,24 +1,21 @@
 mod app;
 mod app_builder;
-mod event;
 mod plugin;
 
 pub use app::*;
 pub use app_builder::*;
-pub use event::*;
 pub use plugin::*;
 
 pub mod prelude {
     pub use crate::{
         app::App,
         app_builder::AppBuilder,
-        event::*,
         plugin::{Plugin, PluginGroup, PluginGroupBuilder},
         CoreStage, StartupStage,
     };
 }
 
-use bevy_ecs::schedule::StageLabel;
+use arara_ecs::schedule::StageLabel;
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
 pub enum CoreStage {

@@ -1,7 +1,7 @@
 use arara_app::{CoreStage, Plugin};
 use arara_camera::FlyCamera;
+use arara_ecs::prelude::*;
 use arara_transform::{GlobalTransform, Transform};
-use bevy_ecs::prelude::*;
 use glam::{vec3, Mat3, Quat, Vec3};
 
 pub struct BillboardPlugin;
@@ -12,7 +12,7 @@ impl Plugin for BillboardPlugin {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Component)]
 pub enum Billboard {
     /// Billboard focused on the view plane
     ViewPlane,

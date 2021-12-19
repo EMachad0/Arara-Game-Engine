@@ -1,4 +1,5 @@
 use super::Transform;
+use arara_ecs::component::Component;
 use glam::{Mat3, Mat4, Quat, Vec3};
 use std::ops::Mul;
 
@@ -31,7 +32,7 @@ use std::ops::Mul;
 /// This system runs in stage [`CoreStage::PostUpdate`](crate::CoreStage::PostUpdate). If you
 /// update the[`Transform`] of an entity in this stage or after, you will notice a 1 frame lag
 /// before the [`GlobalTransform`] is updated.
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Component, Debug, PartialEq, Clone, Copy)]
 pub struct GlobalTransform {
     pub translation: Vec3,
     pub rotation: Quat,
@@ -102,6 +103,27 @@ impl GlobalTransform {
         self
     }
 
+    #[doc(hidden)]
+    #[inline]
+    pub fn with_translation(mut self, translation: Vec3) -> Self {
+        self.translation = translation;
+        self
+    }
+
+    #[doc(hidden)]
+    #[inline]
+    pub fn with_rotation(mut self, rotation: Quat) -> Self {
+        self.rotation = rotation;
+        self
+    }
+
+    #[doc(hidden)]
+    #[inline]
+    pub fn with_scale(mut self, scale: Vec3) -> Self {
+        self.scale = scale;
+        self
+    }
+
     /// Returns the 3d affine transformation matrix from this transforms translation,
     /// rotation, and scale.
     #[inline]
@@ -115,10 +137,34 @@ impl GlobalTransform {
         self.rotation * Vec3::X
     }
 
+    /// Equivalent to -local_x()
+    #[inline]
+    pub fn left(&self) -> Vec3 {
+        -self.local_x()
+    }
+
+    /// Equivalent to local_x()
+    #[inline]
+    pub fn right(&self) -> Vec3 {
+        self.local_x()
+    }
+
     /// Get the unit vector in the local y direction
     #[inline]
     pub fn local_y(&self) -> Vec3 {
         self.rotation * Vec3::Y
+    }
+
+    /// Equivalent to local_y()
+    #[inline]
+    pub fn up(&self) -> Vec3 {
+        self.local_y()
+    }
+
+    /// Equivalent to -local_y()
+    #[inline]
+    pub fn down(&self) -> Vec3 {
+        -self.local_y()
     }
 
     /// Get the unit vector in the local z direction
@@ -127,10 +173,22 @@ impl GlobalTransform {
         self.rotation * Vec3::Z
     }
 
+    /// Equivalent to -local_z()
+    #[inline]
+    pub fn forward(&self) -> Vec3 {
+        -self.local_z()
+    }
+
+    /// Equivalent to local_z()
+    #[inline]
+    pub fn back(&self) -> Vec3 {
+        self.local_z()
+    }
+
     #[doc(hidden)]
     #[inline]
     pub fn rotate(&mut self, rotation: Quat) {
-        self.rotation *= rotation;
+        self.rotation = rotation * self.rotation;
     }
 
     /// Multiplies `self` with `transform` component by component, returning the

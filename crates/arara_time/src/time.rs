@@ -1,4 +1,4 @@
-use bevy_ecs::system::ResMut;
+use arara_ecs::system::ResMut;
 pub use std::time::{Duration, Instant};
 
 /// Tracks elapsed time since the last update and since the App has started

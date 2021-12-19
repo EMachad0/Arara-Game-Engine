@@ -1,6 +1,5 @@
 use arara::prelude::*;
 use cgmath::Deg;
-use rand;
 
 fn main() {
     App::builder()
@@ -26,6 +25,7 @@ fn main() {
         .run();
 }
 
+#[derive(Component)]
 struct Square;
 
 fn rotate_squares(time: Res<Time>, mut query: Query<(&mut Transform, With<Square>)>) {

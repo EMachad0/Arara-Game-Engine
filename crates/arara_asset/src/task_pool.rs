@@ -1,5 +1,5 @@
+use arara_ecs::world::World;
 use arara_utils::tracing::trace;
-use bevy_ecs::world::World;
 use bevy_tasks::{AsyncComputeTaskPool, ComputeTaskPool, IoTaskPool, TaskPoolBuilder};
 
 /// Defines a simple way to determine how many threads to use given the number of remaining cores

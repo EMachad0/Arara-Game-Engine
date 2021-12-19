@@ -1,14 +1,15 @@
-use arara_utils::tracing::debug;
-use bevy_ecs::{
-    component::Component,
+use arara_ecs::{
+    event::Events,
     prelude::*,
-    schedule::{RunOnce, SystemDescriptor},
+    schedule::{IntoSystemDescriptor, RunOnce},
+    system::Resource,
 };
+use arara_utils::tracing::debug;
 
 use crate::{
     app::App,
     plugin::{Plugin, PluginGroup, PluginGroupBuilder},
-    AppExit, CoreStage, Events, StartupStage,
+    AppExit, CoreStage, StartupStage,
 };
 
 pub struct AppBuilder {
@@ -89,40 +90,30 @@ impl AppBuilder {
         self
     }
 
-    pub fn add_system(&mut self, system: impl Into<SystemDescriptor>) -> &mut Self {
+    pub fn add_system<Params>(&mut self, system: impl IntoSystemDescriptor<Params>) -> &mut Self {
         self.add_system_to_stage(CoreStage::Update, system)
     }
 
-    pub fn add_system_to_stage(
+    pub fn add_system_to_stage<Params>(
         &mut self,
         stage_label: impl StageLabel,
-        system: impl Into<SystemDescriptor>,
+        system: impl IntoSystemDescriptor<Params>,
     ) -> &mut Self {
         self.app.schedule.add_system_to_stage(stage_label, system);
         self
     }
 
-    pub fn add_startup_system(&mut self, system: impl Into<SystemDescriptor>) -> &mut Self {
-        self.add_system_to_startup_stage(StartupStage::Startup, system)
-    }
-
-    pub fn add_system_to_startup_stage(
+    pub fn add_startup_system<Params>(
         &mut self,
-        stage_label: impl StageLabel,
-        system: impl Into<SystemDescriptor>,
+        system: impl IntoSystemDescriptor<Params>,
     ) -> &mut Self {
-        self.app
-            .schedule
-            .stage(CoreStage::Startup, |schedule: &mut Schedule| {
-                schedule.add_system_to_stage(stage_label, system)
-            });
-        self
+        self.add_startup_system_to_stage(StartupStage::Startup, system)
     }
 
-    pub fn add_startup_system_to_stage(
+    pub fn add_startup_system_to_stage<Params>(
         &mut self,
         stage_label: impl StageLabel,
-        system: impl Into<SystemDescriptor>,
+        system: impl IntoSystemDescriptor<Params>,
     ) -> &mut Self {
         self.app
             .schedule
@@ -175,12 +166,9 @@ impl AppBuilder {
 
     pub fn add_event<T>(&mut self) -> &mut Self
     where
-        T: Component,
+        T: Resource,
     {
-        self.insert_resource(Events::<T>::default())
-            .add_system_to_stage(
-                CoreStage::EventUpdateStage,
-                Events::<T>::update_system.system(),
-            )
+        self.init_resource::<Events<T>>()
+            .add_system_to_stage(CoreStage::First, Events::<T>::update_system)
     }
 }

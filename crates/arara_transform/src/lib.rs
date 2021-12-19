@@ -11,7 +11,7 @@ pub mod prelude {
 }
 
 use arara_app::prelude::*;
-use bevy_ecs::{
+use arara_ecs::{
     schedule::{ParallelSystemDescriptorCoercion, SystemLabel},
     system::IntoSystem,
 };

@@ -1,5 +1,5 @@
 use arara_utils::tracing::trace;
-use bevy_ecs::{
+use arara_ecs::{
     component::Component,
     system::{Local, Res, ResMut, SystemParam},
 };

@@ -1,3 +1,6 @@
+use arara_ecs::prelude::Component;
+
+#[derive(Component)]
 pub struct Visibility {
     pub active: bool,
     pub visible: bool,

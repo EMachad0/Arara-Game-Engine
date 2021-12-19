@@ -1,5 +1,5 @@
 use arara_asset::Assets;
-use bevy_ecs::prelude::*;
+use arara_ecs::prelude::*;
 
 use arara_app::Plugin;
 use arara_transform::Transform;

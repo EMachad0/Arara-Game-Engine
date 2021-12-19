@@ -1,3 +1,4 @@
+use arara_ecs::prelude::Component;
 use glam::Vec3;
 use rand::{self, Rng};
 
@@ -25,6 +26,7 @@ impl Value {
     }
 }
 
+#[derive(Component)]
 pub struct Particle {
     pub time_remaining: f32,
     pub velocity: f32,

@@ -1,10 +1,14 @@
-use bevy_ecs::{
+use arara_ecs::{
+    component::Component,
     entity::{Entity, EntityMap, MapEntities, MapEntitiesError},
+    reflect::{ReflectComponent, ReflectMapEntities},
     world::{FromWorld, World},
 };
+use bevy_reflect::Reflect;
 use std::ops::{Deref, DerefMut};
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Component, Debug, Copy, Clone, Eq, PartialEq, Reflect)]
+#[reflect(Component, MapEntities, PartialEq)]
 pub struct Parent(pub Entity);
 
 // TODO: We need to impl either FromWorld or Default so Parent can be registered as Properties.
@@ -38,7 +42,8 @@ impl DerefMut for Parent {
     }
 }
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Component, Debug, Copy, Clone, Eq, PartialEq, Reflect)]
+#[reflect(Component, MapEntities, PartialEq)]
 pub struct PreviousParent(pub(crate) Entity);
 
 impl MapEntities for PreviousParent {
@@ -48,7 +53,7 @@ impl MapEntities for PreviousParent {
     }
 }
 
-// TODO: Better handle this case see `impl FromResources for Parent`
+// TODO: Better handle this case see `impl FromWorld for Parent`
 impl FromWorld for PreviousParent {
     fn from_world(_world: &mut World) -> Self {
         PreviousParent(Entity::new(u32::MAX))

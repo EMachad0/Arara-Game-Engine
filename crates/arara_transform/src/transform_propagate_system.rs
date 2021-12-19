@@ -1,5 +1,5 @@
 use crate::components::{Children, GlobalTransform, Parent, Transform};
-use bevy_ecs::{
+use arara_ecs::{
     entity::Entity,
     query::{Changed, With, Without},
     system::Query,
@@ -75,9 +75,9 @@ fn propagate_recursive(
 
 #[cfg(test)]
 mod test {
-    use bevy_ecs::{
+    use arara_ecs::{
         schedule::{Schedule, Stage, SystemStage},
-        system::{CommandQueue, Commands, IntoSystem},
+        system::{CommandQueue, Commands},
         world::World,
     };
 
@@ -89,8 +89,8 @@ mod test {
         let mut world = World::default();
 
         let mut update_stage = SystemStage::parallel();
-        update_stage.add_system(parent_update_system.system());
-        update_stage.add_system(transform_propagate_system.system());
+        update_stage.add_system(parent_update_system);
+        update_stage.add_system(transform_propagate_system);
 
         let mut schedule = Schedule::default();
         schedule.add_stage("update", update_stage);
@@ -144,8 +144,8 @@ mod test {
         let mut world = World::default();
 
         let mut update_stage = SystemStage::parallel();
-        update_stage.add_system(parent_update_system.system());
-        update_stage.add_system(transform_propagate_system.system());
+        update_stage.add_system(parent_update_system);
+        update_stage.add_system(transform_propagate_system);
 
         let mut schedule = Schedule::default();
         schedule.add_stage("update", update_stage);

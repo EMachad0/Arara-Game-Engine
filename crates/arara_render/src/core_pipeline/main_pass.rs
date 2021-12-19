@@ -4,10 +4,10 @@ use crate::{
 };
 use arara_asset::{Assets, Handle};
 use arara_camera::FlyCamera;
+use arara_ecs::prelude::*;
 use arara_transform::GlobalTransform;
 use arara_utils::StableHashMap;
 use arara_window::Window;
-use bevy_ecs::prelude::*;
 use glam::*;
 use glium::{texture::RawImage2d, Surface};
 
@@ -33,12 +33,7 @@ pub fn main_pass(
     shaders: Res<Assets<Shader>>,
     opaques: Res<RenderPhase<Opaque>>,
     transparents: Res<RenderPhase<Transparent>>,
-    query: Query<(
-        &Handle<Mesh>,
-        &GlobalTransform,
-        &Color,
-        &Option<Handle<Image>>,
-    )>,
+    query: Query<(&Handle<Mesh>, &GlobalTransform, &Color, &Handle<Image>)>,
 ) {
     let display = window.display();
     let clear_color = clear_color.0;
@@ -88,22 +83,23 @@ pub fn main_pass(
         for opaque in opaques.items.iter() {
             let (mesh, global_transform, color, image_handle) = query.get(opaque.entity).unwrap();
 
-            let tex_id = match image_handle {
-                Some(handle) => match textures_index.get(handle) {
+            let tex_id = if *image_handle == Handle::<Image>::default() {
+                0
+            } else {
+                match textures_index.get(image_handle) {
                     Some(index) => index.to_owned(),
-                    None => match images.get(handle) {
+                    None => match images.get(image_handle) {
                         Some(image) => {
                             let texture =
                                 RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
                             let index = textures.len() as u32;
                             textures.push(texture);
-                            textures_index.insert(handle.clone(), index);
+                            textures_index.insert(image_handle.clone(), index);
                             index
                         }
                         None => continue,
                     },
-                },
-                None => 0,
+                }
             };
 
             let mesh = meshes.get(mesh).unwrap();
@@ -183,22 +179,19 @@ pub fn main_pass(
             let (mesh, global_transform, color, image_handle) =
                 query.get(transparent.entity).unwrap();
 
-            let tex_id = match image_handle {
-                Some(handle) => match textures_index.get(handle) {
-                    Some(index) => index.to_owned(),
-                    None => match images.get(handle) {
-                        Some(image) => {
-                            let texture =
-                                RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
-                            let index = textures.len() as u32;
-                            textures.push(texture);
-                            textures_index.insert(handle.clone(), index);
-                            index
-                        }
-                        None => continue,
-                    },
+            let tex_id = match textures_index.get(image_handle) {
+                Some(index) => index.to_owned(),
+                None => match images.get(image_handle) {
+                    Some(image) => {
+                        let texture =
+                            RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
+                        let index = textures.len() as u32;
+                        textures.push(texture);
+                        textures_index.insert(image_handle.clone(), index);
+                        index
+                    }
+                    None => continue,
                 },
-                None => 0,
             };
 
             let mesh = meshes.get(mesh).unwrap();

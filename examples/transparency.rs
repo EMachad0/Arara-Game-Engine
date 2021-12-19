@@ -12,7 +12,7 @@ fn main() {
         .add_plugin(LogDiagnosticPlugin {
             wait_duration: Duration::from_secs(3),
         })
-        .add_startup_system(add_shapes.system())
+        .add_startup_system(add_shapes)
         // .insert_resource(ClearColor(Color::RED))
         .insert_resource(BPLight {
             position: vec3(0.0, 5.0, 5.0),
@@ -46,19 +46,19 @@ fn add_shapes(
             parent.spawn_bundle(SimpleMeshBundle {
                 mesh: meshes.add(Mesh::from(Square::default())),
                 transform: Transform::from_xyz(0., 0., 0.),
-                image: Some(img0.clone()),
+                image: img0.clone(),
                 ..Default::default()
             });
             parent.spawn_bundle(SimpleMeshBundle {
                 mesh: meshes.add(Mesh::from(Square::default())),
                 transform: Transform::from_xyz(1., 0., 0.),
-                image: Some(img0.clone()),
+                image: img0.clone(),
                 ..Default::default()
             });
             parent.spawn_bundle(SimpleMeshBundle {
                 mesh: meshes.add(Mesh::from(Square::default())),
                 transform: Transform::from_xyz(0., 0., 1.),
-                image: Some(img0.clone()),
+                image: img0.clone(),
                 ..Default::default()
             });
             parent.spawn_bundle(SimpleMeshBundle {
@@ -73,7 +73,7 @@ fn add_shapes(
                 mesh: meshes.add(Mesh::from(Square::new(5., 5.))),
                 transform: Transform::from_xyz(0., -3., 0.),
                 color: Color::rgba(0.1, 0.1, 0.5, 1.0),
-                image: Some(img0.clone()),
+                image: img0.clone(),
                 ..Default::default()
             });
         });

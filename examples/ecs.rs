@@ -3,7 +3,7 @@ use arara::prelude::*;
 fn main() {
     App::builder()
         .add_plugin(GreetPeoplePlugin)
-        .add_startup_system(hello_world.system())
+        .add_startup_system(hello_world)
         .build()
         .run();
 }
@@ -16,12 +16,13 @@ pub struct GreetPeoplePlugin;
 
 impl Plugin for GreetPeoplePlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.add_startup_system(add_people.system())
-            .add_system(greet_people.system());
+        app.add_startup_system(add_people).add_system(greet_people);
     }
 }
 
+#[derive(Component)]
 struct Person;
+#[derive(Component)]
 struct Name {
     name: String,
 }

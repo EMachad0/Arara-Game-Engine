@@ -11,9 +11,9 @@ pub mod transform {
     pub use arara_transform::*;
 }
 
-// pub mod logger {
-//     pub use arara_logger::*;
-// }
+pub mod logger {
+    pub use arara_logger::*;
+}
 
 pub mod window {
     pub use arara_window::*;
@@ -24,7 +24,7 @@ pub mod app {
 }
 
 pub mod ecs {
-    pub use bevy_ecs::*;
+    pub use arara_ecs::*;
 }
 
 pub mod utils {

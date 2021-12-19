@@ -4,10 +4,7 @@ pub mod mouse;
 pub mod system;
 
 use arara_app::prelude::*;
-use bevy_ecs::{
-    schedule::{ParallelSystemDescriptorCoercion, SystemLabel},
-    system::IntoSystem,
-};
+use arara_ecs::schedule::{ParallelSystemDescriptorCoercion, SystemLabel};
 pub use input::*;
 use keyboard::{keyboard_input_system, KeyCode, KeyboardInput};
 use mouse::{mouse_button_input_system, MouseButton, MouseButtonInput, MouseMotion, MouseWheel};
@@ -31,7 +28,7 @@ impl Plugin for InputPlugin {
             .init_resource::<Input<KeyCode>>()
             .add_system_to_stage(
                 CoreStage::PreUpdate,
-                keyboard_input_system.system().label(InputSystem),
+                keyboard_input_system.label(InputSystem),
             )
             // mouse
             .add_event::<MouseButtonInput>()
@@ -40,7 +37,7 @@ impl Plugin for InputPlugin {
             .init_resource::<Input<MouseButton>>()
             .add_system_to_stage(
                 CoreStage::PreUpdate,
-                mouse_button_input_system.system().label(InputSystem),
+                mouse_button_input_system.label(InputSystem),
             );
     }
 }

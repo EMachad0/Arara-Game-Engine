@@ -4,8 +4,6 @@ use cgmath::Deg;
 fn main() {
     App::builder()
         .add_plugins(DefaultPlugins)
-        .add_plugin(CoordinateSystemPlugin)
-        // .insert_resource(CoordinateSystem { count: 5, lenght: 10.0, radius: 0.5 })
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
         .add_plugin(LogDiagnosticPlugin {
@@ -24,7 +22,9 @@ fn main() {
         .run()
 }
 
+#[derive(Component)]
 struct Tower;
+#[derive(Component)]
 struct Wall;
 
 fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {

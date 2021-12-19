@@ -1,10 +1,11 @@
+use arara_ecs::event::{Events, ManualEventReader};
 use arara_utils::tracing::trace;
 use glium::{
     self,
     glutin::{event::*, event_loop::ControlFlow},
 };
 
-use arara_app::{App, AppExit, Events, ManualEventReader};
+use arara_app::{App, AppExit};
 use arara_input::{keyboard::KeyboardInput, mouse::*};
 
 use crate::{converters, event::*, EventLoop, Window};

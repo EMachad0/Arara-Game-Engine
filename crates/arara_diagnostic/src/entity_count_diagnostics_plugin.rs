@@ -1,9 +1,9 @@
 use arara_app::{AppBuilder, Plugin};
-use arara_utils::tracing::warn;
-use bevy_ecs::{
-    system::{IntoExclusiveSystem, IntoSystem, ResMut},
+use arara_ecs::{
+    system::{IntoExclusiveSystem, ResMut},
     world::World,
 };
+use arara_utils::tracing::warn;
 
 use crate::{Diagnostic, Diagnostics};
 
@@ -17,7 +17,7 @@ impl Plugin for EntityCountDiagnosticPlugin {
             warn!("Tring to add a DiagnosticsPlugin without the [Diagnostics] resource!");
             return;
         };
-        app.add_startup_system(Self::setup_system.system())
+        app.add_startup_system(Self::setup_system)
             .add_system(Self::diagnostic_system.exclusive_system());
     }
 }

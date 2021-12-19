@@ -16,7 +16,7 @@ pub mod prelude {
 }
 
 use arara_app::{AppBuilder, CoreStage, Plugin};
-use bevy_ecs::prelude::*;
+use arara_ecs::prelude::*;
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, SystemLabel)]
 pub enum CoreSystem {

@@ -1,7 +1,7 @@
 use arara_asset::{Assets, Handle};
 use arara_camera::FlyCamera;
+use arara_ecs::prelude::*;
 use arara_transform::GlobalTransform;
-use bevy_ecs::prelude::*;
 use glam::{vec4, Mat4};
 
 use crate::{render_phase::RenderPhase, Color, Image, Mesh, Opaque, Transparent, Visibility};
@@ -17,7 +17,7 @@ pub fn prepare_core_pass(
         &Handle<Mesh>,
         &GlobalTransform,
         &Color,
-        &Option<Handle<Image>>,
+        &Handle<Image>,
         &Visibility,
     )>,
 ) {
@@ -28,12 +28,13 @@ pub fn prepare_core_pass(
             continue;
         }
 
-        let mut transparent = match image_handle {
-            Some(handle) => match images.get(handle) {
+        let mut transparent = if *image_handle == Handle::<Image>::default() {
+            false
+        } else {
+            match images.get(image_handle) {
                 Some(image) => image.translucent,
                 None => continue,
-            },
-            None => false,
+            }
         };
 
         transparent |= color.a() < 1.0;

@@ -1,5 +1,5 @@
 // use crate::render_phase::draw::DrawFunctionId;
-use bevy_ecs::prelude::ResMut;
+use arara_ecs::prelude::ResMut;
 
 /// An item which will be drawn to the screen. A phase item should be queued up for rendering
 /// during the [`RenderStage::Queue`](crate::RenderStage::Queue) stage.

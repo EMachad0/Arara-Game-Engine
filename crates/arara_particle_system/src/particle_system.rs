@@ -1,23 +1,24 @@
 use std::f32::consts::PI;
 
 use arara_asset::Handle;
+use arara_ecs::prelude::{Bundle, Commands, Component, Entity, Query, Res};
 use arara_render::{Billboard, Color, ColorOrGradient, Image, Mesh, SimpleMeshBundle, Visibility};
 use arara_time::{Time, Timer};
 use arara_transform::{BuildChildren, Children, GlobalTransform, Transform};
-use bevy_ecs::prelude::{Bundle, Commands, Entity, Query, Res};
 use glam::{vec3, Vec3};
 
 use crate::{Particle, Value};
 
 use rand::{self, Rng};
 
+#[derive(Component)]
 pub struct ParticleSystem {
     pub lifetime: f32,
     pub timer: Timer,
     pub spawn_shape: SpawnShape,
     pub buffer_quantity: u32,
     pub spawn_quantity: u32,
-    pub image: Option<Handle<Image>>,
+    pub image: Handle<Image>,
     pub billboard: Option<Billboard>,
     pub particle_mesh: Handle<Mesh>,
     pub particle_color: ColorOrGradient,

@@ -1,7 +1,7 @@
 use crate::{filesystem_watcher::FilesystemWatcher, AssetIo, AssetIoError, AssetServer};
 use anyhow::Result;
+use arara_ecs::system::Res;
 use arara_utils::{BoxedFuture, HashSet};
-use bevy_ecs::system::Res;
 use crossbeam_channel::TryRecvError;
 use fs::File;
 use io::Read;

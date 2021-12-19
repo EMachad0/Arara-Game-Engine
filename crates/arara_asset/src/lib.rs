@@ -27,7 +27,7 @@ pub use loader::*;
 pub use path::*;
 
 use arara_app::{prelude::Plugin, AppBuilder};
-use bevy_ecs::{
+use arara_ecs::{
     schedule::{StageLabel, SystemStage},
     system::IntoSystem,
 };

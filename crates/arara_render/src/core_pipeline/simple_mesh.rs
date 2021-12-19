@@ -1,4 +1,4 @@
-use bevy_ecs::prelude::*;
+use arara_ecs::prelude::*;
 use glam::{vec3, Vec3};
 
 use crate::{geometry::Mesh, prelude::Visibility, Color, Image, Shader};
@@ -11,7 +11,7 @@ pub struct SimpleMeshBundle {
     pub transform: Transform,
     pub global_transform: GlobalTransform,
     pub color: Color,
-    pub image: Option<Handle<Image>>,
+    pub image: Handle<Image>,
     pub visibility: Visibility,
 }
 

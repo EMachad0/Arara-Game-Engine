@@ -1,6 +1,5 @@
 use crate::{ElementState, Input};
-use arara_app::EventReader;
-use bevy_ecs::system::ResMut;
+use arara_ecs::{event::EventReader, system::ResMut};
 
 /// A key input event from a keyboard device
 #[derive(Debug, Clone)]

@@ -4,6 +4,7 @@ pub struct DefaultPlugins;
 
 impl PluginGroup for DefaultPlugins {
     fn build(&mut self, group: &mut PluginGroupBuilder) {
+        group.add(arara_logger::LoggerPlugin);
         group.add(arara_time::TimePlugin);
         group.add(arara_diagnostic::DiagnosticsPlugin);
         group.add(arara_input::InputPlugin);

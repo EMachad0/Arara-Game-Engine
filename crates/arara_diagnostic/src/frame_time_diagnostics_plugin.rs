@@ -1,7 +1,7 @@
 use crate::{Diagnostic, Diagnostics};
 use arara_app::prelude::*;
+use arara_ecs::system::{IntoSystem, Res, ResMut};
 use arara_time::Time;
-use bevy_ecs::system::{IntoSystem, Res, ResMut};
 
 /// Adds "frame time" diagnostics to the App
 /// specifically "frame time", "fps" and "frame count"

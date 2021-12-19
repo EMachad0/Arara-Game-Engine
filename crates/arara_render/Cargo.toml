@@ -3,7 +3,8 @@ name = "arara_render"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+# [features]
+# trace = []
 
 [dependencies]
 # arara
@@ -14,7 +15,7 @@ arara_window = { path = "../arara_window", version = "0.1.0" }
 arara_utils = { path = "../arara_utils", version = "0.1.0" }
 arara_asset = { path = "../arara_asset", version = "0.1.0" }
 # other
-bevy_ecs = "*"
+arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
 bevy_reflect = "*"
 glium = "*"
 glam = "*"

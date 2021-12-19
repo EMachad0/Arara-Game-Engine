@@ -9,4 +9,4 @@ edition = "2021"
 arara_app = { path = "../arara_app", version = "0.1.0" }
 arara_time = { path = "../arara_time", version = "0.1.0" }
 arara_utils = { path = "../arara_utils", version = "0.1.0" }
-bevy_ecs = "*"
+arara_ecs = { path = "../arara_ecs", version = "0.1.0" }

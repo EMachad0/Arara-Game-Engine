@@ -5,8 +5,8 @@ use crate::{
     RefChange, RefChangeChannel, SourceInfo, SourceMeta,
 };
 use anyhow::Result;
-use arara_utils::{HashMap, Uuid, tracing::warn};
-use bevy_ecs::system::Res;
+use arara_ecs::system::Res;
+use arara_utils::{tracing::warn, HashMap, Uuid};
 use bevy_tasks::TaskPool;
 use crossbeam_channel::TryRecvError;
 use parking_lot::RwLock;

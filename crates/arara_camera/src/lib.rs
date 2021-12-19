@@ -11,7 +11,7 @@ pub mod prelude {
 }
 
 use arara_app::prelude::*;
-use bevy_ecs::prelude::IntoSystem;
+use arara_ecs::prelude::IntoSystem;
 
 #[derive(Default)]
 pub struct FlyCameraPlugin;

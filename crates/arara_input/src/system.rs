@@ -2,10 +2,8 @@ use crate::{
     keyboard::{KeyCode, KeyboardInput},
     ElementState,
 };
-use arara_app::{
-    prelude::{EventReader, EventWriter},
-    AppExit,
-};
+use arara_app::AppExit;
+use arara_ecs::event::{EventReader, EventWriter};
 
 /// Sends the AppExit event whenever the "esc" key is pressed.
 pub fn exit_on_esc_system(

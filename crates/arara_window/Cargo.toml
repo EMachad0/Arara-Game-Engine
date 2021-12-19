@@ -12,5 +12,5 @@ arara_utils = { path = "../arara_utils", version = "0.1.0" }
 arara_time = { path = "../arara_time", version = "0.1.0" }
 arara_input = { path = "../arara_input", version = "0.1.0" }
 # other
-bevy_ecs = "*"
+arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
 glium = "*"
