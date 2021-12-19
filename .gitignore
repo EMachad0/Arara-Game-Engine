@@ -2,4 +2,4 @@
 .vscode
 Cargo.lock
 .cargo
-trace-*.js
+trace-*.json
