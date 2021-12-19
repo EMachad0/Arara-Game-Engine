@@ -35,11 +35,6 @@ pub fn run(mut app: App) {
         match ev {
             Event::DeviceEvent { ref event, .. } => match event {
                 DeviceEvent::MouseMotion { delta } => {
-                    // if mouse_pressed {
-                    //     let mut camera_controller =
-                    //         app.world.get_resource_mut::<CameraController>().unwrap();
-                    //     camera_controller.process_mouse(delta.0, delta.1);
-                    // }
                     let mut mouse_motion_events =
                         app.world.get_resource_mut::<Events<MouseMotion>>().unwrap();
                     mouse_motion_events.send(MouseMotion {
@@ -57,48 +52,6 @@ pub fn run(mut app: App) {
                     return;
                 }
 
-                // match event {
-                //     WindowEvent::CloseRequested => {
-                //         *control_flow = ControlFlow::Exit;
-                //         return;
-                //     }
-                //     WindowEvent::KeyboardInput {
-                //         input:
-                //             KeyboardInput {
-                //                 virtual_keycode: Some(key),
-                //                 state,
-                //                 ..
-                //             },
-                //         ..
-                //     } => {
-                //         let mut camera_controller =
-                //             app.world.get_resource_mut::<CameraController>().unwrap();
-                //         camera_controller.process_keyboard(key, state);
-                //     }
-                //     WindowEvent::MouseInput {
-                //         button: MouseButton::Left,
-                //         state,
-                //         ..
-                //     } => {
-                //         mouse_pressed = state == ElementState::Pressed;
-                //     }
-                //     WindowEvent::MouseWheel { delta, .. } => {
-                //         let mut camera_controller =
-                //             app.world.get_resource_mut::<CameraController>().unwrap();
-                //         camera_controller.process_scroll(&delta);
-                //     }
-                //     WindowEvent::Resized(physical_size) => {
-                //         let mut camera_controller =
-                //             app.world.get_resource_mut::<CameraController>().unwrap();
-                //         camera_controller.resize_from_size(physical_size);
-                //     }
-                //     WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-                //         let mut camera_controller =
-                //             app.world.get_resource_mut::<CameraController>().unwrap();
-                //         camera_controller.resize_from_size(*new_inner_size);
-                //     }
-                //     _ => return,
-                // }
                 match event {
                     WindowEvent::Resized(size) => {
                         let mut resize_events =
