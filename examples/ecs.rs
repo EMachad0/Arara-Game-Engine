@@ -1,9 +1,6 @@
 use arara::prelude::*;
 
 fn main() {
-    logger::init();
-    logger::debug_logging_level();
-
     App::builder()
         .add_plugin(GreetPeoplePlugin)
         .add_startup_system(hello_world.system())

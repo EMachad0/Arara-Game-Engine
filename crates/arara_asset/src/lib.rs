@@ -17,9 +17,6 @@ pub mod prelude {
     };
 }
 
-#[macro_use]
-extern crate arara_logger;
-
 pub use arara_utils::BoxedFuture;
 pub use asset_server::*;
 pub use assets::*;

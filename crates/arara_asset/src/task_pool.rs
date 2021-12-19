@@ -1,3 +1,4 @@
+use arara_utils::tracing::trace;
 use bevy_ecs::world::World;
 use bevy_tasks::{AsyncComputeTaskPool, ComputeTaskPool, IoTaskPool, TaskPoolBuilder};
 

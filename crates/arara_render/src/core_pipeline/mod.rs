@@ -4,6 +4,7 @@ mod prepare_phase;
 mod simple_mesh;
 
 use arara_app::prelude::*;
+use arara_utils::tracing::info;
 use arara_window::Window;
 use bevy_ecs::prelude::*;
 use glium::{Api, Profile, Version};
@@ -50,9 +51,9 @@ fn extract_core_pipeline_camera_phases(mut commands: Commands) {
 }
 
 fn debug_glium_backend_info(window: NonSend<Window>) {
-    let display = window.display();
+    let glium_display = window.display();
 
-    let version = *display.get_opengl_version();
+    let version = *glium_display.get_opengl_version();
     let api = match version {
         Version(Api::Gl, _, _) => "OpenGL",
         Version(Api::GlEs, _, _) => "OpenGL ES",
@@ -61,17 +62,17 @@ fn debug_glium_backend_info(window: NonSend<Window>) {
     info!(
         "{} context version: {}",
         api,
-        display.get_opengl_version_string()
+        glium_display.get_opengl_version_string()
     );
 
     info!("{} context flags:", api);
-    if display.is_forward_compatible() {
+    if glium_display.is_forward_compatible() {
         info!("\tforward-compatible");
     }
-    if display.is_debug() {
+    if glium_display.is_debug() {
         info!("\tdebug");
     }
-    if display.is_robust() {
+    if glium_display.is_robust() {
         info!("\trobustness");
     }
 
@@ -79,7 +80,7 @@ fn debug_glium_backend_info(window: NonSend<Window>) {
         info!(
             "{} profile mask: {}",
             api,
-            match display.get_opengl_profile() {
+            match glium_display.get_opengl_profile() {
                 Some(Profile::Core) => "core",
                 Some(Profile::Compatibility) => "compatibility",
                 None => "unknown",
@@ -90,7 +91,7 @@ fn debug_glium_backend_info(window: NonSend<Window>) {
     info!(
         "{} robustness strategy: {}",
         api,
-        if display.is_context_loss_possible() {
+        if glium_display.is_context_loss_possible() {
             "lose"
         } else {
             "none"
@@ -100,11 +101,11 @@ fn debug_glium_backend_info(window: NonSend<Window>) {
     info!(
         "{} context vendor: {}",
         api,
-        display.get_opengl_vendor_string()
+        glium_display.get_opengl_vendor_string()
     );
     info!(
         "{} context renderer: {}",
         api,
-        display.get_opengl_renderer_string()
+        glium_display.get_opengl_renderer_string()
     );
 }

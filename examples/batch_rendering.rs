@@ -3,7 +3,6 @@ use cgmath::Deg;
 use rand;
 
 fn main() {
-    logger::init();
     App::builder()
         .add_plugins(DefaultPlugins)
         .add_plugin(FrameTimeDiagnosticPlugin)

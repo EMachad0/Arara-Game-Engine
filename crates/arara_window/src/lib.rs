@@ -15,9 +15,6 @@ pub mod prelude {
     pub use crate::{event::*, window::Window, window_props::WindowProps, WindowPlugin};
 }
 
-#[macro_use]
-extern crate arara_logger;
-
 use arara_app::{AppBuilder, AppExit, EventReader, EventWriter, Plugin};
 use bevy_ecs::prelude::IntoSystem;
 

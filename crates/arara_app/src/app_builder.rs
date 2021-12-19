@@ -1,3 +1,4 @@
+use arara_utils::tracing::debug;
 use bevy_ecs::{
     component::Component,
     prelude::*,

@@ -17,9 +17,6 @@ pub mod prelude {
 
 use arara_app::prelude::*;
 
-#[macro_use]
-extern crate arara_logger;
-
 /// Adds core diagnostics resources to an App.
 #[derive(Default)]
 pub struct DiagnosticsPlugin;

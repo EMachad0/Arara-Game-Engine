@@ -1,5 +1,5 @@
 use crate::AppBuilder;
-use arara_utils::HashMap;
+use arara_utils::{tracing::debug, HashMap};
 use std::any::{Any, TypeId};
 
 /// Plugins use [AppBuilder] to configure an [App](crate::App). When an [App](crate::App) registers

@@ -1,3 +1,4 @@
+use arara_utils::tracing::trace;
 use glium::{
     self,
     glutin::{event::*, event_loop::ControlFlow},

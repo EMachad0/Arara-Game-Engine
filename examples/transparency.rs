@@ -3,7 +3,6 @@ use arara_particle_system::*;
 use cgmath::Deg;
 
 fn main() {
-    logger::init();
     App::builder()
         .add_plugins(DefaultPlugins)
         .add_plugin(CoordinateSystemPlugin)

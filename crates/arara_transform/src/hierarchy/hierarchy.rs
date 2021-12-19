@@ -1,4 +1,5 @@
 use crate::components::{Children, Parent};
+use arara_utils::tracing::debug;
 use bevy_ecs::{
     entity::Entity,
     system::{Command, EntityCommands},

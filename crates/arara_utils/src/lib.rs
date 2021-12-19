@@ -1,6 +1,7 @@
 pub use ahash::AHasher;
 use ahash::RandomState;
 use std::{cmp::Ordering, future::Future, ops::Neg, pin::Pin};
+pub use tracing;
 pub use uuid::Uuid;
 
 pub type BoxedFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;

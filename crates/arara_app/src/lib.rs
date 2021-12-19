@@ -18,9 +18,6 @@ pub mod prelude {
     };
 }
 
-#[macro_use]
-extern crate arara_logger;
-
 use bevy_ecs::schedule::StageLabel;
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]

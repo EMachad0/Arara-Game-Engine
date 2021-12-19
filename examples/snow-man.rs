@@ -2,7 +2,6 @@ use arara::prelude::*;
 use arara_particle_system::{ParticleSystem, ParticleSystemPlugin, SpawnShape, Value};
 
 fn main() {
-    logger::init();
     App::builder()
         .add_plugins(DefaultPlugins)
         .add_plugin(FrameTimeDiagnosticPlugin)

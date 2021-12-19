@@ -34,9 +34,6 @@ pub mod prelude {
     };
 }
 
-#[macro_use]
-extern crate arara_logger;
-
 use arara_app::{AppBuilder, CoreStage, Plugin};
 use bevy_ecs::prelude::*;
 

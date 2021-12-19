@@ -4,7 +4,6 @@ use arara_render::DefaultShader;
 use cgmath::Deg;
 
 fn main() {
-    logger::init();
     App::builder()
         .add_plugins(DefaultPlugins)
         .add_plugin(ParticleSystemPlugin)

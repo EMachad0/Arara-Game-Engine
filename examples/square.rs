@@ -1,9 +1,8 @@
 use arara::prelude::*;
-use arara_logger::debug;
+use arara_utils::tracing::debug;
 use cgmath::Deg;
 
 fn main() {
-    logger::init();
     App::builder()
         .add_plugins(DefaultPlugins)
         .add_startup_system(add_cubes.system())

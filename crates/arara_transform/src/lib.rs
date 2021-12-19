@@ -10,9 +10,6 @@ pub mod prelude {
     pub use crate::{components::*, hierarchy::*, TransformPlugin};
 }
 
-#[macro_use]
-extern crate arara_logger;
-
 use arara_app::prelude::*;
 use bevy_ecs::{
     schedule::{ParallelSystemDescriptorCoercion, SystemLabel},

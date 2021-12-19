@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 ahash = "*"
 uuid = { version = "*", features = ["v4", "serde"] }
+tracing = {version = "0.1", features = ["release_max_level_info"]}
