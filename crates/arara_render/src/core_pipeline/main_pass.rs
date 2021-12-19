@@ -179,19 +179,23 @@ pub fn main_pass(
             let (mesh, global_transform, color, image_handle) =
                 query.get(transparent.entity).unwrap();
 
-            let tex_id = match textures_index.get(image_handle) {
-                Some(index) => index.to_owned(),
-                None => match images.get(image_handle) {
-                    Some(image) => {
-                        let texture =
-                            RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
-                        let index = textures.len() as u32;
-                        textures.push(texture);
-                        textures_index.insert(image_handle.clone(), index);
-                        index
-                    }
-                    None => continue,
-                },
+            let tex_id = if *image_handle == Handle::<Image>::default() {
+                0
+            } else {
+                match textures_index.get(image_handle) {
+                    Some(index) => index.to_owned(),
+                    None => match images.get(image_handle) {
+                        Some(image) => {
+                            let texture =
+                                RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
+                            let index = textures.len() as u32;
+                            textures.push(texture);
+                            textures_index.insert(image_handle.clone(), index);
+                            index
+                        }
+                        None => continue,
+                    },
+                }
             };
 
             let mesh = meshes.get(mesh).unwrap();
