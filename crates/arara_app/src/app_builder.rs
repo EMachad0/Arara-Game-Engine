@@ -1,9 +1,17 @@
-use bevy_ecs::{component::Component, prelude::*, schedule::{RunOnce, SystemDescriptor}};
+use bevy_ecs::{
+    component::Component,
+    prelude::*,
+    schedule::{RunOnce, SystemDescriptor},
+};
 
-use crate::{AppExit, CoreStage, Events, StartupStage, app::App, plugin::{Plugin, PluginGroup, PluginGroupBuilder}};
+use crate::{
+    app::App,
+    plugin::{Plugin, PluginGroup, PluginGroupBuilder},
+    AppExit, CoreStage, Events, StartupStage,
+};
 
 pub struct AppBuilder {
-    pub app : App,
+    pub app: App,
 }
 
 impl Default for AppBuilder {
@@ -11,8 +19,7 @@ impl Default for AppBuilder {
         let mut app_builder = Self {
             app: App::default(),
         };
-        app_builder.add_core_stages()
-            .add_event::<AppExit>();
+        app_builder.add_core_stages().add_event::<AppExit>();
         app_builder
     }
 }
@@ -23,8 +30,8 @@ impl AppBuilder {
     }
 
     pub fn set_runnable<T>(&mut self, runnable: T) -> &mut Self
-    where 
-        T: 'static + Fn(App)
+    where
+        T: 'static + Fn(App),
     {
         self.app.runnable = Box::new(runnable);
         self
@@ -33,7 +40,7 @@ impl AppBuilder {
     pub fn world(&self) -> &World {
         &self.app.world
     }
-    
+
     pub fn world_mut(&mut self) -> &mut World {
         &mut self.app.world
     }
@@ -88,7 +95,7 @@ impl AppBuilder {
     pub fn add_system_to_stage(
         &mut self,
         stage_label: impl StageLabel,
-        system: impl Into<SystemDescriptor>
+        system: impl Into<SystemDescriptor>,
     ) -> &mut Self {
         self.app.schedule.add_system_to_stage(stage_label, system);
         self
@@ -101,11 +108,13 @@ impl AppBuilder {
     pub fn add_system_to_startup_stage(
         &mut self,
         stage_label: impl StageLabel,
-        system: impl Into<SystemDescriptor>
+        system: impl Into<SystemDescriptor>,
     ) -> &mut Self {
-        self.app.schedule.stage(CoreStage::Startup, |schedule: &mut Schedule| {
-            schedule.add_system_to_stage(stage_label, system)
-        });
+        self.app
+            .schedule
+            .stage(CoreStage::Startup, |schedule: &mut Schedule| {
+                schedule.add_system_to_stage(stage_label, system)
+            });
         self
     }
 
@@ -157,7 +166,7 @@ impl AppBuilder {
                     .with_stage(StartupStage::PreStartup, SystemStage::parallel())
                     .with_stage(StartupStage::Startup, SystemStage::parallel())
                     .with_stage(StartupStage::PostStartup, SystemStage::parallel()),
-                )
+            )
             .add_stage(CoreStage::PreUpdate, SystemStage::parallel())
             .add_stage(CoreStage::Update, SystemStage::parallel())
             .add_stage(CoreStage::PostUpdate, SystemStage::parallel())
@@ -168,6 +177,9 @@ impl AppBuilder {
         T: Component,
     {
         self.insert_resource(Events::<T>::default())
-            .add_system_to_stage(CoreStage::EventUpdateStage, Events::<T>::update_system.system())
+            .add_system_to_stage(
+                CoreStage::EventUpdateStage,
+                Events::<T>::update_system.system(),
+            )
     }
 }

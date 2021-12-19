@@ -1,6 +1,4 @@
-use bevy_ecs::{
-    entity::{Entity, EntityMap, MapEntities, MapEntitiesError},
-};
+use bevy_ecs::entity::{Entity, EntityMap, MapEntities, MapEntitiesError};
 use smallvec::SmallVec;
 use std::ops::Deref;
 

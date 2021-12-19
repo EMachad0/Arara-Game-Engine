@@ -1,4 +1,4 @@
-use crate::geometry::{Vertex, Mesh};
+use crate::geometry::{Mesh, Vertex};
 
 pub struct Cuboid {
     x_length: f32,
@@ -33,7 +33,11 @@ impl Default for Cuboid {
 
 impl From<Cuboid> for Mesh {
     fn from(cuboid: Cuboid) -> Self {
-        let Cuboid {x_length, y_length, z_length} = cuboid;
+        let Cuboid {
+            x_length,
+            y_length,
+            z_length,
+        } = cuboid;
 
         let sp = Cords {
             max_x: x_length / 2.0,
@@ -46,32 +50,128 @@ impl From<Cuboid> for Mesh {
 
         let vertices = vec![
             // Top
-            Vertex {position: [sp.min_x, sp.min_y, sp.max_z], normal: [0., 0., 1.0],  tex_coords: [0., 0.]},
-            Vertex {position: [sp.max_x, sp.min_y, sp.max_z], normal: [0., 0., 1.0],  tex_coords: [1.0, 0.]},
-            Vertex {position: [sp.max_x, sp.max_y, sp.max_z], normal: [0., 0., 1.0],  tex_coords: [1.0, 1.0]},
-            Vertex {position: [sp.min_x, sp.max_y, sp.max_z], normal: [0., 0., 1.0],  tex_coords: [0., 1.0]}, 
-            Vertex {position: [sp.min_x, sp.max_y, sp.min_z], normal: [0., 0., -1.0], tex_coords:  [1.0, 0.]},
-            Vertex {position: [sp.max_x, sp.max_y, sp.min_z], normal: [0., 0., -1.0], tex_coords:  [0., 0.]},
-            Vertex {position: [sp.max_x, sp.min_y, sp.min_z], normal: [0., 0., -1.0], tex_coords:  [0., 1.0]},
-            Vertex {position: [sp.min_x, sp.min_y, sp.min_z], normal: [0., 0., -1.0], tex_coords:  [1.0, 1.0]},
-            Vertex {position: [sp.max_x, sp.min_y, sp.min_z], normal: [1.0, 0., 0.],  tex_coords: [0., 0.]},
-            Vertex {position: [sp.max_x, sp.max_y, sp.min_z], normal: [1.0, 0., 0.],  tex_coords: [1.0, 0.]},
-            Vertex {position: [sp.max_x, sp.max_y, sp.max_z], normal: [1.0, 0., 0.],  tex_coords: [1.0, 1.0]},
-            Vertex {position: [sp.max_x, sp.min_y, sp.max_z], normal: [1.0, 0., 0.],  tex_coords: [0., 1.0]},
-            Vertex {position: [sp.min_x, sp.min_y, sp.max_z], normal: [-1.0, 0., 0.], tex_coords:  [1.0, 0.]},
-            Vertex {position: [sp.min_x, sp.max_y, sp.max_z], normal: [-1.0, 0., 0.], tex_coords:  [0., 0.]},
-            Vertex {position: [sp.min_x, sp.max_y, sp.min_z], normal: [-1.0, 0., 0.], tex_coords:  [0., 1.0]},
-            Vertex {position: [sp.min_x, sp.min_y, sp.min_z], normal: [-1.0, 0., 0.], tex_coords:  [1.0, 1.0]},
-            Vertex {position: [sp.max_x, sp.max_y, sp.min_z], normal: [0., 1.0, 0.],  tex_coords: [1.0, 0.]},
-            Vertex {position: [sp.min_x, sp.max_y, sp.min_z], normal: [0., 1.0, 0.],  tex_coords: [0., 0.]},
-            Vertex {position: [sp.min_x, sp.max_y, sp.max_z], normal: [0., 1.0, 0.],  tex_coords: [0., 1.0]},
-            Vertex {position: [sp.max_x, sp.max_y, sp.max_z], normal: [0., 1.0, 0.],  tex_coords: [1.0, 1.0]},
-            Vertex {position: [sp.max_x, sp.min_y, sp.max_z], normal: [0., -1.0, 0.], tex_coords:  [0., 0.]},
-            Vertex {position: [sp.min_x, sp.min_y, sp.max_z], normal: [0., -1.0, 0.], tex_coords:  [1.0, 0.]},
-            Vertex {position: [sp.min_x, sp.min_y, sp.min_z], normal: [0., -1.0, 0.], tex_coords:  [1.0, 1.0]},
-            Vertex {position: [sp.max_x, sp.min_y, sp.min_z], normal: [0., -1.0, 0.], tex_coords:  [0., 1.0]},
+            Vertex {
+                position: [sp.min_x, sp.min_y, sp.max_z],
+                normal: [0., 0., 1.0],
+                tex_coords: [0., 0.],
+            },
+            Vertex {
+                position: [sp.max_x, sp.min_y, sp.max_z],
+                normal: [0., 0., 1.0],
+                tex_coords: [1.0, 0.],
+            },
+            Vertex {
+                position: [sp.max_x, sp.max_y, sp.max_z],
+                normal: [0., 0., 1.0],
+                tex_coords: [1.0, 1.0],
+            },
+            Vertex {
+                position: [sp.min_x, sp.max_y, sp.max_z],
+                normal: [0., 0., 1.0],
+                tex_coords: [0., 1.0],
+            },
+            Vertex {
+                position: [sp.min_x, sp.max_y, sp.min_z],
+                normal: [0., 0., -1.0],
+                tex_coords: [1.0, 0.],
+            },
+            Vertex {
+                position: [sp.max_x, sp.max_y, sp.min_z],
+                normal: [0., 0., -1.0],
+                tex_coords: [0., 0.],
+            },
+            Vertex {
+                position: [sp.max_x, sp.min_y, sp.min_z],
+                normal: [0., 0., -1.0],
+                tex_coords: [0., 1.0],
+            },
+            Vertex {
+                position: [sp.min_x, sp.min_y, sp.min_z],
+                normal: [0., 0., -1.0],
+                tex_coords: [1.0, 1.0],
+            },
+            Vertex {
+                position: [sp.max_x, sp.min_y, sp.min_z],
+                normal: [1.0, 0., 0.],
+                tex_coords: [0., 0.],
+            },
+            Vertex {
+                position: [sp.max_x, sp.max_y, sp.min_z],
+                normal: [1.0, 0., 0.],
+                tex_coords: [1.0, 0.],
+            },
+            Vertex {
+                position: [sp.max_x, sp.max_y, sp.max_z],
+                normal: [1.0, 0., 0.],
+                tex_coords: [1.0, 1.0],
+            },
+            Vertex {
+                position: [sp.max_x, sp.min_y, sp.max_z],
+                normal: [1.0, 0., 0.],
+                tex_coords: [0., 1.0],
+            },
+            Vertex {
+                position: [sp.min_x, sp.min_y, sp.max_z],
+                normal: [-1.0, 0., 0.],
+                tex_coords: [1.0, 0.],
+            },
+            Vertex {
+                position: [sp.min_x, sp.max_y, sp.max_z],
+                normal: [-1.0, 0., 0.],
+                tex_coords: [0., 0.],
+            },
+            Vertex {
+                position: [sp.min_x, sp.max_y, sp.min_z],
+                normal: [-1.0, 0., 0.],
+                tex_coords: [0., 1.0],
+            },
+            Vertex {
+                position: [sp.min_x, sp.min_y, sp.min_z],
+                normal: [-1.0, 0., 0.],
+                tex_coords: [1.0, 1.0],
+            },
+            Vertex {
+                position: [sp.max_x, sp.max_y, sp.min_z],
+                normal: [0., 1.0, 0.],
+                tex_coords: [1.0, 0.],
+            },
+            Vertex {
+                position: [sp.min_x, sp.max_y, sp.min_z],
+                normal: [0., 1.0, 0.],
+                tex_coords: [0., 0.],
+            },
+            Vertex {
+                position: [sp.min_x, sp.max_y, sp.max_z],
+                normal: [0., 1.0, 0.],
+                tex_coords: [0., 1.0],
+            },
+            Vertex {
+                position: [sp.max_x, sp.max_y, sp.max_z],
+                normal: [0., 1.0, 0.],
+                tex_coords: [1.0, 1.0],
+            },
+            Vertex {
+                position: [sp.max_x, sp.min_y, sp.max_z],
+                normal: [0., -1.0, 0.],
+                tex_coords: [0., 0.],
+            },
+            Vertex {
+                position: [sp.min_x, sp.min_y, sp.max_z],
+                normal: [0., -1.0, 0.],
+                tex_coords: [1.0, 0.],
+            },
+            Vertex {
+                position: [sp.min_x, sp.min_y, sp.min_z],
+                normal: [0., -1.0, 0.],
+                tex_coords: [1.0, 1.0],
+            },
+            Vertex {
+                position: [sp.max_x, sp.min_y, sp.min_z],
+                normal: [0., -1.0, 0.],
+                tex_coords: [0., 1.0],
+            },
         ];
-        
+
         let indices = vec![
             0, 1, 2, 2, 3, 0, // top
             4, 5, 6, 6, 7, 4, // bottom
@@ -81,9 +181,6 @@ impl From<Cuboid> for Mesh {
             20, 21, 22, 22, 23, 20, // back
         ];
 
-        Self {
-            vertices,
-            indices,
-        }
+        Self { vertices, indices }
     }
 }

@@ -1,6 +1,6 @@
+use crate::render_phase::PhaseItem;
 use arara_utils::FloatOrd;
 use bevy_ecs::prelude::Entity;
-use crate::render_phase::PhaseItem;
 
 pub struct Opaque {
     pub distance: f32,

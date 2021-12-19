@@ -1,18 +1,25 @@
-use arara_asset::{Handle, Assets};
+use arara_asset::{Assets, Handle};
 use arara_camera::FlyCamera;
 use arara_transform::GlobalTransform;
 use bevy_ecs::prelude::*;
-use glam::{Mat4, vec4};
+use glam::{vec4, Mat4};
 
-use crate::{Mesh, Color, Image, Visibility, Opaque, Transparent, render_phase::RenderPhase};
+use crate::{render_phase::RenderPhase, Color, Image, Mesh, Opaque, Transparent, Visibility};
 
 pub fn prepare_core_pass(
-    mut opaques: ResMut<RenderPhase::<Opaque>>,
-    mut transparents: ResMut<RenderPhase::<Transparent>>,
+    mut opaques: ResMut<RenderPhase<Opaque>>,
+    mut transparents: ResMut<RenderPhase<Transparent>>,
     mut fly_camera: ResMut<FlyCamera>,
     meshes: Res<Assets<Mesh>>,
     images: Res<Assets<Image>>,
-    query: Query<(Entity, &Handle<Mesh>, &GlobalTransform, &Color, &Option::<Handle<Image>>, &Visibility)>,
+    query: Query<(
+        Entity,
+        &Handle<Mesh>,
+        &GlobalTransform,
+        &Color,
+        &Option<Handle<Image>>,
+        &Visibility,
+    )>,
 ) {
     let pv_matrix = fly_camera.calc_matrix();
 
@@ -25,7 +32,7 @@ pub fn prepare_core_pass(
             Some(handle) => match images.get(handle) {
                 Some(image) => image.translucent,
                 None => continue,
-            }
+            },
             None => false,
         };
 
@@ -40,15 +47,9 @@ pub fn prepare_core_pass(
         let distance = -position.z.abs();
 
         if transparent {
-            transparents.add(Transparent {
-                distance,
-                entity,
-            });
+            transparents.add(Transparent { distance, entity });
         } else {
-            opaques.add(Opaque {
-                distance,
-                entity,
-            });
+            opaques.add(Opaque { distance, entity });
         }
     }
 }

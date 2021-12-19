@@ -1,5 +1,5 @@
-use bevy_reflect::{Reflect, ReflectDeserialize};
 use arara_utils::AHasher;
+use bevy_reflect::{Reflect, ReflectDeserialize};
 use serde::{Deserialize, Serialize};
 use std::{
     borrow::Cow,

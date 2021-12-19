@@ -1,6 +1,5 @@
 use crate::WindowMode;
 
-
 #[derive(Debug, Clone)]
 pub struct WindowProps {
     pub width: u32,
@@ -12,7 +11,6 @@ pub struct WindowProps {
     pub cursor_visible: bool,
     pub cursor_locked: bool,
     pub mode: WindowMode,
-
 }
 
 impl Default for WindowProps {

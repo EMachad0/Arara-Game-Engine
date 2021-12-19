@@ -1,4 +1,7 @@
-use bevy_ecs::{schedule::{Schedule, Stage}, world::World};
+use bevy_ecs::{
+    schedule::{Schedule, Stage},
+    world::World,
+};
 
 use crate::app_builder::AppBuilder;
 

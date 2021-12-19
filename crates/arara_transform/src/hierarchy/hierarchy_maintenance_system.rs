@@ -1,10 +1,10 @@
 use crate::components::*;
+use arara_utils::HashMap;
 use bevy_ecs::{
     entity::Entity,
     query::Without,
     system::{Commands, Query},
 };
-use arara_utils::HashMap;
 use smallvec::SmallVec;
 
 pub fn parent_update_system(

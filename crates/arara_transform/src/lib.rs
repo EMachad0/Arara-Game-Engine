@@ -7,11 +7,7 @@ pub use hierarchy::*;
 pub use transform_propagate_system::*;
 
 pub mod prelude {
-    pub use crate::{
-        components::*,
-        hierarchy::*,
-        TransformPlugin
-    };
+    pub use crate::{components::*, hierarchy::*, TransformPlugin};
 }
 
 #[macro_use]
@@ -36,30 +32,30 @@ impl Plugin for TransformPlugin {
     fn build(&self, app: &mut AppBuilder) {
         // add transform systems to startup so the first update is "correct"
         app.add_startup_system_to_stage(
-                StartupStage::PostStartup,
-                parent_update_system
-                    .system()
-                    .label(TransformSystem::ParentUpdate),
-            )
-            .add_startup_system_to_stage(
-                StartupStage::PostStartup,
-                transform_propagate_system::transform_propagate_system
-                    .system()
-                    .label(TransformSystem::TransformPropagate)
-                    .after(TransformSystem::ParentUpdate),
-            )
-            .add_system_to_stage(
-                CoreStage::PostUpdate,
-                parent_update_system
-                    .system()
-                    .label(TransformSystem::ParentUpdate),
-            )
-            .add_system_to_stage(
-                CoreStage::PostUpdate,
-                transform_propagate_system::transform_propagate_system
-                    .system()
-                    .label(TransformSystem::TransformPropagate)
-                    .after(TransformSystem::ParentUpdate),
-            );
+            StartupStage::PostStartup,
+            parent_update_system
+                .system()
+                .label(TransformSystem::ParentUpdate),
+        )
+        .add_startup_system_to_stage(
+            StartupStage::PostStartup,
+            transform_propagate_system::transform_propagate_system
+                .system()
+                .label(TransformSystem::TransformPropagate)
+                .after(TransformSystem::ParentUpdate),
+        )
+        .add_system_to_stage(
+            CoreStage::PostUpdate,
+            parent_update_system
+                .system()
+                .label(TransformSystem::ParentUpdate),
+        )
+        .add_system_to_stage(
+            CoreStage::PostUpdate,
+            transform_propagate_system::transform_propagate_system
+                .system()
+                .label(TransformSystem::TransformPropagate)
+                .after(TransformSystem::ParentUpdate),
+        );
     }
 }

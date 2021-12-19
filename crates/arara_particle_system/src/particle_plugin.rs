@@ -1,4 +1,4 @@
-use arara_app::{Plugin, AppBuilder, StartupStage};
+use arara_app::{AppBuilder, Plugin, StartupStage};
 use bevy_ecs::system::IntoSystem;
 
 use crate::particle_system::{init_particles, update_particles};

@@ -1,7 +1,7 @@
 use std::f32::consts::PI;
 
 use arara_asset::Handle;
-use arara_render::{Billboard, Color, Image, Mesh, SimpleMeshBundle, Visibility, ColorOrGradient};
+use arara_render::{Billboard, Color, ColorOrGradient, Image, Mesh, SimpleMeshBundle, Visibility};
 use arara_time::{Time, Timer};
 use arara_transform::{BuildChildren, Children, GlobalTransform, Transform};
 use bevy_ecs::prelude::{Bundle, Commands, Entity, Query, Res};
@@ -62,7 +62,9 @@ pub fn update_particles(
 
         if let Some(children) = children {
             for child in children.iter() {
-                if let Ok((mut particle, mut visibility, mut color, mut transform)) = query.get_mut(*child) {
+                if let Ok((mut particle, mut visibility, mut color, mut transform)) =
+                    query.get_mut(*child)
+                {
                     if !visibility.active
                         && spawn_count < particle_system.spawn_quantity
                         && particle_system.timer.just_finished()
@@ -86,7 +88,9 @@ pub fn update_particles(
                             particle.time_remaining -= time.delta_seconds();
                             transform.translation +=
                                 particle.direction * time.delta_seconds() * particle.velocity;
-                            if let ColorOrGradient::Gradient(gradient) = &particle_system.particle_color {
+                            if let ColorOrGradient::Gradient(gradient) =
+                                &particle_system.particle_color
+                            {
                                 let t = 1. - particle.time_remaining / particle_system.lifetime;
                                 *color = gradient.at(t);
                             }

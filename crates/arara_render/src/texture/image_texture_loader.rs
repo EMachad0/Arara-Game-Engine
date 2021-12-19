@@ -1,7 +1,7 @@
 use anyhow::Result;
-use thiserror::Error;
 use arara_asset::{AssetLoader, LoadContext, LoadedAsset};
 use arara_utils::BoxedFuture;
+use thiserror::Error;
 
 use crate::texture::{Image, ImageType, TextureError};
 
@@ -9,7 +9,7 @@ use crate::texture::{Image, ImageType, TextureError};
 #[derive(Clone, Default)]
 pub struct ImageTextureLoader;
 
-const FILE_EXTENSIONS: &[&str] = &["png", "jpg", "jpeg", /*"dds", "tga", "bmp"*/];
+const FILE_EXTENSIONS: &[&str] = &["png", "jpg", "jpeg" /*"dds", "tga", "bmp"*/];
 
 impl AssetLoader for ImageTextureLoader {
     fn load<'a>(

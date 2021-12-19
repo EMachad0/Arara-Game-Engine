@@ -24,7 +24,7 @@ pub mod app {
 }
 
 pub mod ecs {
-    pub use bevy_ecs::*;    
+    pub use bevy_ecs::*;
 }
 
 pub mod utils {

@@ -1,5 +1,5 @@
-pub use std::time::{Duration, Instant};
 use bevy_ecs::system::ResMut;
+pub use std::time::{Duration, Instant};
 
 /// Tracks elapsed time since the last update and since the App has started
 /// Updates on [`CoreState::First`]

@@ -1,4 +1,4 @@
-use crate::{Stopwatch, Duration};
+use crate::{Duration, Stopwatch};
 
 /// Tracks elapsed time. Enters the finished state once `duration` is reached.
 ///

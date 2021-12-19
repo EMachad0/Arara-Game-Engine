@@ -1,9 +1,12 @@
-use glium::{self, glutin::{event::*, event_loop::ControlFlow}};
+use glium::{
+    self,
+    glutin::{event::*, event_loop::ControlFlow},
+};
 
 use arara_app::{App, AppExit, Events, ManualEventReader};
 use arara_input::{keyboard::KeyboardInput, mouse::*};
 
-use crate::{EventLoop, Window, converters, event::*};
+use crate::{converters, event::*, EventLoop, Window};
 
 pub fn run(mut app: App) {
     let mut app_exit_event_reader = ManualEventReader::<AppExit>::default();
@@ -14,7 +17,6 @@ pub fn run(mut app: App) {
 
     trace!("Entering winit event loop");
     event_loop.run(move |ev, _, control_flow| {
-
         // update_camera(&mut app.world);
         *control_flow = ControlFlow::Poll;
 
@@ -37,7 +39,8 @@ pub fn run(mut app: App) {
                     //         app.world.get_resource_mut::<CameraController>().unwrap();
                     //     camera_controller.process_mouse(delta.0, delta.1);
                     // }
-                    let mut mouse_motion_events = app.world.get_resource_mut::<Events<MouseMotion>>().unwrap();
+                    let mut mouse_motion_events =
+                        app.world.get_resource_mut::<Events<MouseMotion>>().unwrap();
                     mouse_motion_events.send(MouseMotion {
                         delta: (delta.0 as f32, delta.1 as f32),
                     });
@@ -47,7 +50,7 @@ pub fn run(mut app: App) {
             Event::WindowEvent { event, window_id } => {
                 let world = app.world.cell();
                 let mut window = world.get_non_send_mut::<Window>().unwrap();
-                
+
                 if window_id != window.display().gl_window().window().id() {
                     trace!("recieved event for unknown window_id");
                     return;
@@ -97,7 +100,8 @@ pub fn run(mut app: App) {
                 // }
                 match event {
                     WindowEvent::Resized(size) => {
-                        let mut resize_events = world.get_resource_mut::<Events<WindowResized>>().unwrap();
+                        let mut resize_events =
+                            world.get_resource_mut::<Events<WindowResized>>().unwrap();
                         window.update_actual_size_from_backend(size.width, size.height);
                         resize_events.send(WindowResized {
                             width: size.width,
@@ -111,24 +115,26 @@ pub fn run(mut app: App) {
                         window_close_requested_events.send(WindowCloseRequested);
                     }
                     WindowEvent::KeyboardInput { ref input, .. } => {
-                        let mut keyboard_input_events = world.get_resource_mut::<Events<KeyboardInput>>().unwrap();
+                        let mut keyboard_input_events =
+                            world.get_resource_mut::<Events<KeyboardInput>>().unwrap();
                         keyboard_input_events.send(converters::convert_keyboard_input(input));
                     }
                     WindowEvent::CursorMoved { position, .. } => {
-                        let mut cursor_moved_events = world.get_resource_mut::<Events<CursorMoved>>().unwrap();
+                        let mut cursor_moved_events =
+                            world.get_resource_mut::<Events<CursorMoved>>().unwrap();
                         // let position = position.to_logical(winit_window.scale_factor());
                         let position = (position.x as f32, position.y as f32);
                         window.update_cursor_position_from_backend(Some(position));
-                        cursor_moved_events.send(CursorMoved {
-                            position,
-                        });
+                        cursor_moved_events.send(CursorMoved { position });
                     }
                     WindowEvent::CursorEntered { .. } => {
-                        let mut cursor_entered_events = world.get_resource_mut::<Events<CursorEntered>>().unwrap();
+                        let mut cursor_entered_events =
+                            world.get_resource_mut::<Events<CursorEntered>>().unwrap();
                         cursor_entered_events.send(CursorEntered);
                     }
                     WindowEvent::CursorLeft { .. } => {
-                        let mut cursor_left_events = world.get_resource_mut::<Events<CursorLeft>>().unwrap();
+                        let mut cursor_left_events =
+                            world.get_resource_mut::<Events<CursorLeft>>().unwrap();
                         window.update_cursor_position_from_backend(None);
                         cursor_left_events.send(CursorLeft);
                     }
@@ -143,7 +149,8 @@ pub fn run(mut app: App) {
                     }
                     WindowEvent::MouseWheel { delta, .. } => match delta {
                         MouseScrollDelta::LineDelta(x, y) => {
-                            let mut mouse_wheel_input_events = world.get_resource_mut::<Events<MouseWheel>>().unwrap();
+                            let mut mouse_wheel_input_events =
+                                world.get_resource_mut::<Events<MouseWheel>>().unwrap();
                             mouse_wheel_input_events.send(MouseWheel {
                                 unit: MouseScrollUnit::Line,
                                 x,
@@ -151,7 +158,8 @@ pub fn run(mut app: App) {
                             });
                         }
                         MouseScrollDelta::PixelDelta(p) => {
-                            let mut mouse_wheel_input_events = world.get_resource_mut::<Events<MouseWheel>>().unwrap();
+                            let mut mouse_wheel_input_events =
+                                world.get_resource_mut::<Events<MouseWheel>>().unwrap();
                             mouse_wheel_input_events.send(MouseWheel {
                                 unit: MouseScrollUnit::Pixel,
                                 x: p.x as f32,
@@ -160,10 +168,10 @@ pub fn run(mut app: App) {
                         }
                     },
                     WindowEvent::ReceivedCharacter(c) => {
-                        let mut char_input_events = world.get_resource_mut::<Events<ReceivedCharacter>>().unwrap();
-                        char_input_events.send(ReceivedCharacter {
-                            char: c,
-                        })
+                        let mut char_input_events = world
+                            .get_resource_mut::<Events<ReceivedCharacter>>()
+                            .unwrap();
+                        char_input_events.send(ReceivedCharacter { char: c })
                     }
                     WindowEvent::ScaleFactorChanged {
                         scale_factor,
@@ -173,14 +181,12 @@ pub fn run(mut app: App) {
                             let mut scale_factor_change_events = world
                                 .get_resource_mut::<Events<WindowScaleFactorChanged>>()
                                 .unwrap();
-                            scale_factor_change_events.send(WindowScaleFactorChanged {
-                                scale_factor,
-                            });
+                            scale_factor_change_events
+                                .send(WindowScaleFactorChanged { scale_factor });
                         }
                         {
-                            let mut resize_events = world
-                                .get_resource_mut::<Events<WindowResized>>()
-                                .unwrap();
+                            let mut resize_events =
+                                world.get_resource_mut::<Events<WindowResized>>().unwrap();
                             resize_events.send(WindowResized {
                                 width: new_inner_size.width,
                                 height: new_inner_size.height,
@@ -193,33 +199,29 @@ pub fn run(mut app: App) {
                     }
                     WindowEvent::Focused(focused) => {
                         window.update_focused_status_from_backend(focused);
-                        let mut focused_events = world.get_resource_mut::<Events<WindowFocused>>().unwrap();
-                        focused_events.send(WindowFocused {
-                            focused,
-                        });
+                        let mut focused_events =
+                            world.get_resource_mut::<Events<WindowFocused>>().unwrap();
+                        focused_events.send(WindowFocused { focused });
                     }
                     WindowEvent::DroppedFile(path_buf) => {
-                        let mut events = world.get_resource_mut::<Events<FileDragAndDrop>>().unwrap();
-                        events.send(FileDragAndDrop::DroppedFile {
-                            path_buf,
-                        });
+                        let mut events =
+                            world.get_resource_mut::<Events<FileDragAndDrop>>().unwrap();
+                        events.send(FileDragAndDrop::DroppedFile { path_buf });
                     }
                     WindowEvent::HoveredFile(path_buf) => {
-                        let mut events = world.get_resource_mut::<Events<FileDragAndDrop>>().unwrap();
-                        events.send(FileDragAndDrop::HoveredFile {
-                            path_buf,
-                        });
+                        let mut events =
+                            world.get_resource_mut::<Events<FileDragAndDrop>>().unwrap();
+                        events.send(FileDragAndDrop::HoveredFile { path_buf });
                     }
                     WindowEvent::HoveredFileCancelled => {
-                        let mut events = world.get_resource_mut::<Events<FileDragAndDrop>>().unwrap();
+                        let mut events =
+                            world.get_resource_mut::<Events<FileDragAndDrop>>().unwrap();
                         events.send(FileDragAndDrop::HoveredFileCancelled);
                     }
                     WindowEvent::Moved(position) => {
                         let position = (position.x, position.y);
                         let mut events = world.get_resource_mut::<Events<WindowMoved>>().unwrap();
-                        events.send(WindowMoved {
-                            position,
-                        });
+                        events.send(WindowMoved { position });
                     }
                     _ => {}
                 }

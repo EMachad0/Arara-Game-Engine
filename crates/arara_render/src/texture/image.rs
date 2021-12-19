@@ -23,11 +23,7 @@ impl Image {
     /// # Panics
     /// Panics if the length of the `data`, volume of the `size` and the size of the `format`
     /// do not match.
-    pub fn new(
-        data: Vec<u8>,
-        dimensions: (u32, u32),
-        translucent: bool,
-    ) -> Self {
+    pub fn new(data: Vec<u8>, dimensions: (u32, u32), translucent: bool) -> Self {
         Self {
             data,
             dimensions,

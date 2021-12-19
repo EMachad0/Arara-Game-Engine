@@ -1,4 +1,4 @@
-use crate::geometry::{Vertex, Mesh};
+use crate::geometry::{Mesh, Vertex};
 
 pub struct Square {
     x_lenght: f32,
@@ -13,10 +13,7 @@ impl Default for Square {
 
 impl Square {
     pub fn new(x_lenght: f32, y_lenght: f32) -> Self {
-        Self {
-            x_lenght,
-            y_lenght,
-        }
+        Self { x_lenght, y_lenght }
     }
 }
 
@@ -27,20 +24,30 @@ impl From<Square> for Mesh {
         let normal = [0.0, 0.0, -1.0];
 
         let vertices = vec![
-            Vertex { position: [-hx, -hy, 0.0], tex_coords: [0.0, 0.0], normal },
-            Vertex { position: [-hx,  hy, 0.0], tex_coords: [0.0, 1.0], normal },
-            Vertex { position: [ hx,  hy, 0.0], tex_coords: [1.0, 1.0], normal },
-            Vertex { position: [ hx, -hy, 0.0], tex_coords: [1.0, 0.0], normal },
+            Vertex {
+                position: [-hx, -hy, 0.0],
+                tex_coords: [0.0, 0.0],
+                normal,
+            },
+            Vertex {
+                position: [-hx, hy, 0.0],
+                tex_coords: [0.0, 1.0],
+                normal,
+            },
+            Vertex {
+                position: [hx, hy, 0.0],
+                tex_coords: [1.0, 1.0],
+                normal,
+            },
+            Vertex {
+                position: [hx, -hy, 0.0],
+                tex_coords: [1.0, 0.0],
+                normal,
+            },
         ];
 
-        let indices = vec![
-            0, 1, 2,
-            0, 2, 3,
-        ];
+        let indices = vec![0, 1, 2, 0, 2, 3];
 
-        Self {
-            vertices,
-            indices,
-        }
+        Self { vertices, indices }
     }
 }

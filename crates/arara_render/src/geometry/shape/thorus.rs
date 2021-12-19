@@ -18,18 +18,23 @@ impl Thorus {
         radius: f32,
         ring_radius: f32,
     ) -> Self {
-       Self {
-           subdivisions_segments,
-           subdivisions_sides,
-           radius,
-           ring_radius
-       }
+        Self {
+            subdivisions_segments,
+            subdivisions_sides,
+            radius,
+            ring_radius,
+        }
     }
 }
 
 impl From<Thorus> for Mesh {
     fn from(thorus: Thorus) -> Mesh {
-        let Thorus { subdivisions_segments, subdivisions_sides, radius, ring_radius } = thorus;
+        let Thorus {
+            subdivisions_segments,
+            subdivisions_sides,
+            radius,
+            ring_radius,
+        } = thorus;
 
         let n_vertices = (subdivisions_segments + 1) * (subdivisions_sides + 1);
         let mut vertices = Vec::with_capacity(n_vertices as usize);

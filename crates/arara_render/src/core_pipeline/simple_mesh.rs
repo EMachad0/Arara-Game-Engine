@@ -1,8 +1,8 @@
 use bevy_ecs::prelude::*;
-use glam::{Vec3, vec3};
+use glam::{vec3, Vec3};
 
-use crate::{Color, Image, prelude::Visibility, geometry::Mesh, Shader};
-use arara_asset::{Handle, AssetServer};
+use crate::{geometry::Mesh, prelude::Visibility, Color, Image, Shader};
+use arara_asset::{AssetServer, Handle};
 use arara_transform::{GlobalTransform, Transform};
 
 #[derive(Bundle, Default)]
@@ -11,7 +11,7 @@ pub struct SimpleMeshBundle {
     pub transform: Transform,
     pub global_transform: GlobalTransform,
     pub color: Color,
-    pub image: Option::<Handle<Image>>,
+    pub image: Option<Handle<Image>>,
     pub visibility: Visibility,
 }
 
@@ -27,7 +27,9 @@ impl Default for BPLight {
 
 impl BPLight {
     pub fn new(x: f32, y: f32, z: f32) -> Self {
-        Self {position: vec3(x, y, z)}
+        Self {
+            position: vec3(x, y, z),
+        }
     }
 }
 

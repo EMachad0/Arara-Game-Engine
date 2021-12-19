@@ -1,15 +1,9 @@
 pub use log::*;
-pub use pretty_env_logger::{
-    self as logger,
-    env_logger::*
-};
+pub use pretty_env_logger::{self as logger, env_logger::*};
 
 pub mod prelude {
     pub use log::*;
-    pub use pretty_env_logger::{
-        self as logger,
-        env_logger::*
-    };
+    pub use pretty_env_logger::{self as logger, env_logger::*};
 }
 
 pub fn debug_logging_level() {

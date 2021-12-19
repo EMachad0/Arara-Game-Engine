@@ -1,5 +1,5 @@
 use arara::prelude::*;
-use arara_particle_system::{self, Value, ParticleSystem, ParticleSystemPlugin, SpawnShape};
+use arara_particle_system::{self, ParticleSystem, ParticleSystemPlugin, SpawnShape, Value};
 
 use arara_render::DefaultShader;
 use cgmath::Deg;
@@ -45,10 +45,10 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
             spawn_shape: SpawnShape::Sphere(0.1),
             particle_color: ColorOrGradient::Color(Color::RED),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.2))),
-            timer: Timer::from_seconds( 1., false),
+            timer: Timer::from_seconds(1., false),
             ..Default::default()
         });
-    
+
     commands
         .spawn_bundle(SimpleMeshBundle {
             transform: Transform::from_xyz(0.0, 0.0, 0.0),
@@ -62,7 +62,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
             spawn_shape: SpawnShape::Sphere(0.1),
             particle_color: ColorOrGradient::Color(Color::RED),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.1, 0.1))),
-            timer: Timer::from_seconds( 1., true),
+            timer: Timer::from_seconds(1., true),
             ..Default::default()
         });
 
@@ -79,10 +79,9 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
             spawn_shape: SpawnShape::Sphere(0.1),
             particle_color: ColorOrGradient::Color(Color::GREEN),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.1, 0.1))),
-            timer: Timer::from_seconds( 1.01, true),
+            timer: Timer::from_seconds(1.01, true),
             ..Default::default()
         });
-
 }
 
 fn add_color_only_shader(mut commands: Commands, asset_server: Res<AssetServer>) {

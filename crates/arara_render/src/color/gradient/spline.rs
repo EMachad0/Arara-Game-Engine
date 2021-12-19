@@ -1,4 +1,7 @@
-use crate::{Color, gradient::{BlendMode, Gradient, GradientBase, Interpolation, linspace}};
+use crate::{
+    gradient::{linspace, BlendMode, Gradient, GradientBase, Interpolation},
+    Color,
+};
 
 trait Interpolator {
     fn at(&self, t: f32) -> f32;
@@ -153,10 +156,8 @@ impl<T: Interpolator> GradientBase for SplineGradient<T> {
         let t = t.clamp(self.dmin, self.dmax);
 
         match self.mode {
-            BlendMode::Rgb => {
-                Color::rgba(self.a.at(t), self.b.at(t), self.c.at(t), self.d.at(t))
-            }
-            _ => todo!()
+            BlendMode::Rgb => Color::rgba(self.a.at(t), self.b.at(t), self.c.at(t), self.d.at(t)),
+            _ => todo!(),
         }
     }
 }
@@ -179,7 +180,7 @@ pub(crate) fn spline_gradient(
             // BlendMode::LinearRgb => col.to_linear_rgba(),
             // BlendMode::Oklab => col.to_oklaba(),
             // BlendMode::Hsv => col.to_hsva(),
-            _ => todo!()
+            _ => todo!(),
         };
         a.push(c1);
         b.push(c2);
@@ -240,4 +241,3 @@ pub(crate) fn preset_spline(html_colors: &[&str]) -> Gradient {
     let pos = linspace(0.0, 1.0, colors.len());
     spline_gradient(&colors, &pos, BlendMode::Rgb, Interpolation::Basis)
 }
-

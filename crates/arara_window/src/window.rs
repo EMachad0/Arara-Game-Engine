@@ -43,10 +43,7 @@ impl FromWorld for Window {
 }
 
 impl Window {
-    pub fn new(
-        display: Display,
-        window_props: &WindowProps,
-    ) -> Self {
+    pub fn new(display: Display, window_props: &WindowProps) -> Self {
         Window {
             display,
             width: window_props.width,

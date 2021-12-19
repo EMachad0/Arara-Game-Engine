@@ -1,44 +1,44 @@
-mod color;
+mod billboard;
 mod clear_color;
+mod color;
 mod coordinate_system;
-mod texture;
-mod shader;
-mod shaders;
-mod visibility;
+mod core_pipeline;
 mod geometry;
 mod render_phase;
-mod core_pipeline;
-mod billboard;
+mod shader;
+mod shaders;
+mod texture;
+mod visibility;
 
-pub use color::*;
-pub use clear_color::*;
-pub use coordinate_system::*;
-pub use texture::*;
-pub use shader::*;
-pub use visibility::*;
-pub use geometry::*;
-pub use core_pipeline::*;
 pub use billboard::*;
+pub use clear_color::*;
+pub use color::*;
+pub use coordinate_system::*;
+pub use core_pipeline::*;
+pub use geometry::*;
+pub use shader::*;
+pub use texture::*;
+pub use visibility::*;
 
 pub mod prelude {
     pub use crate::{
-        RenderPlugin,
-        core_pipeline::{SimpleMeshBundle, BPLight},
-        geometry::*,
-        color::*,
+        billboard::Billboard,
         clear_color::ClearColor,
+        color::*,
         coordinate_system::{CoordinateSystem, CoordinateSystemPlugin},
+        core_pipeline::{BPLight, SimpleMeshBundle},
+        geometry::*,
         texture::Image,
         visibility::Visibility,
-        billboard::Billboard,
+        RenderPlugin,
     };
 }
 
 #[macro_use]
 extern crate arara_logger;
 
-use bevy_ecs::prelude::*;
 use arara_app::{AppBuilder, CoreStage, Plugin};
+use bevy_ecs::prelude::*;
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
 pub enum RenderStage {
@@ -71,17 +71,41 @@ pub struct RenderPlugin;
 
 impl Plugin for RenderPlugin {
     fn build(&self, app_builder: &mut AppBuilder) {
-        app_builder.app.schedule
-            .add_stage_before(CoreStage::PreUpdate, RenderStage::Extract, SystemStage::parallel())
-            .add_stage_after(RenderStage::Extract, RenderStage::Prepare, SystemStage::parallel())
-            .add_stage_after(RenderStage::Prepare, RenderStage::Queue, SystemStage::parallel())
-            .add_stage_after(RenderStage::Queue, RenderStage::PhaseSort, SystemStage::parallel())
-            .add_stage_after(
-                RenderStage::PhaseSort, RenderStage::Render,
-                SystemStage::parallel().with_system(main_pass.exclusive_system().at_end().label("MainPass"))
+        app_builder
+            .app
+            .schedule
+            .add_stage_before(
+                CoreStage::PreUpdate,
+                RenderStage::Extract,
+                SystemStage::parallel(),
             )
-            .add_stage_after(RenderStage::Render, RenderStage::Cleanup, SystemStage::parallel());
-        
+            .add_stage_after(
+                RenderStage::Extract,
+                RenderStage::Prepare,
+                SystemStage::parallel(),
+            )
+            .add_stage_after(
+                RenderStage::Prepare,
+                RenderStage::Queue,
+                SystemStage::parallel(),
+            )
+            .add_stage_after(
+                RenderStage::Queue,
+                RenderStage::PhaseSort,
+                SystemStage::parallel(),
+            )
+            .add_stage_after(
+                RenderStage::PhaseSort,
+                RenderStage::Render,
+                SystemStage::parallel()
+                    .with_system(main_pass.exclusive_system().at_end().label("MainPass")),
+            )
+            .add_stage_after(
+                RenderStage::Render,
+                RenderStage::Cleanup,
+                SystemStage::parallel(),
+            );
+
         app_builder
             .add_plugin(shader::ShaderPlugin)
             .add_plugin(geometry::MeshPlugin)

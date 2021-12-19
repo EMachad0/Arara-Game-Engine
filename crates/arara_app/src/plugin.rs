@@ -1,6 +1,6 @@
 use crate::AppBuilder;
-use std::any::{Any, TypeId};
 use arara_utils::HashMap;
+use std::any::{Any, TypeId};
 
 /// Plugins use [AppBuilder] to configure an [App](crate::App). When an [App](crate::App) registers
 /// a plugin, the plugin's [Plugin::build] function is run.

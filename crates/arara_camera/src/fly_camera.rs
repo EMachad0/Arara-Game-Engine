@@ -1,18 +1,14 @@
 use std::f32::consts::FRAC_PI_2;
 
-use crate::{
-    camera::Camera,
-    perspective::Perspective,
-};
+use crate::{camera::Camera, perspective::Perspective};
 use arara_app::EventReader;
-use arara_input::Input;
 use arara_input::keyboard::KeyCode;
 use arara_input::mouse::{MouseButton, MouseMotion, MouseScrollUnit, MouseWheel};
+use arara_input::Input;
+use arara_time::prelude::*;
 use arara_window::WindowResized;
 use bevy_ecs::prelude::*;
-use arara_time::prelude::*;
 use cgmath::*;
-
 
 #[derive(Debug)]
 pub struct FlyCamera {
@@ -42,46 +38,81 @@ impl Default for FlyCamera {
 
 pub fn process_mouse_motion(
     mouse_input: Res<Input<MouseButton>>,
-	mut mouse_motion_event_reader: EventReader<MouseMotion>,
-	mut fly_camera: ResMut<FlyCamera>,
+    mut mouse_motion_event_reader: EventReader<MouseMotion>,
+    mut fly_camera: ResMut<FlyCamera>,
 ) {
-    if !fly_camera.enabled { return; }
-    if !mouse_input.pressed(MouseButton::Left) { return; } 
-    
-	let mut mouse_dx = 0.0;
+    if !fly_camera.enabled {
+        return;
+    }
+    if !mouse_input.pressed(MouseButton::Left) {
+        return;
+    }
+
+    let mut mouse_dx = 0.0;
     let mut mouse_dy = 0.0;
-	for event in mouse_motion_event_reader.iter() {
+    for event in mouse_motion_event_reader.iter() {
         let (x, y) = event.delta;
-		mouse_dx += x;
-		mouse_dy += y;
-	}
-	if mouse_dx == 0.0 && mouse_dy == 0.0 { return; }
+        mouse_dx += x;
+        mouse_dy += y;
+    }
+    if mouse_dx == 0.0 && mouse_dy == 0.0 {
+        return;
+    }
 
     fly_camera.changed = true;
     fly_camera.rotate_horizontal = mouse_dx as f32;
     fly_camera.rotate_vertical = mouse_dy as f32;
 }
 
-pub fn process_keyboard(
-    keyboard_input: Res<Input<KeyCode>>,
-    mut fly_camera: ResMut<FlyCamera>,
-) {
-    if !fly_camera.enabled { return; }
+pub fn process_keyboard(keyboard_input: Res<Input<KeyCode>>, mut fly_camera: ResMut<FlyCamera>) {
+    if !fly_camera.enabled {
+        return;
+    }
     fly_camera.changed = true;
-    let amount = if keyboard_input.pressed(KeyCode::LShift) {2.5} else {1.0};
-    fly_camera.amount_forward = if keyboard_input.pressed(KeyCode::W) {amount} else {0.0};
-    fly_camera.amount_backward = if keyboard_input.pressed(KeyCode::S) {amount} else {0.0};
-    fly_camera.amount_left = if keyboard_input.pressed(KeyCode::A) {amount} else {0.0};
-    fly_camera.amount_right = if keyboard_input.pressed(KeyCode::D) {amount} else {0.0};
-    fly_camera.amount_up = if keyboard_input.pressed(KeyCode::Space) {amount} else {0.0};
-    fly_camera.amount_down = if keyboard_input.pressed(KeyCode::LControl) {amount} else {0.0};
+    let amount = if keyboard_input.pressed(KeyCode::LShift) {
+        2.5
+    } else {
+        1.0
+    };
+    fly_camera.amount_forward = if keyboard_input.pressed(KeyCode::W) {
+        amount
+    } else {
+        0.0
+    };
+    fly_camera.amount_backward = if keyboard_input.pressed(KeyCode::S) {
+        amount
+    } else {
+        0.0
+    };
+    fly_camera.amount_left = if keyboard_input.pressed(KeyCode::A) {
+        amount
+    } else {
+        0.0
+    };
+    fly_camera.amount_right = if keyboard_input.pressed(KeyCode::D) {
+        amount
+    } else {
+        0.0
+    };
+    fly_camera.amount_up = if keyboard_input.pressed(KeyCode::Space) {
+        amount
+    } else {
+        0.0
+    };
+    fly_camera.amount_down = if keyboard_input.pressed(KeyCode::LControl) {
+        amount
+    } else {
+        0.0
+    };
 }
 
 pub fn process_resize(
     mut mouse_motion_event_reader: EventReader<WindowResized>,
     mut fly_camera: ResMut<FlyCamera>,
 ) {
-    if !fly_camera.enabled { return; }
+    if !fly_camera.enabled {
+        return;
+    }
 
     for ev in mouse_motion_event_reader.iter().last() {
         fly_camera.changed = true;
@@ -103,10 +134,7 @@ pub fn process_scroll(
     }
 }
 
-pub fn update_camera(
-    time: Res<Time>,
-    mut fly_camera: ResMut<FlyCamera>,
-) {
+pub fn update_camera(time: Res<Time>, mut fly_camera: ResMut<FlyCamera>) {
     let dt = time.delta_seconds();
 
     let mut position = vec3(0.0, 0.0, 0.0);
@@ -117,7 +145,8 @@ pub fn update_camera(
     let (yaw_sin, yaw_cos) = fly_camera.camera.yaw.0.sin_cos();
     let forward = Vector3::new(yaw_cos, 0.0, yaw_sin).normalize();
     let right = Vector3::new(-yaw_sin, 0.0, yaw_cos).normalize();
-    position += forward * (fly_camera.amount_forward - fly_camera.amount_backward) * fly_camera.speed * dt;
+    position +=
+        forward * (fly_camera.amount_forward - fly_camera.amount_backward) * fly_camera.speed * dt;
     position += right * (fly_camera.amount_right - fly_camera.amount_left) * fly_camera.speed * dt;
 
     // Move in/out (aka. "zoom")
@@ -153,9 +182,7 @@ pub fn update_camera(
     } else if fly_camera.camera.pitch > Rad(FRAC_PI_2) {
         fly_camera.camera.pitch = Rad(FRAC_PI_2);
     }
-
 }
-
 
 impl FlyCamera {
     pub fn new(speed: f32, sensitivity: f32) -> Self {

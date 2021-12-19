@@ -1,14 +1,8 @@
 use glam::{Vec3, Vec4};
 
-
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Color {
-    Rgba {
-        r: f32,
-        g: f32,
-        b: f32,
-        a: f32,
-    },
+    Rgba { r: f32, g: f32, b: f32, a: f32 },
 }
 
 impl Default for Color {
@@ -58,21 +52,11 @@ impl Color {
     pub const YELLOW_GREEN: Color = Color::rgb(0.6, 0.8, 0.2);
 
     pub const fn rgb(r: f32, g: f32, b: f32) -> Color {
-        Color::Rgba {
-            r,
-            g,
-            b,
-            a: 1.0,
-        }
+        Color::Rgba { r, g, b, a: 1.0 }
     }
 
     pub const fn rgba(r: f32, g: f32, b: f32, a: f32) -> Color {
-        Color::Rgba {
-            r,
-            g,
-            b,
-            a,
-        }
+        Color::Rgba { r, g, b, a }
     }
 
     pub fn r(self) -> f32 {
@@ -101,12 +85,7 @@ impl Color {
 
     pub fn as_rgba_f32(self: Color) -> [f32; 4] {
         match self {
-            Color::Rgba {
-                r,
-                g,
-                b,
-                a
-            } => [r, g, b, a],
+            Color::Rgba { r, g, b, a } => [r, g, b, a],
         }
     }
 

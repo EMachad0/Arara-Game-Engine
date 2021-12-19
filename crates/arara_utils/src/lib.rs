@@ -1,6 +1,6 @@
 pub use ahash::AHasher;
 use ahash::RandomState;
-use std::{future::Future, pin::Pin, ops::Neg, cmp::Ordering};
+use std::{cmp::Ordering, future::Future, ops::Neg, pin::Pin};
 pub use uuid::Uuid;
 
 pub type BoxedFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
@@ -83,7 +83,6 @@ impl PartialEq for FloatOrd {
         }
     }
 }
-
 
 impl Neg for FloatOrd {
     type Output = FloatOrd;

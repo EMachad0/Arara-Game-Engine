@@ -7,7 +7,9 @@ fn main() {
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
         .add_plugin(AssetCountDiagnosticsPlugin::<Image>::default())
-        .add_plugin(LogDiagnosticPlugin { wait_duration: Duration::from_secs(1) })
+        .add_plugin(LogDiagnosticPlugin {
+            wait_duration: Duration::from_secs(1),
+        })
         .add_startup_system(add_shapes.system())
         .insert_resource(BPLight::new(-5.0, 10.0, 0.0))
         .build()
@@ -19,7 +21,6 @@ fn add_shapes(
     asset_server: Res<AssetServer>,
     mut meshes: ResMut<Assets<Mesh>>,
 ) {
-
     let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
     let img1: Handle<Image> = asset_server.load("textures/white-snow.jpg");
 
@@ -66,7 +67,14 @@ fn add_shapes(
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
-        mesh: meshes.add(Mesh::from(Capsule::new(0.5, 1.0, 0, 16, 32, CapsuleUvProfile::Aspect))),
+        mesh: meshes.add(Mesh::from(Capsule::new(
+            0.5,
+            1.0,
+            0,
+            16,
+            32,
+            CapsuleUvProfile::Aspect,
+        ))),
         transform: Transform {
             translation: vec3(3.0, 3.0, 3.0),
             ..Default::default()

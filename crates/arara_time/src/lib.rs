@@ -1,22 +1,22 @@
-mod time;
 mod stopwatch;
+mod time;
 mod timer;
 
-pub use time::*;
 pub use stopwatch::*;
+pub use time::*;
 pub use timer::*;
 
 pub mod prelude {
     pub use crate::{
-        TimePlugin,
-        time::{Duration, Instant, Time},
         stopwatch::Stopwatch,
+        time::{Duration, Instant, Time},
         timer::Timer,
+        TimePlugin,
     };
 }
 
-use bevy_ecs::prelude::*;
 use arara_app::{AppBuilder, CoreStage, Plugin};
+use bevy_ecs::prelude::*;
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, SystemLabel)]
 pub enum CoreSystem {
@@ -29,10 +29,9 @@ pub struct TimePlugin;
 
 impl Plugin for TimePlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.init_resource::<Time>()
-            .add_system_to_stage(
-                CoreStage::First,
-                update_time.exclusive_system().label(CoreSystem::Time),
-            );
+        app.init_resource::<Time>().add_system_to_stage(
+            CoreStage::First,
+            update_time.exclusive_system().label(CoreSystem::Time),
+        );
     }
 }

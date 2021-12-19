@@ -1,9 +1,9 @@
 use hexasphere::shapes::IcoSphere;
 
-use crate::geometry::{Vertex, Mesh};
+use crate::geometry::{Mesh, Vertex};
 
 pub struct Icosphere {
-    subdivisions: usize, 
+    subdivisions: usize,
     radius: f32,
 }
 
@@ -18,7 +18,10 @@ impl Icosphere {
 
 impl From<Icosphere> for Mesh {
     fn from(icosphere: Icosphere) -> Self {
-        let Icosphere {subdivisions, radius} = icosphere;
+        let Icosphere {
+            subdivisions,
+            radius,
+        } = icosphere;
         if subdivisions >= 80 {
             /*
             Number of triangles:
@@ -96,9 +99,6 @@ impl From<Icosphere> for Mesh {
             generated.get_indices(i, &mut indices);
         }
 
-        Self {
-            vertices,
-            indices,
-        }
+        Self { vertices, indices }
     }
 }

@@ -119,14 +119,14 @@
 
 #![allow(clippy::many_single_char_names)]
 
-mod spline;
 mod presets;
+mod spline;
 
 use std::{error, fmt};
 
+use crate::Color;
 pub use presets::*;
 use spline::*;
-use crate::Color;
 
 /// Color blending mode
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
@@ -292,7 +292,7 @@ impl GradientBase for LinearGradient {
                     // BlendMode::LinearRgb => return col[0].interpolate_linear_rgb(&col[1], t),
                     // BlendMode::Hsv => return col[0].interpolate_hsv(&col[1], t),
                     // BlendMode::Oklab => return col[0].interpolate_oklab(&col[1], t),
-                    _ => todo!()
+                    _ => todo!(),
                 }
             }
         }
@@ -508,10 +508,7 @@ impl CustomGradient {
         }
 
         let colors = if self.colors.is_empty() {
-            vec![
-                Color::rgb(0.0, 0.0, 0.0),
-                Color::rgb(1.0, 1.0, 1.0),
-            ]
+            vec![Color::rgb(0.0, 0.0, 0.0), Color::rgb(1.0, 1.0, 1.0)]
         } else if self.colors.len() == 1 {
             vec![self.colors[0].clone(), self.colors[0].clone()]
         } else {

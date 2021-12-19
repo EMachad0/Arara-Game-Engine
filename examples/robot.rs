@@ -97,7 +97,11 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
                         .insert_bundle(TransformBundle::default())
                         .with_children(|upper_right_leg| {
                             upper_right_leg.spawn_bundle(SimpleMeshBundle {
-                                mesh: meshes.add(Mesh::from(Sphere::new(sector_count, stack_count, 0.45))),
+                                mesh: meshes.add(Mesh::from(Sphere::new(
+                                    sector_count,
+                                    stack_count,
+                                    0.45,
+                                ))),
                                 transform: Transform::from_xyz(0., 2.1, 0.),
                                 color: Color::DARK_GRAY,
                                 ..Default::default()
@@ -145,7 +149,11 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
                         .insert_bundle(TransformBundle::default())
                         .with_children(|upper_left_leg| {
                             upper_left_leg.spawn_bundle(SimpleMeshBundle {
-                                mesh: meshes.add(Mesh::from(Sphere::new(sector_count, stack_count, 0.45))),
+                                mesh: meshes.add(Mesh::from(Sphere::new(
+                                    sector_count,
+                                    stack_count,
+                                    0.45,
+                                ))),
                                 transform: Transform::from_xyz(0., 2.1, 0.),
                                 color: Color::DARK_GRAY,
                                 ..Default::default()
@@ -237,7 +245,12 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
                         })
                         .with_children(|head| {
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: meshes.add(Mesh::from(Cylinder::new(sector_count, 0.3, 0.3, 0.3))),
+                                mesh: meshes.add(Mesh::from(Cylinder::new(
+                                    sector_count,
+                                    0.3,
+                                    0.3,
+                                    0.3,
+                                ))),
                                 transform: Transform {
                                     translation: vec3(0., -0.7, 0.),
                                     rotation: Quat::from_rotation_x(FRAC_PI_2),
@@ -253,31 +266,56 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
                                 ..Default::default()
                             });
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: meshes.add(Mesh::from(Cylinder::new(sector_count, 0.33, 0.05, 0.05))),
+                                mesh: meshes.add(Mesh::from(Cylinder::new(
+                                    sector_count,
+                                    0.33,
+                                    0.05,
+                                    0.05,
+                                ))),
                                 transform: Transform::from_xyz(-0.25, 0.3, 0.35),
                                 color: Color::SILVER,
                                 ..Default::default()
                             });
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: meshes.add(Mesh::from(Cylinder::new(sector_count, 0.33, 0.05, 0.05))),
+                                mesh: meshes.add(Mesh::from(Cylinder::new(
+                                    sector_count,
+                                    0.33,
+                                    0.05,
+                                    0.05,
+                                ))),
                                 transform: Transform::from_xyz(0.25, 0.3, 0.35),
                                 color: Color::SILVER,
                                 ..Default::default()
                             });
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: meshes.add(Mesh::from(Cylinder::new(sector_count, 0.33, 0.05, 0.05))),
+                                mesh: meshes.add(Mesh::from(Cylinder::new(
+                                    sector_count,
+                                    0.33,
+                                    0.05,
+                                    0.05,
+                                ))),
                                 transform: Transform::from_xyz(0.25, 0.3, 0.35),
                                 color: Color::SILVER,
                                 ..Default::default()
                             });
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: meshes.add(Mesh::from(Cylinder::new(sector_count, 0.3, 0.1, 0.1))),
+                                mesh: meshes.add(Mesh::from(Cylinder::new(
+                                    sector_count,
+                                    0.3,
+                                    0.1,
+                                    0.1,
+                                ))),
                                 transform: Transform::from_xyz(-0.25, 0.3, 0.35),
                                 color: Color::DARK_GRAY,
                                 ..Default::default()
                             });
                             head.spawn_bundle(SimpleMeshBundle {
-                                mesh: meshes.add(Mesh::from(Cylinder::new(sector_count, 0.3, 0.1, 0.1))),
+                                mesh: meshes.add(Mesh::from(Cylinder::new(
+                                    sector_count,
+                                    0.3,
+                                    0.1,
+                                    0.1,
+                                ))),
                                 transform: Transform::from_xyz(0.25, 0.3, 0.35),
                                 color: Color::DARK_GRAY,
                                 ..Default::default()

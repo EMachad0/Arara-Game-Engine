@@ -1,4 +1,4 @@
-use arara_asset::{AssetLoader, LoadContext, BoxedFuture, LoadedAsset};
+use arara_asset::{AssetLoader, BoxedFuture, LoadContext, LoadedAsset};
 use glium::program::ShaderStage;
 
 use crate::Shader;
@@ -16,14 +16,12 @@ impl AssetLoader for ShaderLoader {
             let ext = load_context.path().extension().unwrap().to_str().unwrap();
 
             let shader = match ext {
-                "vert" => Shader::from_glsl(
-                    String::from_utf8(Vec::from(bytes))?,
-                    ShaderStage::Vertex,
-                ),
-                "frag" => Shader::from_glsl(
-                    String::from_utf8(Vec::from(bytes))?,
-                    ShaderStage::Fragment,
-                ),
+                "vert" => {
+                    Shader::from_glsl(String::from_utf8(Vec::from(bytes))?, ShaderStage::Vertex)
+                }
+                "frag" => {
+                    Shader::from_glsl(String::from_utf8(Vec::from(bytes))?, ShaderStage::Fragment)
+                }
                 _ => panic!("unhandled extension: {}", ext),
             };
 

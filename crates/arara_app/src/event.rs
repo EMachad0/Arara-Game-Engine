@@ -2,11 +2,7 @@ use bevy_ecs::{
     component::Component,
     system::{Local, Res, ResMut, SystemParam},
 };
-use std::{
-    fmt,
-    hash::Hash,
-    marker::PhantomData,
-};
+use std::{fmt, hash::Hash, marker::PhantomData};
 
 /// An `EventId` uniquely identifies an event.
 ///

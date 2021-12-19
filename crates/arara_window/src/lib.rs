@@ -1,30 +1,25 @@
 mod converters;
 mod event;
-mod runnable;
-mod window_props;
-mod window;
 mod event_loop;
+mod runnable;
+mod window;
+mod window_props;
 
 pub use event::*;
-pub use runnable::*;
-pub use window_props::*;
-pub use window::*;
 pub use event_loop::*;
+pub use runnable::*;
+pub use window::*;
+pub use window_props::*;
 
 pub mod prelude {
-    pub use crate::{
-        WindowPlugin,
-        window_props::WindowProps,
-        window::Window,
-        event::*,
-    };
+    pub use crate::{event::*, window::Window, window_props::WindowProps, WindowPlugin};
 }
 
 #[macro_use]
 extern crate arara_logger;
 
-use bevy_ecs::prelude::IntoSystem;
 use arara_app::{AppBuilder, AppExit, EventReader, EventWriter, Plugin};
+use bevy_ecs::prelude::IntoSystem;
 
 #[derive(Default)]
 pub struct WindowPlugin;
@@ -47,7 +42,6 @@ impl Plugin for WindowPlugin {
             .init_non_send_resource::<Window>()
             .add_system(exit_on_window_close.system())
             .set_runnable(run);
-
     }
 }
 

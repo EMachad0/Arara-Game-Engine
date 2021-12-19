@@ -1,5 +1,5 @@
 use arara::prelude::*;
-use arara_particle_system::{self, Value, ParticleSystem, ParticleSystemPlugin, SpawnShape};
+use arara_particle_system::{self, ParticleSystem, ParticleSystemPlugin, SpawnShape, Value};
 
 use arara_render::DefaultShader;
 use cgmath::Deg;
@@ -29,7 +29,11 @@ fn main() {
         .run()
 }
 
-fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_server: Res<AssetServer>) {
+fn add_shapes(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    asset_server: Res<AssetServer>,
+) {
     // ------------- Particle ------------------
     let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
 
@@ -47,7 +51,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
             spawn_shape: SpawnShape::Cone(0.1),
             particle_color: ColorOrGradient::Color(Color::BLACK),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
-            timer: Timer::from_seconds( 0.1, true),
+            timer: Timer::from_seconds(0.1, true),
             ..Default::default()
         });
 
@@ -67,12 +71,12 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
             spawn_shape: SpawnShape::Cone(0.3),
             particle_color: ColorOrGradient::Color(Color::YELLOW),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
-            timer: Timer::from_seconds( 3., false),
+            timer: Timer::from_seconds(3., false),
             ..Default::default()
         });
-    
+
     let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
-    
+
     commands
         .spawn_bundle(SimpleMeshBundle {
             transform: Transform::from_xyz(0.0, 0.5, 0.0),
@@ -87,7 +91,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
             spawn_shape: SpawnShape::Cone(0.4),
             particle_color: ColorOrGradient::Color(Color::RED),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
-            timer: Timer::from_seconds( 0.3, true),
+            timer: Timer::from_seconds(0.3, true),
             ..Default::default()
         });
 }

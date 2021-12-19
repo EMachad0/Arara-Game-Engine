@@ -1,6 +1,5 @@
-
 use super::vertex::Vertex;
-use crate::geometry::{Mesh, unit_circle_points};
+use crate::geometry::{unit_circle_points, Mesh};
 
 pub struct Cylinder {
     pub sector_count: u32,

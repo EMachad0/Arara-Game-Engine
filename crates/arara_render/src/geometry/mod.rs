@@ -1,10 +1,10 @@
-mod shape;
 mod mesh;
+mod shape;
 
-pub use shape::*;
 pub use mesh::*;
+pub use shape::*;
 
-use arara_app::{Plugin, AppBuilder};
+use arara_app::{AppBuilder, Plugin};
 use arara_asset::AddAsset;
 
 /// Adds the [`Mesh`] as an asset and makes sure that they are extracted and prepared for the GPU.

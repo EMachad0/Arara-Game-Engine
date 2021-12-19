@@ -1,6 +1,9 @@
 use std::f32::consts::{FRAC_PI_3, PI};
 
-use crate::{Color, gradient::{spline::preset_spline, Gradient, GradientBase}};
+use crate::{
+    gradient::{spline::preset_spline, Gradient, GradientBase},
+    Color,
+};
 
 const PI2_3: f32 = PI * 2.0 / 3.0;
 

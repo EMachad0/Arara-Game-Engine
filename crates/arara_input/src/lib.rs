@@ -3,23 +3,18 @@ pub mod keyboard;
 pub mod mouse;
 pub mod system;
 
+use arara_app::prelude::*;
 use bevy_ecs::{
     schedule::{ParallelSystemDescriptorCoercion, SystemLabel},
     system::IntoSystem,
 };
-use arara_app::prelude::*;
 pub use input::*;
 use keyboard::{keyboard_input_system, KeyCode, KeyboardInput};
 use mouse::{mouse_button_input_system, MouseButton, MouseButtonInput, MouseMotion, MouseWheel};
 
 pub mod prelude {
-    pub use crate::{
-        keyboard::KeyCode,
-        mouse::MouseButton,
-        Input,
-    };
+    pub use crate::{keyboard::KeyCode, mouse::MouseButton, Input};
 }
-
 
 /// Adds keyboard and mouse input to an App
 #[derive(Default)]

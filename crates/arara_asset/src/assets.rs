@@ -2,12 +2,12 @@ use crate::{
     update_asset_storage_system, Asset, AssetLoader, AssetServer, AssetStage, Handle, HandleId,
     RefChange,
 };
+use arara_app::{AppBuilder, EventWriter, Events};
+use arara_utils::HashMap;
 use bevy_ecs::{
     system::{IntoSystem, ResMut},
     world::FromWorld,
 };
-use arara_app::{AppBuilder, EventWriter, Events};
-use arara_utils::HashMap;
 use crossbeam_channel::Sender;
 use std::fmt::Debug;
 

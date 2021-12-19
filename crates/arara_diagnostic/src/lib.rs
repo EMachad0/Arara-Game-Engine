@@ -10,9 +10,7 @@ pub use log_diagnostics_plugin::LogDiagnosticPlugin;
 
 pub mod prelude {
     pub use crate::{
-        DiagnosticsPlugin,
-        EntityCountDiagnosticPlugin,
-        FrameTimeDiagnosticPlugin,
+        DiagnosticsPlugin, EntityCountDiagnosticPlugin, FrameTimeDiagnosticPlugin,
         LogDiagnosticPlugin,
     };
 }

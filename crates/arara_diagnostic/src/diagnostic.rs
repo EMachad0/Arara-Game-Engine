@@ -29,13 +29,11 @@ impl Diagnostic {
         }
 
         self.sum += value;
-        self.history.push_front(DiagnosticMeasurement { time, value });
+        self.history
+            .push_front(DiagnosticMeasurement { time, value });
     }
 
-    pub fn new(
-        name: &'static str,
-        max_history_length: usize,
-    ) -> Diagnostic {
+    pub fn new(name: &'static str, max_history_length: usize) -> Diagnostic {
         Diagnostic {
             name,
             history: VecDeque::with_capacity(max_history_length),

@@ -1,5 +1,5 @@
-use std::borrow::Cow;
 use glium::program::ShaderStage;
+use std::borrow::Cow;
 
 use bevy_reflect::TypeUuid;
 

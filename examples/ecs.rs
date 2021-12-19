@@ -25,12 +25,20 @@ impl Plugin for GreetPeoplePlugin {
 }
 
 struct Person;
-struct Name { name: String }
+struct Name {
+    name: String,
+}
 
 fn add_people(mut commands: Commands) {
-    commands.spawn().insert(Person).insert(Name { name: "Elaina Proctor".to_string() });
-    commands.spawn().insert(Person).insert(Name { name: "Renzo Hume".to_string() });
-    commands.spawn().insert(Person).insert(Name { name: "Zayna Nieves".to_string() });
+    commands.spawn().insert(Person).insert(Name {
+        name: "Elaina Proctor".to_string(),
+    });
+    commands.spawn().insert(Person).insert(Name {
+        name: "Renzo Hume".to_string(),
+    });
+    commands.spawn().insert(Person).insert(Name {
+        name: "Zayna Nieves".to_string(),
+    });
 }
 
 fn greet_people(query: Query<&Name, With<Person>>) {

@@ -10,7 +10,9 @@ fn main() {
         .add_plugin(ParticleSystemPlugin)
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
-        .add_plugin(LogDiagnosticPlugin { wait_duration: Duration::from_secs(3) })
+        .add_plugin(LogDiagnosticPlugin {
+            wait_duration: Duration::from_secs(3),
+        })
         .add_startup_system(add_shapes.system())
         // .insert_resource(ClearColor(Color::RED))
         .insert_resource(BPLight {
@@ -25,49 +27,55 @@ fn main() {
         .run()
 }
 
-fn add_shapes(mut commands: Commands, asset_server: Res<AssetServer>, mut meshes: ResMut<Assets<Mesh>>) {
+fn add_shapes(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut meshes: ResMut<Assets<Mesh>>,
+) {
     let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
 
-    commands.spawn_bundle(TransformBundle {
-        transform: Transform {
-            translation: vec3(0.5, 0.5, 0.0),
-            rotation: Quat::from_euler(EulerRot::ZYX, PI, 0., FRAC_PI_2),
+    commands
+        .spawn_bundle(TransformBundle {
+            transform: Transform {
+                translation: vec3(0.5, 0.5, 0.0),
+                rotation: Quat::from_euler(EulerRot::ZYX, PI, 0., FRAC_PI_2),
+                ..Default::default()
+            },
             ..Default::default()
-        },
-        ..Default::default()
-    }).with_children(|parent| {
-        parent.spawn_bundle(SimpleMeshBundle {
-            mesh: meshes.add(Mesh::from(Square::default())),
-            transform: Transform::from_xyz(0., 0., 0.),
-            image: Some(img0.clone()),
-            ..Default::default()
-        });
-        parent.spawn_bundle(SimpleMeshBundle {
-            mesh: meshes.add(Mesh::from(Square::default())),
-            transform: Transform::from_xyz(1., 0., 0.),
-            image: Some(img0.clone()),
-            ..Default::default()
-        });
-        parent.spawn_bundle(SimpleMeshBundle {
-            mesh: meshes.add(Mesh::from(Square::default())),
-            transform: Transform::from_xyz(0., 0., 1.),
-            image: Some(img0.clone()),
-            ..Default::default()
-        });
-        parent.spawn_bundle(SimpleMeshBundle {
-            mesh: meshes.add(Mesh::from(Square::default())),
-            transform: Transform::from_xyz(1., 0., 1.),
-            color: Color::rgba(0.5, 0.1, 0.5, 0.3),
-            ..Default::default()
-        });
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: meshes.add(Mesh::from(Square::default())),
+                transform: Transform::from_xyz(0., 0., 0.),
+                image: Some(img0.clone()),
+                ..Default::default()
+            });
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: meshes.add(Mesh::from(Square::default())),
+                transform: Transform::from_xyz(1., 0., 0.),
+                image: Some(img0.clone()),
+                ..Default::default()
+            });
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: meshes.add(Mesh::from(Square::default())),
+                transform: Transform::from_xyz(0., 0., 1.),
+                image: Some(img0.clone()),
+                ..Default::default()
+            });
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: meshes.add(Mesh::from(Square::default())),
+                transform: Transform::from_xyz(1., 0., 1.),
+                color: Color::rgba(0.5, 0.1, 0.5, 0.3),
+                ..Default::default()
+            });
 
-        // panel
-        parent.spawn_bundle(SimpleMeshBundle {
-            mesh: meshes.add(Mesh::from(Square::new(5., 5.))),
-            transform: Transform::from_xyz(0., -3., 0.),
-            color: Color::rgba(0.1, 0.1, 0.5, 1.0),
-            image: Some(img0.clone()),
-            ..Default::default()
+            // panel
+            parent.spawn_bundle(SimpleMeshBundle {
+                mesh: meshes.add(Mesh::from(Square::new(5., 5.))),
+                transform: Transform::from_xyz(0., -3., 0.),
+                color: Color::rgba(0.1, 0.1, 0.5, 1.0),
+                image: Some(img0.clone()),
+                ..Default::default()
+            });
         });
-    });
 }

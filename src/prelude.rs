@@ -1,15 +1,5 @@
 pub use crate::{
-    logger,
-    math::*,
-    camera::prelude::*,
-    transform::prelude::*,
-    ecs::prelude::*,
-    app::prelude::*,
-    window::prelude::*,
-    render::prelude::*,
-    diagnostics::prelude::*,
-    time::prelude::*,
-    input::prelude::*,
-    asset::prelude::*,
-    DefaultPlugins,
+    app::prelude::*, asset::prelude::*, camera::prelude::*, diagnostics::prelude::*,
+    ecs::prelude::*, input::prelude::*, logger, math::*, render::prelude::*, time::prelude::*,
+    transform::prelude::*, window::prelude::*, DefaultPlugins,
 };

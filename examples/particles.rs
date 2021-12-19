@@ -1,5 +1,5 @@
 use arara::prelude::*;
-use arara_particle_system::{self, Value, ParticleSystem, ParticleSystemPlugin, SpawnShape};
+use arara_particle_system::{self, ParticleSystem, ParticleSystemPlugin, SpawnShape, Value};
 use arara_render::DefaultShader;
 use cgmath::Deg;
 
@@ -28,7 +28,11 @@ fn main() {
         .run()
 }
 
-fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_server: Res<AssetServer>) {
+fn add_shapes(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    asset_server: Res<AssetServer>,
+) {
     // ------------- Particle ------------------
     let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
 
@@ -48,7 +52,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, asset_se
             spawn_shape: SpawnShape::Cone(0.5),
             particle_color: ColorOrGradient::Color(Color::RED),
             particle_mesh: meshes.add(Mesh::from(Square::new(0.2, 0.5))),
-            timer: Timer::from_seconds( 0.5, true),
+            timer: Timer::from_seconds(0.5, true),
             billboard: Some(Billboard::ViewPlane),
             ..Default::default()
         });

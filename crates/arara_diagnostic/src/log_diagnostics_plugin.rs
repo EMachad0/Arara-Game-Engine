@@ -25,7 +25,8 @@ impl Plugin for LogDiagnosticPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.insert_resource(LogDiagnosticsTimer {
             timer: Timer::new(self.wait_duration, true),
-        }).add_system_to_stage(CoreStage::PostUpdate, Self::log_diagnostics_system.system());
+        })
+        .add_system_to_stage(CoreStage::PostUpdate, Self::log_diagnostics_system.system());
     }
 }
 

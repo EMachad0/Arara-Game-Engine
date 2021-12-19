@@ -4,7 +4,10 @@ use bevy_ecs::prelude::*;
 use arara_app::Plugin;
 use arara_transform::Transform;
 
-use crate::{Color, SimpleMeshBundle, geometry::{Mesh, Cuboid}};
+use crate::{
+    geometry::{Cuboid, Mesh},
+    Color, SimpleMeshBundle,
+};
 
 pub struct CoordinateSystem {
     pub count: u32,
@@ -27,11 +30,17 @@ pub struct CoordinateSystemPlugin;
 
 impl Plugin for CoordinateSystemPlugin {
     fn build(&self, app_builder: &mut arara_app::AppBuilder) {
-        app_builder.init_resource::<CoordinateSystem>().add_startup_system(draw_cordinate_system.system());
+        app_builder
+            .init_resource::<CoordinateSystem>()
+            .add_startup_system(draw_cordinate_system.system());
     }
 }
 
-fn draw_cordinate_system(mut commands: Commands, coordinate_system: Res<CoordinateSystem>, mut meshes: ResMut<Assets<Mesh>>) {
+fn draw_cordinate_system(
+    mut commands: Commands,
+    coordinate_system: Res<CoordinateSystem>,
+    mut meshes: ResMut<Assets<Mesh>>,
+) {
     let count = coordinate_system.count;
     let lenght = coordinate_system.lenght;
     let radius = coordinate_system.radius;
