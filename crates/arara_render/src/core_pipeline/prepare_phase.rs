@@ -22,7 +22,7 @@ pub fn prepare_core_pass(
         &Visibility,
     )>,
 ) {
-    let pv_matrix = (camera.calc_matrix() * perspective.calc_matrix()).into();
+    let pv_matrix = (perspective.calc_matrix() * camera.calc_matrix()).into();
 
     for (entity, mesh, global_transform, color, image_handle, visibility) in query.iter() {
         if !visibility.active || !visibility.visible {

@@ -51,14 +51,6 @@ impl FlyCamera {
             ..Default::default()
         }
     }
-
-    // pub fn calc_matrix(&mut self) -> [[f32; 4]; 4] {
-    //     if self.changed {
-    //         let pv_matrix = self.perspective.calc_matrix() * self.camera.calc_matrix();
-    //         self.cached_matrix = pv_matrix.into();
-    //     }
-    //     self.cached_matrix
-    // }
 }
 
 pub fn process_mouse_motion(
