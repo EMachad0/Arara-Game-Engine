@@ -1,5 +1,5 @@
 use arara_app::{App, CoreStage, Plugin};
-use arara_camera::FlyCamera;
+use arara_camera::Camera;
 use arara_ecs::prelude::*;
 use arara_transform::{GlobalTransform, Transform};
 use glam::{vec3, Mat3, Quat, Vec3};
@@ -27,7 +27,7 @@ pub enum Billboard {
 }
 
 fn rotate_billboards(
-    fly_camera: Res<FlyCamera>,
+    camera: Res<Camera>,
     mut query: Query<(&mut Transform, &GlobalTransform, &Billboard)>,
 ) {
     let iterator = query.iter_mut();
@@ -35,13 +35,13 @@ fn rotate_billboards(
         return;
     }
 
-    let camera_position = fly_camera.camera.position;
+    let camera_position = camera.position;
     let camera_position = vec3(camera_position.x, camera_position.y, camera_position.z);
 
     let view_plane_normal = vec3(
-        fly_camera.camera.yaw.0.cos(),
-        fly_camera.camera.pitch.0.sin(),
-        fly_camera.camera.yaw.0.sin(),
+        camera.yaw.0.cos(),
+        camera.pitch.0.sin(),
+        camera.yaw.0.sin(),
     );
     let view_plane_billboard_rotation = calc_billboard_rotation(view_plane_normal, false);
     let view_plane_axial_billboard_rotation = calc_billboard_rotation(view_plane_normal, true);

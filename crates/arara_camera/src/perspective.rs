@@ -1,4 +1,6 @@
-use cgmath::*;
+use arara_ecs::{event::EventReader, system::ResMut};
+use arara_window::WindowResized;
+use cgmath::{Deg, Matrix4, Rad};
 
 #[derive(Debug)]
 pub struct Perspective {
@@ -29,6 +31,15 @@ impl Perspective {
     }
 
     pub fn calc_matrix(&self) -> Matrix4<f32> {
-        perspective(self.fovy, self.aspect, self.znear, self.zfar)
+        cgmath::perspective(self.fovy, self.aspect, self.znear, self.zfar)
+    }
+}
+
+pub fn process_resize(
+    mut mouse_motion_event_reader: EventReader<WindowResized>,
+    mut perspective: ResMut<Perspective>,
+) {
+    for ev in mouse_motion_event_reader.iter().last() {
+        perspective.resize(ev.width, ev.height);
     }
 }

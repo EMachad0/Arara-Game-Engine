@@ -3,7 +3,7 @@ use crate::{
     Opaque, Shader, Transparent,
 };
 use arara_asset::{Assets, Handle};
-use arara_camera::FlyCamera;
+use arara_camera::{Camera, Perspective};
 use arara_ecs::prelude::*;
 use arara_transform::GlobalTransform;
 use arara_utils::StableHashMap;
@@ -26,7 +26,8 @@ pub fn main_pass(
     window: NonSend<Window>,
     clear_color: Res<ClearColor>,
     light: Res<BPLight>,
-    mut fly_camera: ResMut<FlyCamera>,
+    camera: Res<Camera>,
+    perspective: Res<Perspective>,
     default_shader: Res<DefaultShader>,
     images: Res<Assets<Image>>,
     meshes: Res<Assets<Mesh>>,
@@ -44,8 +45,8 @@ pub fn main_pass(
         clear_color.a(),
     );
 
-    let pv_matrix = fly_camera.calc_matrix();
-    let camera_pos: [f32; 3] = fly_camera.camera.position.into();
+    let pv_matrix: [[f32; 4]; 4] = (camera.calc_matrix() * perspective.calc_matrix()).into();
+    let camera_pos: [f32; 3] = camera.position.into();
     let light_pos: [f32; 3] = light.position.into();
 
     let DefaultShader {

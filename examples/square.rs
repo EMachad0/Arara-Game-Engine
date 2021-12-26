@@ -5,11 +5,8 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_startup_system(add_cubes.system())
-        .insert_resource(FlyCamera::from_camera(
-            Camera::new((3.0, 0.0, 5.0), Deg(-125.0), Deg(0.0)),
-            2.0,
-            0.1,
-        ))
+        .insert_resource(Camera::new((3.0, 0.0, 5.0), Deg(-125.0), Deg(0.0)))
+        .insert_resource(FlyCamera::new(2.0, 0.1))
         .insert_resource(BPLight {
             position: vec3(3.0, 2.0, 5.0),
         })

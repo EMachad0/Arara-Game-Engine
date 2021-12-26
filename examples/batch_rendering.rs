@@ -11,11 +11,8 @@ fn main() {
             wait_duration: Duration::from_secs(3),
         })
         .add_startup_system(add_cubes.system())
-        .insert_resource(FlyCamera::from_camera(
-            Camera::new((-10.0, -10.0, -10.0), Deg(45.0), Deg(45.0)),
-            2.0,
-            0.1,
-        ))
+        .insert_resource(Camera::new((-10.0, -10.0, -10.0), Deg(45.0), Deg(45.0)))
+        .insert_resource(FlyCamera::new(2.0, 0.1))
         .insert_resource(BPLight {
             position: vec3(-5.0, 5.0, -5.0),
         })

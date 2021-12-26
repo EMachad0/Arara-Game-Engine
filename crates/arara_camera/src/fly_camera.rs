@@ -1,20 +1,15 @@
 use std::f32::consts::FRAC_PI_2;
 
-use crate::{camera::Camera, perspective::Perspective};
+use crate::camera::Camera;
 use arara_ecs::prelude::*;
 use arara_input::keyboard::KeyCode;
 use arara_input::mouse::{MouseButton, MouseMotion, MouseScrollUnit, MouseWheel};
 use arara_input::Input;
 use arara_time::prelude::*;
-use arara_window::WindowResized;
 use cgmath::*;
 
 #[derive(Debug)]
 pub struct FlyCamera {
-    pub camera: Camera,
-    perspective: Perspective,
-    changed: bool,
-    cached_matrix: [[f32; 4]; 4],
     amount_left: f32,
     amount_right: f32,
     amount_forward: f32,
@@ -31,8 +26,39 @@ pub struct FlyCamera {
 
 impl Default for FlyCamera {
     fn default() -> Self {
-        Self::new(5.0, 0.5)
+        Self {
+            amount_left: 0.0,
+            amount_right: 0.0,
+            amount_forward: 0.0,
+            amount_backward: 0.0,
+            amount_up: 0.0,
+            amount_down: 0.0,
+            rotate_horizontal: 0.0,
+            rotate_vertical: 0.0,
+            scroll: 0.0,
+            speed: 5.0,
+            sensitivity: 0.5,
+            enabled: true,
+        }
     }
+}
+
+impl FlyCamera {
+    pub fn new(speed: f32, sensitivity: f32) -> Self {
+        Self {
+            speed,
+            sensitivity,
+            ..Default::default()
+        }
+    }
+
+    // pub fn calc_matrix(&mut self) -> [[f32; 4]; 4] {
+    //     if self.changed {
+    //         let pv_matrix = self.perspective.calc_matrix() * self.camera.calc_matrix();
+    //         self.cached_matrix = pv_matrix.into();
+    //     }
+    //     self.cached_matrix
+    // }
 }
 
 pub fn process_mouse_motion(
@@ -58,7 +84,6 @@ pub fn process_mouse_motion(
         return;
     }
 
-    fly_camera.changed = true;
     fly_camera.rotate_horizontal = mouse_dx as f32;
     fly_camera.rotate_vertical = mouse_dy as f32;
 }
@@ -67,7 +92,6 @@ pub fn process_keyboard(keyboard_input: Res<Input<KeyCode>>, mut fly_camera: Res
     if !fly_camera.enabled {
         return;
     }
-    fly_camera.changed = true;
     let amount = if keyboard_input.pressed(KeyCode::LShift) {
         2.5
     } else {
@@ -105,25 +129,10 @@ pub fn process_keyboard(keyboard_input: Res<Input<KeyCode>>, mut fly_camera: Res
     };
 }
 
-pub fn process_resize(
-    mut mouse_motion_event_reader: EventReader<WindowResized>,
-    mut fly_camera: ResMut<FlyCamera>,
-) {
-    if !fly_camera.enabled {
-        return;
-    }
-
-    for ev in mouse_motion_event_reader.iter().last() {
-        fly_camera.changed = true;
-        fly_camera.perspective.resize(ev.width, ev.height);
-    }
-}
-
 pub fn process_scroll(
     mut fly_camera: ResMut<FlyCamera>,
     mut mouse_wheel_event_reader: EventReader<MouseWheel>,
 ) {
-    fly_camera.changed = true;
     for ev in mouse_wheel_event_reader.iter() {
         fly_camera.scroll = match ev.unit {
             // I'm assuming a line is about 10 pixels
@@ -133,7 +142,7 @@ pub fn process_scroll(
     }
 }
 
-pub fn update_camera(time: Res<Time>, mut fly_camera: ResMut<FlyCamera>) {
+pub fn update_camera(time: Res<Time>, mut fly_camera: ResMut<FlyCamera>, mut camera: ResMut<Camera>) {
     let dt = time.delta_seconds();
 
     let mut position = vec3(0.0, 0.0, 0.0);
@@ -141,7 +150,7 @@ pub fn update_camera(time: Res<Time>, mut fly_camera: ResMut<FlyCamera>) {
     let mut pitch = Rad(0.0);
 
     // Move forward/backward and left/right
-    let (yaw_sin, yaw_cos) = fly_camera.camera.yaw.0.sin_cos();
+    let (yaw_sin, yaw_cos) = camera.yaw.0.sin_cos();
     let forward = Vector3::new(yaw_cos, 0.0, yaw_sin).normalize();
     let right = Vector3::new(-yaw_sin, 0.0, yaw_cos).normalize();
     position +=
@@ -152,7 +161,7 @@ pub fn update_camera(time: Res<Time>, mut fly_camera: ResMut<FlyCamera>) {
     // Note: this isn't an actual zoom. The camera's position
     // changes when zooming. I've added this to make it easier
     // to get closer to an object you want to focus on.
-    let (pitch_sin, pitch_cos) = fly_camera.camera.pitch.0.sin_cos();
+    let (pitch_sin, pitch_cos) = camera.pitch.0.sin_cos();
     let scrollward = Vector3::new(pitch_cos * yaw_cos, pitch_sin, pitch_cos * yaw_sin).normalize();
     position += scrollward * fly_camera.scroll * fly_camera.speed * fly_camera.sensitivity * dt;
     fly_camera.scroll = 0.0;
@@ -165,9 +174,9 @@ pub fn update_camera(time: Res<Time>, mut fly_camera: ResMut<FlyCamera>) {
     yaw += Rad(fly_camera.rotate_horizontal) * fly_camera.sensitivity * dt;
     pitch += Rad(-fly_camera.rotate_vertical) * fly_camera.sensitivity * dt;
 
-    fly_camera.camera.position += position;
-    fly_camera.camera.yaw += yaw;
-    fly_camera.camera.pitch += pitch;
+    camera.position += position;
+    camera.yaw += yaw;
+    camera.pitch += pitch;
 
     // If process_mouse isn't called every frame, these values
     // will not get set to zero, and the camera will rotate
@@ -176,61 +185,9 @@ pub fn update_camera(time: Res<Time>, mut fly_camera: ResMut<FlyCamera>) {
     fly_camera.rotate_vertical = 0.0;
 
     // Keep the self.camera's angle from going too high/low.
-    if fly_camera.camera.pitch < -Rad(FRAC_PI_2) {
-        fly_camera.camera.pitch = -Rad(FRAC_PI_2);
-    } else if fly_camera.camera.pitch > Rad(FRAC_PI_2) {
-        fly_camera.camera.pitch = Rad(FRAC_PI_2);
-    }
-}
-
-impl FlyCamera {
-    pub fn new(speed: f32, sensitivity: f32) -> Self {
-        Self {
-            camera: Default::default(),
-            perspective: Default::default(),
-            changed: true,
-            cached_matrix: Default::default(),
-            amount_left: 0.0,
-            amount_right: 0.0,
-            amount_forward: 0.0,
-            amount_backward: 0.0,
-            amount_up: 0.0,
-            amount_down: 0.0,
-            rotate_horizontal: 0.0,
-            rotate_vertical: 0.0,
-            scroll: 0.0,
-            speed,
-            sensitivity,
-            enabled: true,
-        }
-    }
-
-    pub fn from_camera(camera: Camera, speed: f32, sensitivity: f32) -> Self {
-        Self {
-            camera,
-            perspective: Default::default(),
-            changed: true,
-            cached_matrix: Default::default(),
-            amount_left: 0.0,
-            amount_right: 0.0,
-            amount_forward: 0.0,
-            amount_backward: 0.0,
-            amount_up: 0.0,
-            amount_down: 0.0,
-            rotate_horizontal: 0.0,
-            rotate_vertical: 0.0,
-            scroll: 0.0,
-            speed,
-            sensitivity,
-            enabled: true,
-        }
-    }
-
-    pub fn calc_matrix(&mut self) -> [[f32; 4]; 4] {
-        if self.changed {
-            let pv_matrix = self.perspective.calc_matrix() * self.camera.calc_matrix();
-            self.cached_matrix = pv_matrix.into();
-        }
-        self.cached_matrix
+    if camera.pitch < -Rad(FRAC_PI_2) {
+        camera.pitch = -Rad(FRAC_PI_2);
+    } else if camera.pitch > Rad(FRAC_PI_2) {
+        camera.pitch = Rad(FRAC_PI_2);
     }
 }

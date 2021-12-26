@@ -1,5 +1,5 @@
 use arara_asset::{Assets, Handle};
-use arara_camera::FlyCamera;
+use arara_camera::{Camera, Perspective};
 use arara_ecs::prelude::*;
 use arara_transform::GlobalTransform;
 use glam::{vec4, Mat4};
@@ -9,7 +9,8 @@ use crate::{render_phase::RenderPhase, Color, Image, Mesh, Opaque, Transparent, 
 pub fn prepare_core_pass(
     mut opaques: ResMut<RenderPhase<Opaque>>,
     mut transparents: ResMut<RenderPhase<Transparent>>,
-    mut fly_camera: ResMut<FlyCamera>,
+    camera: Res<Camera>,
+    perspective: Res<Perspective>,
     meshes: Res<Assets<Mesh>>,
     images: Res<Assets<Image>>,
     query: Query<(
@@ -21,7 +22,7 @@ pub fn prepare_core_pass(
         &Visibility,
     )>,
 ) {
-    let pv_matrix = fly_camera.calc_matrix();
+    let pv_matrix = (camera.calc_matrix() * perspective.calc_matrix()).into();
 
     for (entity, mesh, global_transform, color, image_handle, visibility) in query.iter() {
         if !visibility.active || !visibility.visible {
