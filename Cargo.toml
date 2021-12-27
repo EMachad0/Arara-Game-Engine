@@ -5,7 +5,7 @@ edition = "2021"
 
 [features]
 # logging
-trace = ["arara_ecs/trace", "arara_app/trace", "arara_logger/tracing-chrome"]
+trace = ["arara_ecs/trace", "arara_app/trace", "arara_render/trace", "arara_logger/tracing-chrome"]
 
 [dependencies]
 # internal

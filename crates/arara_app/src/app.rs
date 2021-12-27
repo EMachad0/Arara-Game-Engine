@@ -45,9 +45,9 @@ impl App {
 
     pub fn run(&mut self) {
         #[cfg(feature = "trace")]
-        let bevy_app_run_span = info_span!("arara_app");
+        let arara_app_run_span = info_span!("arara_app");
         #[cfg(feature = "trace")]
-        let _bevy_app_run_guard = bevy_app_run_span.enter();
+        let _arara_app_run_guard = arara_app_run_span.enter();
 
         self.debug_stage_order();
         let mut app = std::mem::replace(self, App::default());

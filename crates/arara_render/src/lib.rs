@@ -73,7 +73,8 @@ impl Plugin for RenderPlugin {
             .add_stage_before(
                 CoreStage::PreUpdate,
                 RenderStage::Extract,
-                SystemStage::parallel(),
+                SystemStage::parallel()
+                    .with_system(extract_cameras),
             )
             .add_stage_after(
                 RenderStage::Extract,

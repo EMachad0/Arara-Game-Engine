@@ -1,16 +1,14 @@
 use arara_asset::{Assets, Handle};
-use arara_camera::{Camera, Perspective};
 use arara_ecs::prelude::*;
 use arara_transform::GlobalTransform;
 use glam::{vec4, Mat4};
 
-use crate::{render_phase::RenderPhase, Color, Image, Mesh, Opaque, Transparent, Visibility};
+use crate::{render_phase::RenderPhase, Color, Image, Mesh, Opaque, Transparent, Visibility, ExtractedView};
 
 pub fn prepare_core_pass(
     mut opaques: ResMut<RenderPhase<Opaque>>,
     mut transparents: ResMut<RenderPhase<Transparent>>,
-    camera: Res<Camera>,
-    perspective: Res<Perspective>,
+    view: Res<ExtractedView>,
     meshes: Res<Assets<Mesh>>,
     images: Res<Assets<Image>>,
     query: Query<(
@@ -22,7 +20,7 @@ pub fn prepare_core_pass(
         &Visibility,
     )>,
 ) {
-    let pv_matrix = (perspective.calc_matrix() * camera.calc_matrix()).to_cols_array_2d();
+    let pv_matrix = view.pv_matrix.to_cols_array_2d();
 
     for (entity, mesh, global_transform, color, image_handle, visibility) in query.iter() {
         if !visibility.active || !visibility.visible {

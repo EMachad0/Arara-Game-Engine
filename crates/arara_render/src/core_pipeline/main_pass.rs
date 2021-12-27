@@ -1,15 +1,17 @@
 use crate::{
     geometry::Mesh, render_phase::RenderPhase, BPLight, ClearColor, Color, DefaultShader, Image,
-    Opaque, Shader, Transparent,
+    Opaque, Shader, Transparent, ExtractedView,
 };
 use arara_asset::{Assets, Handle};
-use arara_camera::{Camera, Perspective};
 use arara_ecs::prelude::*;
 use arara_transform::GlobalTransform;
 use arara_utils::StableHashMap;
 use arara_window::Window;
 use glam::*;
 use glium::{texture::RawImage2d, Surface};
+
+#[cfg(feature = "trace")]
+use arara_utils::tracing::info_span;
 
 #[derive(Copy, Clone)]
 struct Vertex {
@@ -26,8 +28,7 @@ pub fn main_pass(
     window: NonSend<Window>,
     clear_color: Res<ClearColor>,
     light: Res<BPLight>,
-    camera: Res<Camera>,
-    perspective: Res<Perspective>,
+    view: Res<ExtractedView>,
     default_shader: Res<DefaultShader>,
     images: Res<Assets<Image>>,
     meshes: Res<Assets<Mesh>>,
@@ -45,8 +46,8 @@ pub fn main_pass(
         clear_color.a(),
     );
 
-    let pv_matrix: [[f32; 4]; 4] = (perspective.calc_matrix() * camera.calc_matrix()).to_cols_array_2d();
-    let camera_pos: [f32; 3] = camera.position.into();
+    let pv_matrix: [[f32; 4]; 4] = view.pv_matrix.to_cols_array_2d();
+    let camera_pos: [f32; 3] = view.position.into();
     let light_pos: [f32; 3] = light.position.into();
 
     let DefaultShader {
@@ -72,6 +73,12 @@ pub fn main_pass(
 
     // Main pass
     if !opaques.items.is_empty() {
+        
+        #[cfg(feature = "trace")]
+        let opaque_run_span = info_span!("arara_render::opaque");
+        #[cfg(feature = "trace")]
+        let _opaque_run_guard = opaque_run_span.enter();
+
         let mut vertices: Vec<Vertex> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
         let mut textures: Vec<RawImage2d<u8>> = vec![RawImage2d::from_raw_rgba_reversed(
@@ -160,6 +167,12 @@ pub fn main_pass(
             // polygon_mode: glium::PolygonMode::Line,
             ..Default::default()
         };
+
+        #[cfg(feature = "trace")]
+        let opaque_draw_run_span = info_span!("arara_render::opaque::draw_call");
+        #[cfg(feature = "trace")]
+        let _opaque_draw_run_guard = opaque_draw_run_span.enter();
+
         frame
             .draw(&vertex_buffer, &index_buffer, &program, &uniforms, &params)
             .unwrap();
@@ -167,6 +180,11 @@ pub fn main_pass(
 
     // Translucent pass
     if !transparents.items.is_empty() {
+        #[cfg(feature = "trace")]
+        let transparent_run_span = info_span!("arara_render::transparent");
+        #[cfg(feature = "trace")]
+        let _transparent_run_guard = transparent_run_span.enter();
+
         let mut vertices: Vec<Vertex> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
         let mut textures: Vec<RawImage2d<u8>> = vec![RawImage2d::from_raw_rgba_reversed(
@@ -255,6 +273,12 @@ pub fn main_pass(
             blend: glium::draw_parameters::Blend::alpha_blending(),
             ..Default::default()
         };
+
+        #[cfg(feature = "trace")]
+        let transparent_draw_run_span = info_span!("arara_render::transparent::draw_call");
+        #[cfg(feature = "trace")]
+        let _transparent_draw_run_guard = transparent_draw_run_span.enter();
+
         frame
             .draw(&vertex_buffer, &index_buffer, &program, &uniforms, &params)
             .unwrap();
