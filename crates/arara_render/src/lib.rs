@@ -68,13 +68,11 @@ pub struct RenderPlugin;
 
 impl Plugin for RenderPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .schedule
+        app.schedule
             .add_stage_before(
                 CoreStage::PreUpdate,
                 RenderStage::Extract,
-                SystemStage::parallel()
-                    .with_system(extract_cameras),
+                SystemStage::parallel().with_system(extract_cameras),
             )
             .add_stage_after(
                 RenderStage::Extract,
@@ -103,8 +101,7 @@ impl Plugin for RenderPlugin {
                 SystemStage::parallel(),
             );
 
-        app
-            .add_plugin(shader::ShaderPlugin)
+        app.add_plugin(shader::ShaderPlugin)
             .add_plugin(geometry::MeshPlugin)
             .add_plugin(texture::ImagePlugin)
             .add_plugin(core_pipeline::CorePipelinePlugin)

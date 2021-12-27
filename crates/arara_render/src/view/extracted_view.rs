@@ -8,8 +8,11 @@ pub struct ExtractedView {
     pub position: Vec3,
 }
 
-
-pub(crate) fn extract_cameras(mut commands: Commands, camera: Res<Camera>, perspective: Res<Perspective>) {
+pub(crate) fn extract_cameras(
+    mut commands: Commands,
+    camera: Res<Camera>,
+    perspective: Res<Perspective>,
+) {
     commands.insert_resource(ExtractedView {
         pv_matrix: perspective.calc_matrix() * camera.calc_matrix(),
         position: camera.position,

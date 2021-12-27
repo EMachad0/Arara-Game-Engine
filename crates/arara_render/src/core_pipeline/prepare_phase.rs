@@ -3,7 +3,9 @@ use arara_ecs::prelude::*;
 use arara_transform::GlobalTransform;
 use glam::{vec4, Mat4};
 
-use crate::{render_phase::RenderPhase, Color, Image, Mesh, Opaque, Transparent, Visibility, ExtractedView};
+use crate::{
+    render_phase::RenderPhase, Color, ExtractedView, Image, Mesh, Opaque, Transparent, Visibility,
+};
 
 pub fn prepare_core_pass(
     mut opaques: ResMut<RenderPhase<Opaque>>,

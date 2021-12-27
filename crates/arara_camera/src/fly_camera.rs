@@ -134,7 +134,11 @@ pub fn process_scroll(
     }
 }
 
-pub fn update_camera(time: Res<Time>, mut fly_camera: ResMut<FlyCamera>, mut camera: ResMut<Camera>) {
+pub fn update_camera(
+    time: Res<Time>,
+    mut fly_camera: ResMut<FlyCamera>,
+    mut camera: ResMut<Camera>,
+) {
     let dt = time.delta_seconds();
 
     let mut position = Vec3::ZERO;

@@ -1,6 +1,6 @@
 use crate::{
-    geometry::Mesh, render_phase::RenderPhase, BPLight, ClearColor, Color, DefaultShader, Image,
-    Opaque, Shader, Transparent, ExtractedView,
+    geometry::Mesh, render_phase::RenderPhase, BPLight, ClearColor, Color, DefaultShader,
+    ExtractedView, Image, Opaque, Shader, Transparent,
 };
 use arara_asset::{Assets, Handle};
 use arara_ecs::prelude::*;
@@ -73,7 +73,6 @@ pub fn main_pass(
 
     // Main pass
     if !opaques.items.is_empty() {
-        
         #[cfg(feature = "trace")]
         let opaque_run_span = info_span!("arara_render::opaque");
         #[cfg(feature = "trace")]
