@@ -8,7 +8,7 @@ mod render_phase;
 mod shader;
 mod shaders;
 mod texture;
-mod visibility;
+mod view;
 
 pub use billboard::*;
 pub use clear_color::*;
@@ -18,7 +18,7 @@ pub use core_pipeline::*;
 pub use geometry::*;
 pub use shader::*;
 pub use texture::*;
-pub use visibility::*;
+pub use view::*;
 
 pub mod prelude {
     pub use crate::{
@@ -29,7 +29,7 @@ pub mod prelude {
         core_pipeline::{BPLight, SimpleMeshBundle},
         geometry::*,
         texture::Image,
-        visibility::Visibility,
+        view::Visibility,
         RenderPlugin,
     };
 }
@@ -67,8 +67,8 @@ pub enum RenderStage {
 pub struct RenderPlugin;
 
 impl Plugin for RenderPlugin {
-    fn build(&self, app_builder: &mut App) {
-        app_builder
+    fn build(&self, app: &mut App) {
+        app
             .schedule
             .add_stage_before(
                 CoreStage::PreUpdate,
@@ -102,7 +102,7 @@ impl Plugin for RenderPlugin {
                 SystemStage::parallel(),
             );
 
-        app_builder
+        app
             .add_plugin(shader::ShaderPlugin)
             .add_plugin(geometry::MeshPlugin)
             .add_plugin(texture::ImagePlugin)
