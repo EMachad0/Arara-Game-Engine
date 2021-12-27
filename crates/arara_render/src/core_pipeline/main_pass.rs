@@ -45,7 +45,7 @@ pub fn main_pass(
         clear_color.a(),
     );
 
-    let pv_matrix: [[f32; 4]; 4] = (perspective.calc_matrix() * camera.calc_matrix()).into();
+    let pv_matrix: [[f32; 4]; 4] = (perspective.calc_matrix() * camera.calc_matrix()).to_cols_array_2d();
     let camera_pos: [f32; 3] = camera.position.into();
     let light_pos: [f32; 3] = light.position.into();
 

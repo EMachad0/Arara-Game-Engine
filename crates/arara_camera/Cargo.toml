@@ -11,6 +11,7 @@ arara_transform = { path = "../arara_transform", version = "0.1.0" }
 arara_input = { path = "../arara_input", version = "0.1.0" }
 arara_window = { path = "../arara_window", version = "0.1.0" }
 arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
+arara_utils = { path = "../arara_utils", version = "0.1.0" }
 # other
-glium = "*"
 cgmath = "*"
+glam = "*"

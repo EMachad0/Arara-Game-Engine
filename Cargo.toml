@@ -26,5 +26,4 @@ arara_ecs = { path = "crates/arara_ecs", version = "0.1.0" }
 glium = "*"
 image = "*"
 glam = "*"
-cgmath = "*"    # Remove after camera refactor
 rand = "*"

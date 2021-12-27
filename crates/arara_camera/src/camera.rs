@@ -1,36 +1,44 @@
-use cgmath::*;
+use std::f32::consts::FRAC_PI_2;
+
+use glam::{Vec3, vec3, Mat4};
+
 
 #[derive(Debug)]
 pub struct Camera {
-    pub position: Point3<f32>,
-    pub yaw: Rad<f32>,
-    pub pitch: Rad<f32>,
+    pub position: Vec3,
+    pub yaw: f32,
+    pub pitch: f32,
 }
 
 impl Default for Camera {
     fn default() -> Self {
-        Self::new((0.0, 5.0, 10.0), Deg(-90.0), Deg(-20.0))
+        Self::new(vec3(0.0, 5.0, 10.0), -FRAC_PI_2, (-20f32).to_radians())
     }
 }
 
 impl Camera {
-    pub fn new<V: Into<Point3<f32>>, Y: Into<Rad<f32>>, P: Into<Rad<f32>>>(
-        position: V,
-        yaw: Y,
-        pitch: P,
+    pub fn new(
+        position: Vec3,
+        yaw: f32,
+        pitch: f32,
     ) -> Self {
         Self {
-            position: position.into(),
-            yaw: yaw.into(),
-            pitch: pitch.into(),
+            position,
+            yaw,
+            pitch,
         }
     }
 
-    pub fn calc_matrix(&self) -> Matrix4<f32> {
-        Matrix4::look_to_rh(
-            self.position,
-            Vector3::new(self.yaw.0.cos(), self.pitch.0.sin(), self.yaw.0.sin()).normalize(),
-            Vector3::unit_y(),
-        )
+    pub fn calc_matrix(&self) -> Mat4 {
+        let mut up = Vec3::Y;
+        let normal = vec3(self.yaw.cos(), self.pitch.sin(), self.yaw.sin()).normalize();
+        let right = normal.cross(up).normalize();
+        up = right.cross(normal).normalize();
+        Mat4::from_cols_array(&[
+            right.x, up.x, -normal.x, 0.0,
+            right.y, up.y, -normal.y, 0.0,
+            right.z, up.z, -normal.z, 0.0,
+            -self.position.dot(right), -self.position.dot(up), self.position.dot(normal), 1.0,
+        ])
     }
 }

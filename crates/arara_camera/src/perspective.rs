@@ -1,26 +1,28 @@
+use std::f32::consts::FRAC_PI_3;
+
 use arara_ecs::{event::EventReader, system::ResMut};
 use arara_window::WindowResized;
-use cgmath::{Deg, Matrix4, Rad};
+use glam::Mat4;
 
 #[derive(Debug)]
 pub struct Perspective {
     aspect: f32,
-    fovy: Rad<f32>,
+    fovy: f32,
     znear: f32,
     zfar: f32,
 }
 
 impl Default for Perspective {
     fn default() -> Self {
-        Self::new(1024, 768, Deg(60.0), 0.1, 1024.0)
+        Self::new(1024, 768, FRAC_PI_3, 0.1, 1024.0)
     }
 }
 
 impl Perspective {
-    pub fn new<F: Into<Rad<f32>>>(width: u32, height: u32, fovy: F, znear: f32, zfar: f32) -> Self {
+    pub fn new(width: u32, height: u32, fovy: f32, znear: f32, zfar: f32) -> Self {
         Self {
             aspect: width as f32 / height as f32,
-            fovy: fovy.into(),
+            fovy,
             znear,
             zfar,
         }
@@ -30,8 +32,8 @@ impl Perspective {
         self.aspect = width as f32 / height as f32;
     }
 
-    pub fn calc_matrix(&self) -> Matrix4<f32> {
-        cgmath::perspective(self.fovy, self.aspect, self.znear, self.zfar)
+    pub fn calc_matrix(&self) -> Mat4 {
+        Mat4::perspective_rh_gl(self.fovy, self.aspect, self.znear, self.zfar)
     }
 }
 

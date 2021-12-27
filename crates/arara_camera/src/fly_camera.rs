@@ -6,7 +6,7 @@ use arara_input::keyboard::KeyCode;
 use arara_input::mouse::{MouseButton, MouseMotion, MouseScrollUnit, MouseWheel};
 use arara_input::Input;
 use arara_time::prelude::*;
-use cgmath::*;
+use glam::{vec3, Vec3};
 
 #[derive(Debug)]
 pub struct FlyCamera {
@@ -137,14 +137,14 @@ pub fn process_scroll(
 pub fn update_camera(time: Res<Time>, mut fly_camera: ResMut<FlyCamera>, mut camera: ResMut<Camera>) {
     let dt = time.delta_seconds();
 
-    let mut position = vec3(0.0, 0.0, 0.0);
-    let mut yaw = Rad(0.0);
-    let mut pitch = Rad(0.0);
+    let mut position = Vec3::ZERO;
+    let mut yaw = 0.0;
+    let mut pitch = 0.0;
 
     // Move forward/backward and left/right
-    let (yaw_sin, yaw_cos) = camera.yaw.0.sin_cos();
-    let forward = Vector3::new(yaw_cos, 0.0, yaw_sin).normalize();
-    let right = Vector3::new(-yaw_sin, 0.0, yaw_cos).normalize();
+    let (yaw_sin, yaw_cos) = camera.yaw.sin_cos();
+    let forward = vec3(yaw_cos, 0.0, yaw_sin).normalize();
+    let right = vec3(-yaw_sin, 0.0, yaw_cos).normalize();
     position +=
         forward * (fly_camera.amount_forward - fly_camera.amount_backward) * fly_camera.speed * dt;
     position += right * (fly_camera.amount_right - fly_camera.amount_left) * fly_camera.speed * dt;
@@ -153,8 +153,8 @@ pub fn update_camera(time: Res<Time>, mut fly_camera: ResMut<FlyCamera>, mut cam
     // Note: this isn't an actual zoom. The camera's position
     // changes when zooming. I've added this to make it easier
     // to get closer to an object you want to focus on.
-    let (pitch_sin, pitch_cos) = camera.pitch.0.sin_cos();
-    let scrollward = Vector3::new(pitch_cos * yaw_cos, pitch_sin, pitch_cos * yaw_sin).normalize();
+    let (pitch_sin, pitch_cos) = camera.pitch.sin_cos();
+    let scrollward = vec3(pitch_cos * yaw_cos, pitch_sin, pitch_cos * yaw_sin).normalize();
     position += scrollward * fly_camera.scroll * fly_camera.speed * fly_camera.sensitivity * dt;
     fly_camera.scroll = 0.0;
 
@@ -163,8 +163,8 @@ pub fn update_camera(time: Res<Time>, mut fly_camera: ResMut<FlyCamera>, mut cam
     position.y += (fly_camera.amount_up - fly_camera.amount_down) * fly_camera.speed * dt;
 
     // Rotate
-    yaw += Rad(fly_camera.rotate_horizontal) * fly_camera.sensitivity * dt;
-    pitch += Rad(-fly_camera.rotate_vertical) * fly_camera.sensitivity * dt;
+    yaw += (fly_camera.rotate_horizontal) * fly_camera.sensitivity * dt;
+    pitch += (-fly_camera.rotate_vertical) * fly_camera.sensitivity * dt;
 
     camera.position += position;
     camera.yaw += yaw;
@@ -177,9 +177,9 @@ pub fn update_camera(time: Res<Time>, mut fly_camera: ResMut<FlyCamera>, mut cam
     fly_camera.rotate_vertical = 0.0;
 
     // Keep the self.camera's angle from going too high/low.
-    if camera.pitch < -Rad(FRAC_PI_2) {
-        camera.pitch = -Rad(FRAC_PI_2);
-    } else if camera.pitch > Rad(FRAC_PI_2) {
-        camera.pitch = Rad(FRAC_PI_2);
+    if camera.pitch < -(FRAC_PI_2) {
+        camera.pitch = -(FRAC_PI_2);
+    } else if camera.pitch > (FRAC_PI_2) {
+        camera.pitch = FRAC_PI_2;
     }
 }

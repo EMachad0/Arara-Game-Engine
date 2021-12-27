@@ -1,5 +1,4 @@
 use arara::prelude::*;
-use cgmath::Deg;
 
 fn main() {
     App::new()
@@ -14,7 +13,7 @@ fn main() {
         .insert_resource(BPLight {
             position: vec3(-2.0, 5.0, 3.0),
         })
-        .insert_resource(Camera::new((0.0, 5.0, 10.0), Deg(-90.0), Deg(0.0)))
+        .insert_resource(Camera::new(vec3(0.0, 5.0, 10.0), -FRAC_PI_2, 0.0))
         .insert_resource(FlyCamera::new(2.0, 0.1))
         .run()
 }

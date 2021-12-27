@@ -39,9 +39,9 @@ fn rotate_billboards(
     let camera_position = vec3(camera_position.x, camera_position.y, camera_position.z);
 
     let view_plane_normal = vec3(
-        camera.yaw.0.cos(),
-        camera.pitch.0.sin(),
-        camera.yaw.0.sin(),
+        camera.yaw.cos(),
+        camera.pitch.sin(),
+        camera.yaw.sin(),
     );
     let view_plane_billboard_rotation = calc_billboard_rotation(view_plane_normal, false);
     let view_plane_axial_billboard_rotation = calc_billboard_rotation(view_plane_normal, true);

@@ -1,5 +1,4 @@
 use arara::prelude::*;
-use cgmath::Deg;
 
 fn main() {
     App::new()
@@ -11,7 +10,7 @@ fn main() {
             wait_duration: Duration::from_secs(3),
         })
         .add_startup_system(add_cubes.system())
-        .insert_resource(Camera::new((-10.0, -10.0, -10.0), Deg(45.0), Deg(45.0)))
+        .insert_resource(Camera::new(vec3(-10.0, -10.0, -10.0), FRAC_PI_4, FRAC_PI_4))
         .insert_resource(FlyCamera::new(2.0, 0.1))
         .insert_resource(BPLight {
             position: vec3(-5.0, 5.0, -5.0),
