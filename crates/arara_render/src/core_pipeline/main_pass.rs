@@ -8,7 +8,7 @@ use arara_transform::GlobalTransform;
 use arara_utils::StableHashMap;
 use arara_window::Window;
 use glam::*;
-use glium::{texture::RawImage2d, Surface};
+use glium::{texture::RawImage2d, Surface, implement_uniform_block};
 
 #[cfg(feature = "trace")]
 use arara_utils::tracing::info_span;
@@ -23,6 +23,21 @@ struct Vertex {
 }
 
 glium::implement_vertex!(Vertex, i_position, i_normal, i_color, i_tex_cords, i_tex_id);
+
+#[derive(Debug, Default, Clone, Copy)]
+struct CameraUniformBuffer {
+    u_pv_matrix: [[f32; 4]; 4],
+}
+
+impl CameraUniformBuffer {
+    fn new(u_pv_matrix: [[f32; 4]; 4]) -> Self {
+        Self {
+            u_pv_matrix,
+        }
+    }
+}
+
+implement_uniform_block!(CameraUniformBuffer, u_pv_matrix);
 
 pub fn main_pass(
     window: NonSend<Window>,
@@ -47,6 +62,8 @@ pub fn main_pass(
     );
 
     let pv_matrix: [[f32; 4]; 4] = view.pv_matrix.to_cols_array_2d();
+    let camera_uniform_buffer = glium::uniforms::UniformBuffer::new(display, CameraUniformBuffer::new(pv_matrix)).unwrap();
+
     let camera_pos: [f32; 3] = view.position.into();
     let light_pos: [f32; 3] = light.position.into();
 
@@ -149,7 +166,7 @@ pub fn main_pass(
         .unwrap();
 
         let uniforms = glium::uniform! {
-            u_pv_matrix: pv_matrix,
+            camera: &camera_uniform_buffer,
             u_light_pos: light_pos,
             u_camera_pos: camera_pos,
             u_texture_array: texture_array,
@@ -256,7 +273,7 @@ pub fn main_pass(
         .unwrap();
 
         let uniforms = glium::uniform! {
-            u_pv_matrix: pv_matrix,
+            camera: &camera_uniform_buffer,
             u_light_pos: light_pos,
             u_camera_pos: camera_pos,
             u_texture_array: texture_array,

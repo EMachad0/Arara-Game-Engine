@@ -11,7 +11,7 @@ fn main() {
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin::default())
         .add_plugin(LogDiagnosticPlugin {
-            wait_duration: Duration::from_secs(3),
+            wait_duration: Duration::from_secs(10),
         })
         .add_startup_system(add_color_only_shader.system())
         .add_startup_system(add_shapes.system())
