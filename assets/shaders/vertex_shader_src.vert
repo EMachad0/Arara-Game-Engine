@@ -1,4 +1,4 @@
-#version 150
+#version 460
 
 uniform camera {
     mat4 u_pv_matrix;

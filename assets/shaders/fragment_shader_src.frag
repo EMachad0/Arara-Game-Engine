@@ -1,4 +1,5 @@
-#version 150
+#version 460
+#extension GL_ARB_bindless_texture : require
 
 in vec3 v_position;
 in vec3 v_normal;
@@ -10,13 +11,23 @@ out vec4 color;
 
 uniform vec3 u_camera_pos;
 uniform vec3 u_light_pos;
-uniform sampler2DArray tex;
+// uniform sampler2DArray tex;
+
+uniform samplers {
+    layout (bindless_sampler) sampler2D tex;
+    float valor;
+};
+
+// uniform textures {
+//     sampler2D tex[32];
+// };
 
 const float shineness = 32.0;
 const vec3 light_color = vec3(0.3);
 
 void main() {
-    vec4 tex_color = texture(tex, vec3(v_tex_cords, float(v_tex_id))) * v_color;
+    vec4 tex_color = texture(tex, v_tex_cords) * v_color;
+    // vec4 tex_color = vec4(vec3(valor), 1.0);
     vec3 base_color = vec3(tex_color);
 
     vec3 normal = normalize(v_normal);

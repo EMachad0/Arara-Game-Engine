@@ -8,7 +8,7 @@ use arara_transform::GlobalTransform;
 use arara_utils::StableHashMap;
 use arara_window::Window;
 use glam::*;
-use glium::{texture::RawImage2d, Surface, implement_uniform_block};
+use glium::{implement_uniform_block, implement_vertex, texture::RawImage2d, Surface};
 
 #[cfg(feature = "trace")]
 use arara_utils::tracing::info_span;
@@ -22,7 +22,7 @@ struct Vertex {
     i_tex_id: u32,
 }
 
-glium::implement_vertex!(Vertex, i_position, i_normal, i_color, i_tex_cords, i_tex_id);
+implement_vertex!(Vertex, i_position, i_normal, i_color, i_tex_cords, i_tex_id);
 
 #[derive(Debug, Default, Clone, Copy)]
 struct CameraUniformBuffer {
@@ -31,13 +31,25 @@ struct CameraUniformBuffer {
 
 impl CameraUniformBuffer {
     fn new(u_pv_matrix: [[f32; 4]; 4]) -> Self {
-        Self {
-            u_pv_matrix,
-        }
+        Self { u_pv_matrix }
     }
 }
 
 implement_uniform_block!(CameraUniformBuffer, u_pv_matrix);
+
+#[derive(Copy, Clone)]
+struct TextureUniformBuffer<'a> {
+    tex: glium::texture::TextureHandle<'a>,
+    valor: f32,
+}
+
+impl<'a> TextureUniformBuffer<'a> {
+    fn new(tex: glium::texture::TextureHandle<'a>) -> Self {
+        Self { tex, valor: 0.2 }
+    }
+}
+
+implement_uniform_block!(TextureUniformBuffer<'a>, tex, valor);
 
 pub fn main_pass(
     window: NonSend<Window>,
@@ -62,7 +74,19 @@ pub fn main_pass(
     );
 
     let pv_matrix: [[f32; 4]; 4] = view.pv_matrix.to_cols_array_2d();
-    let camera_uniform_buffer = glium::uniforms::UniformBuffer::new(display, CameraUniformBuffer::new(pv_matrix)).unwrap();
+    let camera_uniform_buffer =
+        glium::uniforms::UniformBuffer::new(display, CameraUniformBuffer::new(pv_matrix)).unwrap();
+
+    let raw_image = RawImage2d::from_raw_rgba_reversed(&vec![255; 4 * 64 * 64], (64, 64));
+    let texture = glium::texture::SrgbTexture2d::new(display, raw_image).unwrap();
+    let texture = texture.resident().unwrap();
+    let texture_uniform_buffer = glium::uniforms::UniformBuffer::new(
+        display,
+        TextureUniformBuffer::new(glium::texture::TextureHandle::new(
+            &texture,
+            &Default::default(),
+        )),
+    ).unwrap();
 
     let camera_pos: [f32; 3] = view.position.into();
     let light_pos: [f32; 3] = light.position.into();
@@ -169,7 +193,7 @@ pub fn main_pass(
             camera: &camera_uniform_buffer,
             u_light_pos: light_pos,
             u_camera_pos: camera_pos,
-            u_texture_array: texture_array,
+            samplers: &texture_uniform_buffer,
         };
 
         let params = glium::DrawParameters {
@@ -276,7 +300,7 @@ pub fn main_pass(
             camera: &camera_uniform_buffer,
             u_light_pos: light_pos,
             u_camera_pos: camera_pos,
-            u_texture_array: texture_array,
+            samplers: &texture_uniform_buffer,
         };
 
         let params = glium::DrawParameters {
