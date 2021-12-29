@@ -1,6 +1,6 @@
 use crate::{
-    geometry::Mesh, render_phase::RenderPhase, BPLight, ClearColor, DefaultShader, ExtractedCPE,
-    ExtractedView, Opaque, Shader, TextureBuffer, Transparent,
+    geometry::Mesh, render_phase::RenderPhase, BPLight, ClearColor, ExtractedCPE,
+    ExtractedView, Opaque, TextureBuffer, Transparent, DefaultShaderProgram,
 };
 use arara_asset::Assets;
 use arara_ecs::prelude::*;
@@ -47,15 +47,18 @@ pub fn main_pass(
     clear_color: Res<ClearColor>,
     light: Res<BPLight>,
     view: Res<ExtractedView>,
-    default_shader: Res<DefaultShader>,
+    default_shader_program: NonSend<DefaultShaderProgram>,
     texture_buffer: NonSend<TextureBuffer>,
     meshes: Res<Assets<Mesh>>,
-    shaders: Res<Assets<Shader>>,
     opaques: Res<RenderPhase<Opaque>>,
     transparents: Res<RenderPhase<Transparent>>,
     query: Query<&ExtractedCPE>,
 ) {
     let display = window.display();
+    let program = match &default_shader_program.program {
+        Some(program) => program,
+        None => return,
+    };
 
     let clear_color = (
         clear_color.0.r(),
@@ -73,23 +76,6 @@ pub fn main_pass(
 
     let camera_pos: [f32; 3] = view.position.into();
     let light_pos: [f32; 3] = light.position.into();
-
-    let DefaultShader {
-        vertex_shader,
-        fragment_shader,
-    } = &*default_shader;
-    let vertex_shader = shaders.get(vertex_shader);
-    let fragment_shader = shaders.get(fragment_shader);
-    if vertex_shader.is_none() || fragment_shader.is_none() {
-        return;
-    }
-    let program = glium::Program::from_source(
-        display,
-        vertex_shader.unwrap().source(),
-        fragment_shader.unwrap().source(),
-        None,
-    )
-    .unwrap();
 
     // Start Frame
     let mut frame = display.draw();

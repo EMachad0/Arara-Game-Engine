@@ -6,7 +6,6 @@ mod core_pipeline;
 mod geometry;
 mod render_phase;
 mod shader;
-mod shaders;
 mod texture;
 mod view;
 

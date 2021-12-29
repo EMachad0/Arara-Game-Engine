@@ -12,12 +12,13 @@ use arara_window::Window;
 use glium::{Api, Profile, Version};
 pub use main_pass::main_pass;
 pub use phase_items::*;
-pub use prepare_phase::{prepare_split_render_phase, prepare_bindless_textures};
+pub use prepare_phase::{prepare_bindless_textures, prepare_split_render_phase};
 pub use simple_mesh::*;
 
 use crate::{
+    init_default_shader_program, load_default_shader,
     render_phase::{sort_phase_system, RenderPhase},
-    ClearColor, RenderStage, Mesh, Image, Color, Visibility,
+    ClearColor, Color, DefaultShader, DefaultShaderProgram, Image, Mesh, RenderStage, Visibility,
 };
 
 #[derive(Default)]
@@ -29,8 +30,10 @@ impl Plugin for CorePipelinePlugin {
             .init_resource::<ClearColor>()
             .init_resource::<BPLight>()
             .init_resource::<DefaultShader>()
+            .init_non_send_resource::<DefaultShaderProgram>()
             .add_startup_system_to_stage(StartupStage::PreStartup, load_default_shader)
             .add_startup_system_to_stage(StartupStage::PostStartup, debug_glium_backend_info)
+            .add_system_to_stage(CoreStage::First, init_default_shader_program)
             .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_camera_phases)
             .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_entities)
             .add_system_to_stage(RenderStage::Prepare, prepare_bindless_textures)
