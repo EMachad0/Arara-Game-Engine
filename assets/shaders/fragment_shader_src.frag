@@ -9,25 +9,18 @@ flat in uint v_tex_id;
 
 out vec4 color;
 
-uniform vec3 u_camera_pos;
-uniform vec3 u_light_pos;
-// uniform sampler2DArray tex;
-
 uniform samplers {
-    layout (bindless_sampler) sampler2D tex;
-    float valor;
+    sampler2D tex[5];
 };
 
-// uniform textures {
-//     sampler2D tex[32];
-// };
+uniform vec3 u_camera_pos;
+uniform vec3 u_light_pos;
 
 const float shineness = 32.0;
 const vec3 light_color = vec3(0.3);
 
 void main() {
-    vec4 tex_color = texture(tex, v_tex_cords) * v_color;
-    // vec4 tex_color = vec4(vec3(valor), 1.0);
+    vec4 tex_color = texture(tex[v_tex_id], v_tex_cords) * v_color;
     vec3 base_color = vec3(tex_color);
 
     vec3 normal = normalize(v_normal);
