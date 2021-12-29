@@ -24,7 +24,7 @@ fn add_shapes(
     mut meshes: ResMut<Assets<Mesh>>,
 ) {
     let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
-    let img1: Handle<Image> = asset_server.load("textures/white-snow.jpg");
+    let img1: Handle<Image> = asset_server.load("textures/fire/fire1.png");
 
     commands.spawn_bundle(SimpleMeshBundle {
         mesh: meshes.add(Mesh::from(Cuboid::new(2.0, 2.0, 2.0))),

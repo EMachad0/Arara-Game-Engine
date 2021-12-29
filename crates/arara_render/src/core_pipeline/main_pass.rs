@@ -1,13 +1,12 @@
 use crate::{
-    geometry::Mesh, render_phase::RenderPhase, BPLight, ClearColor, DefaultShader,
-    ExtractedCPE, ExtractedView, Image, Opaque, Shader, Transparent,
+    geometry::Mesh, render_phase::RenderPhase, BPLight, ClearColor, DefaultShader, ExtractedCPE,
+    ExtractedView, Opaque, Shader, TextureBuffer, Transparent,
 };
-use arara_asset::{Assets, Handle};
+use arara_asset::Assets;
 use arara_ecs::prelude::*;
-use arara_utils::StableHashMap;
 use arara_window::Window;
 use glam::*;
-use glium::{implement_uniform_block, implement_vertex, texture::RawImage2d, Surface};
+use glium::{implement_uniform_block, implement_vertex, Surface};
 
 #[cfg(feature = "trace")]
 use arara_utils::tracing::info_span;
@@ -49,7 +48,7 @@ pub fn main_pass(
     light: Res<BPLight>,
     view: Res<ExtractedView>,
     default_shader: Res<DefaultShader>,
-    images: Res<Assets<Image>>,
+    texture_buffer: NonSend<TextureBuffer>,
     meshes: Res<Assets<Mesh>>,
     shaders: Res<Assets<Shader>>,
     opaques: Res<RenderPhase<Opaque>>,
@@ -69,45 +68,47 @@ pub fn main_pass(
     let camera_uniform_buffer =
         glium::uniforms::UniformBuffer::new(display, CameraUniformBuffer::new(pv_matrix)).unwrap();
 
-    let raw_image = RawImage2d::from_raw_rgba_reversed(&vec![1.0, 0.0, 0.0, 1.0], (1, 1));
-    let texture_1 = glium::texture::SrgbTexture2d::new(display, raw_image)
-        .unwrap()
-        .resident()
-        .unwrap();
-    let raw_image = RawImage2d::from_raw_rgba_reversed(&vec![0.0, 1.0, 0.0, 1.0], (1, 1));
-    let texture_2 = glium::texture::SrgbTexture2d::new(display, raw_image)
-        .unwrap()
-        .resident()
-        .unwrap();
-    let raw_image = RawImage2d::from_raw_rgba_reversed(&vec![0.0, 0.0, 1.0, 1.0], (1, 1));
-    let texture_3 = glium::texture::SrgbTexture2d::new(display, raw_image)
-        .unwrap()
-        .resident()
-        .unwrap();
-    let raw_image = RawImage2d::from_raw_rgba_reversed(&vec![1.0; 4 * 16 * 16], (16, 16));
-    let texture_4 = glium::texture::SrgbTexture2d::new(display, raw_image)
-        .unwrap()
-        .resident()
-        .unwrap();
-    let raw_image = RawImage2d::from_raw_rgba_reversed(&vec![0.5; 4 * 64 * 64], (64, 64));
-    let texture_5 = glium::texture::SrgbTexture2d::new(display, raw_image)
-        .unwrap()
-        .resident()
-        .unwrap();
+    let texture_uniform_buffer =
+        glium::uniforms::UniformBuffer::new(display, texture_buffer.texture_uniform_buffer()).unwrap();
 
-    let texture_uniform_buffer = glium::uniforms::UniformBuffer::new(
-        display,
-        TextureUniformBuffer {
-            tex: [
-                glium::texture::TextureHandle::new(&texture_1, &Default::default()),
-                glium::texture::TextureHandle::new(&texture_2, &Default::default()),
-                glium::texture::TextureHandle::new(&texture_3, &Default::default()),
-                glium::texture::TextureHandle::new(&texture_4, &Default::default()),
-                glium::texture::TextureHandle::new(&texture_5, &Default::default()),
-            ],
-        },
-    )
-    .unwrap();
+    // let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(&vec![1.0, 0.0, 0.0, 1.0], (1, 1));
+    // let texture_1 = glium::texture::SrgbTexture2d::new(display, raw_image)
+    //     .unwrap()
+    //     .resident()
+    //     .unwrap();
+    // let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(&vec![0.0, 1.0, 0.0, 1.0], (1, 1));
+    // let texture_2 = glium::texture::SrgbTexture2d::new(display, raw_image)
+    //     .unwrap()
+    //     .resident()
+    //     .unwrap();
+    // let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(&vec![0.0, 0.0, 1.0, 1.0], (1, 1));
+    // let texture_3 = glium::texture::SrgbTexture2d::new(display, raw_image)
+    //     .unwrap()
+    //     .resident()
+    //     .unwrap();
+    // let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(&vec![1.0; 4 * 16 * 16], (16, 16));
+    // let texture_4 = glium::texture::SrgbTexture2d::new(display, raw_image)
+    //     .unwrap()
+    //     .resident()
+    //     .unwrap();
+    // let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(&vec![0.5; 4 * 64 * 64], (64, 64));
+    // let texture_5 = glium::texture::SrgbTexture2d::new(display, raw_image)
+    //     .unwrap()
+    //     .resident()
+    //     .unwrap();
+    // let texture_uniform_buffer = glium::uniforms::UniformBuffer::new(
+    //     display,
+    //     TextureUniformBuffer {
+    //         tex: [
+    //             glium::texture::TextureHandle::new(&texture_1, &Default::default()),
+    //             glium::texture::TextureHandle::new(&texture_2, &Default::default()),
+    //             glium::texture::TextureHandle::new(&texture_3, &Default::default()),
+    //             glium::texture::TextureHandle::new(&texture_4, &Default::default()),
+    //             glium::texture::TextureHandle::new(&texture_5, &Default::default()),
+    //         ],
+    //     },
+    // )
+    // .unwrap();
 
     let camera_pos: [f32; 3] = view.position.into();
     let light_pos: [f32; 3] = light.position.into();
@@ -142,12 +143,6 @@ pub fn main_pass(
 
         let mut vertices: Vec<Vertex> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
-        let mut textures: Vec<RawImage2d<u8>> = vec![RawImage2d::from_raw_rgba_reversed(
-            &vec![255; 4 * 64 * 64],
-            (64, 64),
-        )];
-
-        let mut textures_index: StableHashMap<Handle<Image>, u32> = StableHashMap::default();
 
         for opaque in opaques.items.iter() {
             let ExtractedCPE {
@@ -157,18 +152,7 @@ pub fn main_pass(
                 image: image_handle,
             } = query.get(opaque.entity).unwrap();
 
-            let tex_id = match textures_index.get(image_handle) {
-                Some(index) => index.to_owned(),
-                None => {
-                    let image = images.get(image_handle).unwrap();
-                    let texture =
-                        RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
-                    let index = textures.len() as u32;
-                    textures.push(texture);
-                    textures_index.insert(image_handle.clone(), index);
-                    index
-                }
-            };
+            let tex_id = texture_buffer.get_position(image_handle);
 
             let mesh = meshes.get(mesh_handle).unwrap();
             let offset = vertices.len() as u32;
@@ -245,12 +229,6 @@ pub fn main_pass(
 
         let mut vertices: Vec<Vertex> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
-        let mut textures: Vec<RawImage2d<u8>> = vec![RawImage2d::from_raw_rgba_reversed(
-            &vec![255; 4 * 64 * 64],
-            (64, 64),
-        )];
-
-        let mut textures_index: StableHashMap<Handle<Image>, u32> = StableHashMap::default();
 
         for transparent in transparents.items.iter() {
             let ExtractedCPE {
@@ -260,18 +238,7 @@ pub fn main_pass(
                 image: image_handle,
             } = query.get(transparent.entity).unwrap();
 
-            let tex_id = match textures_index.get(image_handle) {
-                Some(index) => index.to_owned(),
-                None => {
-                    let image = images.get(image_handle).unwrap();
-                    let texture =
-                        RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
-                    let index = textures.len() as u32;
-                    textures.push(texture);
-                    textures_index.insert(image_handle.clone(), index);
-                    index
-                }
-            };
+            let tex_id = texture_buffer.get_position(image_handle);
 
             let mesh = meshes.get(mesh_handle).unwrap();
             let offset = vertices.len() as u32;

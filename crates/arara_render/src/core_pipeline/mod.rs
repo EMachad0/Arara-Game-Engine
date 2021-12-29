@@ -12,7 +12,7 @@ use arara_window::Window;
 use glium::{Api, Profile, Version};
 pub use main_pass::main_pass;
 pub use phase_items::*;
-pub use prepare_phase::prepare_core_pass;
+pub use prepare_phase::{prepare_split_render_phase, prepare_bindless_textures};
 pub use simple_mesh::*;
 
 use crate::{
@@ -33,7 +33,8 @@ impl Plugin for CorePipelinePlugin {
             .add_startup_system_to_stage(StartupStage::PostStartup, debug_glium_backend_info)
             .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_camera_phases)
             .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_entities)
-            .add_system_to_stage(RenderStage::Prepare, prepare_core_pass)
+            .add_system_to_stage(RenderStage::Prepare, prepare_bindless_textures)
+            .add_system_to_stage(RenderStage::Prepare, prepare_split_render_phase)
             .add_system_to_stage(RenderStage::PhaseSort, sort_phase_system::<Transparent>);
         // .add_system_to_stage(RenderStage::PhaseSort, sort_phase_system::<Opaque>);
     }
