@@ -91,6 +91,16 @@ pub fn main_pass(
         .unwrap()
         .resident()
         .unwrap();
+    let raw_image = RawImage2d::from_raw_rgba_reversed(&vec![1.0; 4 * 16 * 16], (16, 16));
+    let texture_4 = glium::texture::SrgbTexture2d::new(display, raw_image)
+        .unwrap()
+        .resident()
+        .unwrap();
+    let raw_image = RawImage2d::from_raw_rgba_reversed(&vec![0.5; 4 * 64 * 64], (64, 64));
+    let texture_5 = glium::texture::SrgbTexture2d::new(display, raw_image)
+        .unwrap()
+        .resident()
+        .unwrap();
 
     let texture_uniform_buffer = glium::uniforms::UniformBuffer::new(
         display,
@@ -99,8 +109,8 @@ pub fn main_pass(
                 glium::texture::TextureHandle::new(&texture_1, &Default::default()),
                 glium::texture::TextureHandle::new(&texture_2, &Default::default()),
                 glium::texture::TextureHandle::new(&texture_3, &Default::default()),
-                glium::texture::TextureHandle::new(&texture_3, &Default::default()),
-                glium::texture::TextureHandle::new(&texture_3, &Default::default()),
+                glium::texture::TextureHandle::new(&texture_4, &Default::default()),
+                glium::texture::TextureHandle::new(&texture_5, &Default::default()),
             ],
         },
     )
