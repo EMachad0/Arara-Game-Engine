@@ -1,10 +1,9 @@
 use crate::{
-    geometry::Mesh, render_phase::RenderPhase, BPLight, ClearColor, Color, DefaultShader,
-    ExtractedView, Image, Opaque, Shader, Transparent,
+    geometry::Mesh, render_phase::RenderPhase, BPLight, ClearColor, DefaultShader,
+    ExtractedCPE, ExtractedView, Image, Opaque, Shader, Transparent,
 };
 use arara_asset::{Assets, Handle};
 use arara_ecs::prelude::*;
-use arara_transform::GlobalTransform;
 use arara_utils::StableHashMap;
 use arara_window::Window;
 use glam::*;
@@ -42,12 +41,6 @@ struct TextureUniformBuffer<'a> {
     tex: [glium::texture::TextureHandle<'a>; 5],
 }
 
-// impl<'a> TextureUniformBuffer<'a> {
-//     fn new(tex: glium::texture::TextureHandle<'a>) -> Self {
-//         Self { tex }
-//     }
-// }
-
 implement_uniform_block!(TextureUniformBuffer<'a>, tex);
 
 pub fn main_pass(
@@ -61,15 +54,15 @@ pub fn main_pass(
     shaders: Res<Assets<Shader>>,
     opaques: Res<RenderPhase<Opaque>>,
     transparents: Res<RenderPhase<Transparent>>,
-    query: Query<(&Handle<Mesh>, &GlobalTransform, &Color, &Handle<Image>)>,
+    query: Query<&ExtractedCPE>,
 ) {
     let display = window.display();
-    let clear_color = clear_color.0;
+
     let clear_color = (
-        clear_color.r(),
-        clear_color.g(),
-        clear_color.b(),
-        clear_color.a(),
+        clear_color.0.r(),
+        clear_color.0.g(),
+        clear_color.0.b(),
+        clear_color.0.a(),
     );
 
     let pv_matrix: [[f32; 4]; 4] = view.pv_matrix.to_cols_array_2d();
@@ -157,32 +150,29 @@ pub fn main_pass(
         let mut textures_index: StableHashMap<Handle<Image>, u32> = StableHashMap::default();
 
         for opaque in opaques.items.iter() {
-            let (mesh, global_transform, color, image_handle) = query.get(opaque.entity).unwrap();
+            let ExtractedCPE {
+                mesh: mesh_handle,
+                transform,
+                color,
+                image: image_handle,
+            } = query.get(opaque.entity).unwrap();
 
-            let tex_id = if *image_handle == Handle::<Image>::default() {
-                0
-            } else {
-                match textures_index.get(image_handle) {
-                    Some(index) => index.to_owned(),
-                    None => match images.get(image_handle) {
-                        Some(image) => {
-                            let texture =
-                                RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
-                            let index = textures.len() as u32;
-                            textures.push(texture);
-                            textures_index.insert(image_handle.clone(), index);
-                            index
-                        }
-                        None => continue,
-                    },
+            let tex_id = match textures_index.get(image_handle) {
+                Some(index) => index.to_owned(),
+                None => {
+                    let image = images.get(image_handle).unwrap();
+                    let texture =
+                        RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
+                    let index = textures.len() as u32;
+                    textures.push(texture);
+                    textures_index.insert(image_handle.clone(), index);
+                    index
                 }
             };
 
-            let mesh = meshes.get(mesh).unwrap();
+            let mesh = meshes.get(mesh_handle).unwrap();
             let offset = vertices.len() as u32;
-            let transform = global_transform.compute_matrix();
-            let ti_transform =
-                Mat3::from_mat4(global_transform.compute_matrix().inverse().transpose());
+            let ti_transform = Mat3::from_mat4(transform.inverse().transpose());
             let color: [f32; 4] = color.to_owned().into();
 
             for vertex in mesh.vertices.iter() {
@@ -192,7 +182,7 @@ pub fn main_pass(
                     vertex.position[2],
                     1.0,
                 );
-                let position = transform * position;
+                let position = *transform * position;
                 let normal = vec3(vertex.normal[0], vertex.normal[1], vertex.normal[2]);
                 let normal = ti_transform * normal;
                 vertices.push(Vertex {
@@ -208,7 +198,7 @@ pub fn main_pass(
             }
         }
 
-        let texture_array = glium::texture::SrgbTexture2dArray::new(display, textures).unwrap();
+        // let texture_array = glium::texture::SrgbTexture2dArray::new(display, textures).unwrap();
         let vertex_buffer = glium::VertexBuffer::new(display, &vertices).unwrap();
         let index_buffer = glium::IndexBuffer::new(
             display,
@@ -263,33 +253,29 @@ pub fn main_pass(
         let mut textures_index: StableHashMap<Handle<Image>, u32> = StableHashMap::default();
 
         for transparent in transparents.items.iter() {
-            let (mesh, global_transform, color, image_handle) =
-                query.get(transparent.entity).unwrap();
+            let ExtractedCPE {
+                mesh: mesh_handle,
+                transform,
+                color,
+                image: image_handle,
+            } = query.get(transparent.entity).unwrap();
 
-            let tex_id = if *image_handle == Handle::<Image>::default() {
-                0
-            } else {
-                match textures_index.get(image_handle) {
-                    Some(index) => index.to_owned(),
-                    None => match images.get(image_handle) {
-                        Some(image) => {
-                            let texture =
-                                RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
-                            let index = textures.len() as u32;
-                            textures.push(texture);
-                            textures_index.insert(image_handle.clone(), index);
-                            index
-                        }
-                        None => continue,
-                    },
+            let tex_id = match textures_index.get(image_handle) {
+                Some(index) => index.to_owned(),
+                None => {
+                    let image = images.get(image_handle).unwrap();
+                    let texture =
+                        RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
+                    let index = textures.len() as u32;
+                    textures.push(texture);
+                    textures_index.insert(image_handle.clone(), index);
+                    index
                 }
             };
 
-            let mesh = meshes.get(mesh).unwrap();
+            let mesh = meshes.get(mesh_handle).unwrap();
             let offset = vertices.len() as u32;
-            let transform = global_transform.compute_matrix();
-            let ti_transform =
-                Mat3::from_mat4(global_transform.compute_matrix().inverse().transpose());
+            let ti_transform = Mat3::from_mat4(transform.inverse().transpose());
             let color: [f32; 4] = color.to_owned().into();
 
             for vertex in mesh.vertices.iter() {
@@ -299,7 +285,7 @@ pub fn main_pass(
                     vertex.position[2],
                     1.0,
                 );
-                let position = transform * position;
+                let position = *transform * position;
                 let normal = vec3(vertex.normal[0], vertex.normal[1], vertex.normal[2]);
                 let normal = ti_transform * normal;
                 vertices.push(Vertex {
@@ -315,7 +301,7 @@ pub fn main_pass(
             }
         }
 
-        let texture_array = glium::texture::SrgbTexture2dArray::new(display, textures).unwrap();
+        // let texture_array = glium::texture::SrgbTexture2dArray::new(display, textures).unwrap();
         let vertex_buffer = glium::VertexBuffer::new(display, &vertices).unwrap();
         let index_buffer = glium::IndexBuffer::new(
             display,

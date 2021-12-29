@@ -4,7 +4,9 @@ mod prepare_phase;
 mod simple_mesh;
 
 use arara_app::prelude::*;
+use arara_asset::{Assets, Handle};
 use arara_ecs::prelude::*;
+use arara_transform::GlobalTransform;
 use arara_utils::tracing::info;
 use arara_window::Window;
 use glium::{Api, Profile, Version};
@@ -15,7 +17,7 @@ pub use simple_mesh::*;
 
 use crate::{
     render_phase::{sort_phase_system, RenderPhase},
-    ClearColor, RenderStage,
+    ClearColor, RenderStage, Mesh, Image, Color, Visibility,
 };
 
 #[derive(Default)]
@@ -27,27 +29,48 @@ impl Plugin for CorePipelinePlugin {
             .init_resource::<ClearColor>()
             .init_resource::<BPLight>()
             .init_resource::<DefaultShader>()
-            .add_startup_system_to_stage(StartupStage::PreStartup, load_default_shader.system())
-            .add_startup_system_to_stage(
-                StartupStage::PostStartup,
-                debug_glium_backend_info.system(),
-            )
-            .add_system_to_stage(
-                RenderStage::Extract,
-                extract_core_pipeline_camera_phases.system(),
-            )
-            .add_system_to_stage(RenderStage::Prepare, prepare_core_pass.system())
-            .add_system_to_stage(
-                RenderStage::PhaseSort,
-                sort_phase_system::<Transparent>.system(),
-            );
-        // .add_system_to_stage(RenderStage::PhaseSort, sort_phase_system::<Opaque>.system());
+            .add_startup_system_to_stage(StartupStage::PreStartup, load_default_shader)
+            .add_startup_system_to_stage(StartupStage::PostStartup, debug_glium_backend_info)
+            .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_camera_phases)
+            .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_entities)
+            .add_system_to_stage(RenderStage::Prepare, prepare_core_pass)
+            .add_system_to_stage(RenderStage::PhaseSort, sort_phase_system::<Transparent>);
+        // .add_system_to_stage(RenderStage::PhaseSort, sort_phase_system::<Opaque>);
     }
 }
 
 fn extract_core_pipeline_camera_phases(mut commands: Commands) {
     commands.insert_resource(RenderPhase::<Opaque>::default());
     commands.insert_resource(RenderPhase::<Transparent>::default());
+}
+
+fn extract_core_pipeline_entities(
+    mut commands: Commands,
+    meshes: Res<Assets<Mesh>>,
+    images: Res<Assets<Image>>,
+    query: Query<(
+        Entity,
+        &Handle<Mesh>,
+        &Handle<Image>,
+        &GlobalTransform,
+        &Color,
+        &Visibility,
+    )>,
+) {
+    for (entity, mesh, image, global_transform, color, visibility) in query.iter() {
+        if !visibility.active || !visibility.visible {
+            continue;
+        }
+        if meshes.get(mesh).is_none() || images.get(image).is_none() {
+            continue;
+        }
+        commands.entity(entity).insert(ExtractedCPE {
+            mesh: mesh.clone_weak(),
+            image: image.clone_weak(),
+            transform: global_transform.compute_matrix(),
+            color: *color,
+        });
+    }
 }
 
 fn debug_glium_backend_info(window: NonSend<Window>) {

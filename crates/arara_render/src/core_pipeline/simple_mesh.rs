@@ -1,11 +1,11 @@
 use arara_ecs::prelude::*;
-use glam::{vec3, Vec3};
+use glam::{vec3, Mat4, Vec3};
 
-use crate::{geometry::Mesh, prelude::Visibility, Color, Image, Shader};
+use crate::{geometry::Mesh, prelude::Visibility, Color, Image, Shader, DEFAULT_IMAGE_HANDLE};
 use arara_asset::{AssetServer, Handle};
 use arara_transform::{GlobalTransform, Transform};
 
-#[derive(Bundle, Default)]
+#[derive(Bundle)]
 pub struct SimpleMeshBundle {
     pub mesh: Handle<Mesh>,
     pub transform: Transform,
@@ -13,6 +13,27 @@ pub struct SimpleMeshBundle {
     pub color: Color,
     pub image: Handle<Image>,
     pub visibility: Visibility,
+}
+
+impl Default for SimpleMeshBundle {
+    fn default() -> Self {
+        Self {
+            mesh: Default::default(),
+            transform: Default::default(),
+            global_transform: Default::default(),
+            color: Default::default(),
+            image: DEFAULT_IMAGE_HANDLE.typed(),
+            visibility: Default::default(),
+        }
+    }
+}
+
+#[derive(Component)]
+pub struct ExtractedCPE {
+    pub mesh: Handle<Mesh>,
+    pub image: Handle<Image>,
+    pub transform: Mat4,
+    pub color: Color,
 }
 
 pub struct BPLight {
