@@ -71,45 +71,6 @@ pub fn main_pass(
     let texture_uniform_buffer =
         glium::uniforms::UniformBuffer::new(display, texture_buffer.texture_uniform_buffer()).unwrap();
 
-    // let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(&vec![1.0, 0.0, 0.0, 1.0], (1, 1));
-    // let texture_1 = glium::texture::SrgbTexture2d::new(display, raw_image)
-    //     .unwrap()
-    //     .resident()
-    //     .unwrap();
-    // let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(&vec![0.0, 1.0, 0.0, 1.0], (1, 1));
-    // let texture_2 = glium::texture::SrgbTexture2d::new(display, raw_image)
-    //     .unwrap()
-    //     .resident()
-    //     .unwrap();
-    // let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(&vec![0.0, 0.0, 1.0, 1.0], (1, 1));
-    // let texture_3 = glium::texture::SrgbTexture2d::new(display, raw_image)
-    //     .unwrap()
-    //     .resident()
-    //     .unwrap();
-    // let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(&vec![1.0; 4 * 16 * 16], (16, 16));
-    // let texture_4 = glium::texture::SrgbTexture2d::new(display, raw_image)
-    //     .unwrap()
-    //     .resident()
-    //     .unwrap();
-    // let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(&vec![0.5; 4 * 64 * 64], (64, 64));
-    // let texture_5 = glium::texture::SrgbTexture2d::new(display, raw_image)
-    //     .unwrap()
-    //     .resident()
-    //     .unwrap();
-    // let texture_uniform_buffer = glium::uniforms::UniformBuffer::new(
-    //     display,
-    //     TextureUniformBuffer {
-    //         tex: [
-    //             glium::texture::TextureHandle::new(&texture_1, &Default::default()),
-    //             glium::texture::TextureHandle::new(&texture_2, &Default::default()),
-    //             glium::texture::TextureHandle::new(&texture_3, &Default::default()),
-    //             glium::texture::TextureHandle::new(&texture_4, &Default::default()),
-    //             glium::texture::TextureHandle::new(&texture_5, &Default::default()),
-    //         ],
-    //     },
-    // )
-    // .unwrap();
-
     let camera_pos: [f32; 3] = view.position.into();
     let light_pos: [f32; 3] = light.position.into();
 
@@ -182,7 +143,6 @@ pub fn main_pass(
             }
         }
 
-        // let texture_array = glium::texture::SrgbTexture2dArray::new(display, textures).unwrap();
         let vertex_buffer = glium::VertexBuffer::new(display, &vertices).unwrap();
         let index_buffer = glium::IndexBuffer::new(
             display,
@@ -268,7 +228,6 @@ pub fn main_pass(
             }
         }
 
-        // let texture_array = glium::texture::SrgbTexture2dArray::new(display, textures).unwrap();
         let vertex_buffer = glium::VertexBuffer::new(display, &vertices).unwrap();
         let index_buffer = glium::IndexBuffer::new(
             display,
