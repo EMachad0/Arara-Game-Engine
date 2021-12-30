@@ -63,7 +63,7 @@ impl TextureBuffer {
                     "
                     No texture slot avaible in the Texture Buffer
                     You are probably using more than {} textures!
-                    this value can be tweeked on [arara_render::texture::texture_buffer]
+                    this value can be tweaked on [arara_render::texture::texture_buffer]
                     ",
                     TEXTURE_BUFFER_SIZE
                 );
