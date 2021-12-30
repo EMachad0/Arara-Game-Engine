@@ -14,8 +14,8 @@ arara_camera = { path = "../arara_camera", version = "0.1.0" }
 arara_window = { path = "../arara_window", version = "0.1.0" }
 arara_utils = { path = "../arara_utils", version = "0.1.0" }
 arara_asset = { path = "../arara_asset", version = "0.1.0" }
-# other
 arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
+# other
 bevy_reflect = "*"
 glium = "*"
 glam = "*"

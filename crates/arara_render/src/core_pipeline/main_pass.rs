@@ -1,6 +1,6 @@
 use crate::{
     geometry::Mesh, render_phase::RenderPhase, BPLight, ClearColor, ExtractedCPE,
-    ExtractedView, Opaque, TextureBuffer, Transparent, DefaultShaderProgram,
+    ExtractedView, Opaque, TextureBuffer, Transparent, RenderPipelineCache,
 };
 use arara_asset::Assets;
 use arara_ecs::prelude::*;
@@ -47,18 +47,14 @@ pub fn main_pass(
     clear_color: Res<ClearColor>,
     light: Res<BPLight>,
     view: Res<ExtractedView>,
-    default_shader_program: NonSend<DefaultShaderProgram>,
     texture_buffer: NonSend<TextureBuffer>,
     meshes: Res<Assets<Mesh>>,
     opaques: Res<RenderPhase<Opaque>>,
     transparents: Res<RenderPhase<Transparent>>,
     query: Query<&ExtractedCPE>,
+    render_pipeline_cache: NonSend<RenderPipelineCache>,
 ) {
     let display = window.display();
-    let program = match &default_shader_program.program {
-        Some(program) => program,
-        None => return,
-    };
 
     let clear_color = (
         clear_color.0.r(),
@@ -87,6 +83,15 @@ pub fn main_pass(
         let opaque_run_span = info_span!("arara_render::opaque");
         #[cfg(feature = "trace")]
         let _opaque_run_guard = opaque_run_span.enter();
+        
+        let pipeline = opaques.items.first().unwrap();
+        let pipeline = match render_pipeline_cache.get(pipeline.pipeline) {
+            Some(pipeline) => pipeline,
+            None => {
+                frame.finish().unwrap();
+                return;
+            }
+        };
 
         let mut vertices: Vec<Vertex> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
@@ -144,25 +149,13 @@ pub fn main_pass(
             samplers: &texture_uniform_buffer,
         };
 
-        let params = glium::DrawParameters {
-            depth: glium::Depth {
-                test: glium::draw_parameters::DepthTest::IfLess,
-                write: true,
-                ..Default::default()
-            },
-            backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockwise,
-            // line_width: Some(2.0),
-            // polygon_mode: glium::PolygonMode::Line,
-            ..Default::default()
-        };
-
         #[cfg(feature = "trace")]
         let opaque_draw_run_span = info_span!("arara_render::opaque::draw_call");
         #[cfg(feature = "trace")]
         let _opaque_draw_run_guard = opaque_draw_run_span.enter();
 
         frame
-            .draw(&vertex_buffer, &index_buffer, &program, &uniforms, &params)
+            .draw(&vertex_buffer, &index_buffer, &pipeline.program, &uniforms, &pipeline.parameters)
             .unwrap();
     }
 
@@ -172,6 +165,15 @@ pub fn main_pass(
         let transparent_run_span = info_span!("arara_render::transparent");
         #[cfg(feature = "trace")]
         let _transparent_run_guard = transparent_run_span.enter();
+
+        let pipeline = transparents.items.first().unwrap();
+        let pipeline = match render_pipeline_cache.get(pipeline.pipeline) {
+            Some(pipeline) => pipeline,
+            None => {
+                frame.finish().unwrap();
+                return;
+            }
+        };
 
         let mut vertices: Vec<Vertex> = Vec::new();
         let mut indices: Vec<u32> = Vec::new();
@@ -229,24 +231,13 @@ pub fn main_pass(
             samplers: &texture_uniform_buffer,
         };
 
-        let params = glium::DrawParameters {
-            depth: glium::Depth {
-                test: glium::draw_parameters::DepthTest::IfLess,
-                //     write: true,
-                ..Default::default()
-            },
-            backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockwise,
-            blend: glium::draw_parameters::Blend::alpha_blending(),
-            ..Default::default()
-        };
-
         #[cfg(feature = "trace")]
         let transparent_draw_run_span = info_span!("arara_render::transparent::draw_call");
         #[cfg(feature = "trace")]
         let _transparent_draw_run_guard = transparent_draw_run_span.enter();
 
         frame
-            .draw(&vertex_buffer, &index_buffer, &program, &uniforms, &params)
+            .draw(&vertex_buffer, &index_buffer, &pipeline.program, &uniforms, &pipeline.parameters)
             .unwrap();
     }
 

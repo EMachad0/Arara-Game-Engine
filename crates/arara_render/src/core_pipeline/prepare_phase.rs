@@ -4,7 +4,12 @@ use arara_window::Window;
 use glam::vec4;
 use glium::texture::{RawImage2d, SrgbTexture2d};
 
-use crate::{render_phase::RenderPhase, ExtractedCPE, ExtractedView, Image, Opaque, Transparent, TextureBuffer};
+use crate::{
+    core_pipeline::pipelines::{OpaquePipeline, OpaquePipelineKey, TransparentPipelineKey, TransparentPipeline},
+    render_phase::RenderPhase,
+    ExtractedCPE, ExtractedView, Image, Opaque, RenderPipelineCache,
+    SpecializedPipelines, TextureBuffer, Transparent,
+};
 
 pub fn prepare_split_render_phase(
     mut opaques: ResMut<RenderPhase<Opaque>>,
@@ -12,7 +17,22 @@ pub fn prepare_split_render_phase(
     view: Res<ExtractedView>,
     images: Res<Assets<Image>>,
     query: Query<(Entity, &ExtractedCPE)>,
+    mut render_pipeline_cache: NonSendMut<RenderPipelineCache>,
+    opaque_pipeline: Res<OpaquePipeline>,
+    transparent_pipeline: Res<TransparentPipeline>,
+    mut opaque_pipelines: ResMut<SpecializedPipelines<OpaquePipeline>>,
+    mut transparent_pipelines: ResMut<SpecializedPipelines<TransparentPipeline>>,
 ) {
+    let opaque_pipeline = opaque_pipelines.specialize(
+        &mut render_pipeline_cache,
+        &opaque_pipeline,
+        OpaquePipelineKey,
+    );
+    let transparent_pipeline = transparent_pipelines.specialize(
+        &mut render_pipeline_cache,
+        &transparent_pipeline,
+        TransparentPipelineKey,
+    );
     for (
         entity,
         ExtractedCPE {
@@ -29,9 +49,17 @@ pub fn prepare_split_render_phase(
         let distance = -position.z.abs();
 
         if transparent {
-            transparents.add(Transparent { distance, entity });
+            transparents.add(Transparent {
+                distance,
+                entity,
+                pipeline: transparent_pipeline,
+            });
         } else {
-            opaques.add(Opaque { distance, entity });
+            opaques.add(Opaque {
+                distance,
+                entity,
+                pipeline: opaque_pipeline,
+            });
         }
     }
 }

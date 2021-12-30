@@ -8,6 +8,7 @@ mod render_phase;
 mod shader;
 mod texture;
 mod view;
+mod render_resource;
 
 pub use billboard::*;
 pub use clear_color::*;
@@ -18,6 +19,7 @@ pub use geometry::*;
 pub use shader::*;
 pub use texture::*;
 pub use view::*;
+pub use render_resource::*;
 
 pub mod prelude {
     pub use crate::{
@@ -25,7 +27,7 @@ pub mod prelude {
         clear_color::ClearColor,
         color::*,
         coordinate_system::{CoordinateSystem, CoordinateSystemPlugin},
-        core_pipeline::{BPLight, SimpleMeshBundle},
+        core_pipeline::*,
         geometry::*,
         texture::Image,
         view::Visibility,
@@ -67,11 +69,15 @@ pub struct RenderPlugin;
 
 impl Plugin for RenderPlugin {
     fn build(&self, app: &mut App) {
+        app.init_non_send_resource::<RenderPipelineCache>();
+
         app.schedule
             .add_stage_before(
                 CoreStage::PreUpdate,
                 RenderStage::Extract,
-                SystemStage::parallel().with_system(extract_cameras),
+                SystemStage::parallel()
+                    .with_system(extract_cameras)
+                    .with_system(extract_shaders),
             )
             .add_stage_after(
                 RenderStage::Extract,
@@ -92,6 +98,7 @@ impl Plugin for RenderPlugin {
                 RenderStage::PhaseSort,
                 RenderStage::Render,
                 SystemStage::parallel()
+                    .with_system(process_pipeline_queue)
                     .with_system(main_pass.exclusive_system().at_end().label("MainPass")),
             )
             .add_stage_after(

@@ -6,9 +6,9 @@ fn main() {
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
         .add_plugin(AssetCountDiagnosticsPlugin::<Image>::default())
-        // .add_plugin(LogDiagnosticPlugin {
-        //     wait_duration: Duration::from_secs(1),
-        // })
+        .add_plugin(LogDiagnosticPlugin {
+            wait_duration: Duration::from_secs(1),
+        })
         .insert_resource(arara::logger::LogSettings {
             level: arara::logger::Level::DEBUG,
             filter: "".to_string(),
