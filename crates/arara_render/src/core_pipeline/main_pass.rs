@@ -5,6 +5,7 @@ use crate::{
 use arara_asset::Assets;
 use arara_ecs::prelude::*;
 use arara_window::Window;
+use crevice::std140::AsStd140;
 use glam::*;
 use glium::{implement_uniform_block, implement_vertex, Surface};
 
@@ -83,7 +84,7 @@ pub fn main_pass(
         display,
         BPLightUniformBuffer {
             u_camera_pos: view.position.into(),
-            u_light_pos: light.position.into(),
+            u_light_pos: [0.0, 10.0, 1.0], //light.position.into(),
         },
     )
     .unwrap();

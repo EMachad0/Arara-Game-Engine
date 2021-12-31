@@ -16,7 +16,7 @@ uniform samplers {
 uniform bplight {
     vec3 u_camera_pos;
     vec3 u_light_pos;
-}
+};
 
 const float shineness = 32.0;
 const vec3 light_color = vec3(0.3);

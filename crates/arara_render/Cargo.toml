@@ -25,3 +25,4 @@ thiserror = "*"
 anyhow = "*"
 hexasphere = "*"
 dyn-clone = "*"
+crevice = { version = "*", features = ["glam"] }
