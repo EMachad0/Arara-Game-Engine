@@ -1,6 +1,6 @@
 use crate::{
-    geometry::Mesh, render_phase::RenderPhase, BPLight, ClearColor, ExtractedCPE,
-    ExtractedView, Opaque, TextureBuffer, Transparent, RenderPipelineCache,
+    geometry::Mesh, render_phase::RenderPhase, BPLight, ClearColor, ExtractedCPE, ExtractedView,
+    Opaque, RenderPipelineCache, TextureBuffer, Transparent,
 };
 use arara_asset::Assets;
 use arara_ecs::prelude::*;
@@ -42,6 +42,14 @@ struct TextureUniformBuffer<'a> {
 
 implement_uniform_block!(TextureUniformBuffer<'a>, tex);
 
+#[derive(Copy, Clone)]
+struct BPLightUniformBuffer {
+    pub u_camera_pos: [f32; 3],
+    pub u_light_pos: [f32; 3],
+}
+
+implement_uniform_block!(BPLightUniformBuffer, u_camera_pos, u_light_pos);
+
 pub fn main_pass(
     window: NonSend<Window>,
     clear_color: Res<ClearColor>,
@@ -68,10 +76,17 @@ pub fn main_pass(
         glium::uniforms::UniformBuffer::new(display, CameraUniformBuffer::new(pv_matrix)).unwrap();
 
     let texture_uniform_buffer =
-        glium::uniforms::UniformBuffer::new(display, texture_buffer.texture_uniform_buffer()).unwrap();
+        glium::uniforms::UniformBuffer::new(display, texture_buffer.texture_uniform_buffer())
+            .unwrap();
 
-    let camera_pos: [f32; 3] = view.position.into();
-    let light_pos: [f32; 3] = light.position.into();
+    let bplight_uniform_buffer = glium::uniforms::UniformBuffer::new(
+        display,
+        BPLightUniformBuffer {
+            u_camera_pos: view.position.into(),
+            u_light_pos: light.position.into(),
+        },
+    )
+    .unwrap();
 
     // Start Frame
     let mut frame = display.draw();
@@ -83,7 +98,7 @@ pub fn main_pass(
         let opaque_run_span = info_span!("arara_render::opaque");
         #[cfg(feature = "trace")]
         let _opaque_run_guard = opaque_run_span.enter();
-        
+
         let pipeline = opaques.items.first().unwrap();
         let pipeline = match render_pipeline_cache.get(pipeline.pipeline) {
             Some(pipeline) => pipeline,
@@ -144,8 +159,7 @@ pub fn main_pass(
 
         let uniforms = glium::uniform! {
             camera: &camera_uniform_buffer,
-            u_light_pos: light_pos,
-            u_camera_pos: camera_pos,
+            bplight: &bplight_uniform_buffer,
             samplers: &texture_uniform_buffer,
         };
 
@@ -155,7 +169,13 @@ pub fn main_pass(
         let _opaque_draw_run_guard = opaque_draw_run_span.enter();
 
         frame
-            .draw(&vertex_buffer, &index_buffer, &pipeline.program, &uniforms, &pipeline.parameters)
+            .draw(
+                &vertex_buffer,
+                &index_buffer,
+                &pipeline.program,
+                &uniforms,
+                &pipeline.parameters,
+            )
             .unwrap();
     }
 
@@ -226,8 +246,7 @@ pub fn main_pass(
 
         let uniforms = glium::uniform! {
             camera: &camera_uniform_buffer,
-            u_light_pos: light_pos,
-            u_camera_pos: camera_pos,
+            bplight: &bplight_uniform_buffer,
             samplers: &texture_uniform_buffer,
         };
 
@@ -237,7 +256,13 @@ pub fn main_pass(
         let _transparent_draw_run_guard = transparent_draw_run_span.enter();
 
         frame
-            .draw(&vertex_buffer, &index_buffer, &pipeline.program, &uniforms, &pipeline.parameters)
+            .draw(
+                &vertex_buffer,
+                &index_buffer,
+                &pipeline.program,
+                &uniforms,
+                &pipeline.parameters,
+            )
             .unwrap();
     }
 

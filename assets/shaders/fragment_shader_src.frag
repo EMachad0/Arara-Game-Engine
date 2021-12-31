@@ -13,8 +13,10 @@ uniform samplers {
     sampler2D tex[5];
 };
 
-uniform vec3 u_camera_pos;
-uniform vec3 u_light_pos;
+uniform bplight {
+    vec3 u_camera_pos;
+    vec3 u_light_pos;
+}
 
 const float shineness = 32.0;
 const vec3 light_color = vec3(0.3);
