@@ -1,4 +1,7 @@
-use crate::{render_phase::{PhaseItem, EntityPhaseItem, CachedPipelinePhaseItem, DrawFunctionId}, CachedPipelineId};
+use crate::{
+    render_phase::{CachedPipelinePhaseItem, DrawFunctionId, EntityPhaseItem, PhaseItem},
+    CachedPipelineId,
+};
 use arara_ecs::prelude::Entity;
 use arara_utils::FloatOrd;
 

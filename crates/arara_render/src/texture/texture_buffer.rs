@@ -1,8 +1,10 @@
 use arara_asset::Handle;
 use arara_ecs::system::NonSendMut;
 use arara_utils::HashMap;
+use glium::texture::{
+    RawImage2d, ResidentTexture, SrgbTexture2d, TextureHandle as GliumTextureHandle,
+};
 use glium::{implement_uniform_block, Display};
-use glium::texture::{ResidentTexture, SrgbTexture2d, TextureHandle as GliumTextureHandle, RawImage2d};
 use std::collections::VecDeque;
 
 use crate::{Image, DEFAULT_IMAGE_HANDLE};

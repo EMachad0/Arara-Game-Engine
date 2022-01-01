@@ -1,6 +1,6 @@
-use arara_ecs::{prelude::ResMut, entity::Entity};
+use arara_ecs::{entity::Entity, prelude::ResMut};
 
-use crate::{CachedPipelineId, render_phase::DrawFunctionId};
+use crate::{render_phase::DrawFunctionId, CachedPipelineId};
 
 /// An item which will be drawn to the screen. A phase item should be queued up for rendering
 /// during the [`RenderStage::Queue`](crate::RenderStage::Queue) stage.

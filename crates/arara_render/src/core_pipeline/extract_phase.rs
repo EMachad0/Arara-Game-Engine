@@ -6,7 +6,10 @@ use arara_ecs::{
 use arara_transform::GlobalTransform;
 
 use crate::{
-    core_pipeline::{phase_items::{Opaque3D, Transparent3D}, core_pipeline_entities::ExtractedCorePipelineEntity},
+    core_pipeline::{
+        core_pipeline_entities::ExtractedCorePipelineEntity,
+        phase_items::{Opaque3D, Transparent3D},
+    },
     render_phase::RenderPhase,
     Color, Image, Mesh, Visibility,
 };

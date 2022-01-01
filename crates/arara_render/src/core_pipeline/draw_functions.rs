@@ -7,12 +7,11 @@ use arara_ecs::{
 };
 use arara_window::Window;
 use glam::Vec4;
-use glium::{implement_uniform_block, Surface};
+use glium::implement_uniform_block;
 
 use crate::{
-    core_pipeline::prepare_phase::CorePipelineBatch,
-    render_phase::{Draw, TrackedFrame},
-    BPLight, ExtractedView, Opaque3D, RenderPipelineCache, TextureBuffer,
+    core_pipeline::prepare_phase::CorePipelineBatch, render_phase::Draw, BPLight, ExtractedView,
+    Opaque3D, RenderPipelineCache, TextureBuffer, TrackedFrame,
 };
 
 #[derive(Debug, Default, Clone, Copy)]
@@ -109,7 +108,6 @@ impl Draw<Opaque3D> for DrawSimpleMesh {
         .unwrap();
 
         frame
-            .frame
             .draw(
                 &vertex_buffer,
                 &index_buffer,

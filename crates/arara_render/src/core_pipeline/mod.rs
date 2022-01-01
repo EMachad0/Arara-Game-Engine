@@ -7,7 +7,7 @@ mod prepare_phase;
 mod queue_phase;
 
 use arara_app::{App, Plugin, StartupStage};
-use arara_ecs::system::{NonSend, IntoExclusiveSystem, Commands, Res};
+use arara_ecs::system::{Commands, IntoExclusiveSystem, NonSend, Res};
 use arara_utils::tracing::info;
 use arara_window::Window;
 pub use core_pipeline_entities::{BPLight, SimpleMeshBundle};
@@ -19,7 +19,7 @@ pub use pipelines::{CorePipeline, DefaultShader};
 use prepare_phase::{prepare_bindless_textures, prepare_core_pipeline_phase};
 use queue_phase::queue_core_pipeline_phase;
 
-use crate::{DrawFunctions, RenderStage, SpecializedPipelines, RenderPhase};
+use crate::{DrawFunctions, RenderPhase, RenderPhases, RenderStage, SpecializedPipelines};
 
 #[derive(Default)]
 pub struct CorePipelinePlugin;
@@ -34,7 +34,10 @@ impl Plugin for CorePipelinePlugin {
             .add_startup_system_to_stage(StartupStage::PostStartup, debug_glium_backend_info)
             .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_phases)
             .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_entities)
-            .add_system_to_stage(RenderStage::Prepare, prepare_bindless_textures.exclusive_system())
+            .add_system_to_stage(
+                RenderStage::Prepare,
+                prepare_bindless_textures.exclusive_system(),
+            )
             .add_system_to_stage(RenderStage::Prepare, prepare_core_pipeline_phase)
             .add_system_to_stage(RenderStage::Queue, queue_core_pipeline_phase)
             .add_system_to_stage(RenderStage::Cleanup, clear_core_pipeline_entities);
@@ -45,6 +48,12 @@ impl Plugin for CorePipelinePlugin {
             .unwrap()
             .write()
             .add(draw_simple_mesh);
+
+        app.world
+            .get_resource_mut::<RenderPhases>()
+            .unwrap()
+            .add::<Opaque3D>()
+            .add::<Transparent3D>();
     }
 }
 

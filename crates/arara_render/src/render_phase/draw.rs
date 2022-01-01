@@ -4,7 +4,7 @@ use arara_ecs::world::World;
 use arara_utils::HashMap;
 use parking_lot::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
-use crate::render_phase::{PhaseItem, TrackedFrame};
+use crate::{render_phase::PhaseItem, TrackedFrame};
 
 /// A [`Draw`] function identifier.
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
@@ -13,12 +13,7 @@ pub struct DrawFunctionId(usize);
 /// A draw function which is used to draw a specific [`PhaseItem`].
 pub trait Draw<P: PhaseItem>: Send + Sync + 'static {
     /// Draws the [`PhaseItem`] by issuing draw calls via the [`TrackedFrame`].
-    fn draw<'w>(
-        &mut self,
-        world: &'w World,
-        frame: &mut TrackedFrame,
-        item: &P,
-    );
+    fn draw<'w>(&mut self, world: &'w World, frame: &mut TrackedFrame, item: &P);
 }
 
 /// Stores all draw functions for the [`PhaseItem`] type.

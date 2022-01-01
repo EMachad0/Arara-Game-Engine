@@ -16,7 +16,7 @@ pub use clear_color::*;
 pub use color::*;
 pub use coordinate_system::*;
 pub use core_pipeline::*;
-pub use frame_executor::*;
+use frame_executor::draw_frame;
 pub use geometry::*;
 pub use render_phase::*;
 pub use render_resource::*;
@@ -73,6 +73,7 @@ pub struct RenderPlugin;
 impl Plugin for RenderPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<ClearColor>()
+            .init_resource::<RenderPhases>()
             .init_non_send_resource::<RenderPipelineCache>();
 
         app.schedule

@@ -1,7 +1,7 @@
 use arara_utils::HashMap;
 use std::hash::Hash;
 
-use crate::render_resource::{RenderPipelineCache, CachedPipelineId, RenderPipelineDescriptor};
+use crate::render_resource::{CachedPipelineId, RenderPipelineCache, RenderPipelineDescriptor};
 
 pub struct SpecializedPipelines<S: SpecializedPipeline> {
     cache: HashMap<S::Key, CachedPipelineId>,

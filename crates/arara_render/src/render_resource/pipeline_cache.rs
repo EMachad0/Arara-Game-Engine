@@ -1,9 +1,12 @@
 use arara_asset::{AssetEvent, Assets, Handle};
 use arara_ecs::{
     event::EventReader,
-    system::{NonSendMut, Res, NonSend},
+    system::{NonSend, NonSendMut, Res},
 };
-use arara_utils::{tracing::{error, debug}, HashMap, HashSet};
+use arara_utils::{
+    tracing::{debug, error},
+    HashMap, HashSet,
+};
 use arara_window::Window;
 use glium::Display;
 use thiserror::Error;
@@ -25,10 +28,7 @@ pub struct ShaderMetaData {
 }
 
 impl ShaderCache {
-    fn get(
-        &mut self,
-        handle: &Handle<Shader>,
-    ) -> Result<Shader, RenderPipelineError> {
+    fn get(&mut self, handle: &Handle<Shader>) -> Result<Shader, RenderPipelineError> {
         let shader = self
             .shaders
             .get(handle)
@@ -111,7 +111,6 @@ impl RenderPipelineCache {
     }
 
     pub fn process_queue(&mut self, display: &Display) {
-        
         let pipelines = std::mem::take(&mut self.waiting_pipelines);
         for id in pipelines {
             // debug!("trying id {:?}", id);
@@ -176,7 +175,10 @@ impl RenderPipelineCache {
     }
 }
 
-pub(crate) fn process_pipeline_queue(mut cache: NonSendMut<RenderPipelineCache>, window: NonSend<Window>) {
+pub(crate) fn process_pipeline_queue(
+    mut cache: NonSendMut<RenderPipelineCache>,
+    window: NonSend<Window>,
+) {
     cache.process_queue(window.display());
 }
 
