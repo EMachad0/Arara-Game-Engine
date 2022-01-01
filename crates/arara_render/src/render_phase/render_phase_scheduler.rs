@@ -30,7 +30,7 @@ impl RenderPhases {
             .map(|(i, _)| i)
             .unwrap_or_else(|| {
                 panic!(
-                    "Plugin does not exist: {}.",
+                    "Render Phase does not exist: {}.",
                     std::any::type_name::<Target>()
                 )
             });
@@ -49,7 +49,7 @@ impl RenderPhases {
             .map(|(i, _)| i)
             .unwrap_or_else(|| {
                 panic!(
-                    "Plugin does not exist: {}.",
+                    "Render Phase does not exist: {}.",
                     std::any::type_name::<Target>()
                 )
             });
