@@ -5,7 +5,6 @@ use crate::{
 use arara_asset::Assets;
 use arara_ecs::prelude::*;
 use arara_window::Window;
-use crevice::std140::AsStd140;
 use glam::*;
 use glium::{implement_uniform_block, implement_vertex, Surface};
 
@@ -45,8 +44,8 @@ implement_uniform_block!(TextureUniformBuffer<'a>, tex);
 
 #[derive(Copy, Clone)]
 struct BPLightUniformBuffer {
-    pub u_camera_pos: [f32; 3],
-    pub u_light_pos: [f32; 3],
+    pub u_camera_pos: [f32; 4],
+    pub u_light_pos: [f32; 4],
 }
 
 implement_uniform_block!(BPLightUniformBuffer, u_camera_pos, u_light_pos);
@@ -83,8 +82,8 @@ pub fn main_pass(
     let bplight_uniform_buffer = glium::uniforms::UniformBuffer::new(
         display,
         BPLightUniformBuffer {
-            u_camera_pos: view.position.into(),
-            u_light_pos: [0.0, 10.0, 1.0], //light.position.into(),
+            u_camera_pos: Vec4::from((view.position, 0.0)).into(),
+            u_light_pos: Vec4::from((light.position, 0.0)).into(),
         },
     )
     .unwrap();

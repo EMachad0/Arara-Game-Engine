@@ -3,7 +3,6 @@ mod phase_items;
 mod pipelines;
 mod prepare_phase;
 mod simple_mesh;
-mod uniforms;
 
 use arara_app::prelude::*;
 use arara_asset::{Assets, Handle};

@@ -17,7 +17,7 @@ arara_asset = { path = "../arara_asset", version = "0.1.0" }
 arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
 # other
 bevy_reflect = "*"
-glium = "*"
+glium = "0.31.0"
 glam = "*"
 hex = "*"
 image = "*"
@@ -25,4 +25,3 @@ thiserror = "*"
 anyhow = "*"
 hexasphere = "*"
 dyn-clone = "*"
-crevice = { version = "*", features = ["glam"] }

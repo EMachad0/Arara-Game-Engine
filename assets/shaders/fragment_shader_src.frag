@@ -14,8 +14,8 @@ uniform samplers {
 };
 
 uniform bplight {
-    vec3 u_camera_pos;
-    vec3 u_light_pos;
+    vec4 u_camera_pos;
+    vec4 u_light_pos;
 };
 
 const float shineness = 32.0;
@@ -26,8 +26,8 @@ void main() {
     vec3 base_color = vec3(tex_color);
 
     vec3 normal = normalize(v_normal);
-    vec3 camera_dir = normalize(u_camera_pos - v_position);
-    vec3 light_dir = normalize(u_light_pos - v_position);
+    vec3 camera_dir = normalize(vec3(u_camera_pos) - v_position);
+    vec3 light_dir = normalize(vec3(u_light_pos) - v_position);
     vec3 half_direction = normalize(light_dir + camera_dir);
     
     float diffuse = max(dot(normal, light_dir), 0.0);
