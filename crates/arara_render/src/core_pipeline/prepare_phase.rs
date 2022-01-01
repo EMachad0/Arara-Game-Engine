@@ -1,83 +1,87 @@
 use arara_asset::{Assets, Handle};
 use arara_ecs::prelude::*;
 use arara_window::Window;
-use glam::vec4;
-use glium::texture::{RawImage2d, SrgbTexture2d};
+use glam::{vec3, vec4, Mat3};
 
 use crate::{
-    core_pipeline::pipelines::{OpaquePipeline, OpaquePipelineKey, TransparentPipelineKey, TransparentPipeline},
-    render_phase::RenderPhase,
-    ExtractedCPE, ExtractedView, Image, Opaque, RenderPipelineCache,
-    SpecializedPipelines, TextureBuffer, Transparent,
+    core_pipeline::core_pipeline_entities::ExtractedCorePipelineEntity, Image, Mesh, TextureBuffer,
 };
 
-pub fn prepare_split_render_phase(
-    mut opaques: ResMut<RenderPhase<Opaque>>,
-    mut transparents: ResMut<RenderPhase<Transparent>>,
-    view: Res<ExtractedView>,
-    images: Res<Assets<Image>>,
-    query: Query<(Entity, &ExtractedCPE)>,
-    mut render_pipeline_cache: NonSendMut<RenderPipelineCache>,
-    opaque_pipeline: Res<OpaquePipeline>,
-    transparent_pipeline: Res<TransparentPipeline>,
-    mut opaque_pipelines: ResMut<SpecializedPipelines<OpaquePipeline>>,
-    mut transparent_pipelines: ResMut<SpecializedPipelines<TransparentPipeline>>,
+#[derive(Copy, Clone)]
+pub struct Vertex {
+    i_position: [f32; 3],
+    i_normal: [f32; 3],
+    i_color: [f32; 4],
+    i_tex_cords: [f32; 2],
+    i_tex_id: u32,
+}
+
+glium::implement_vertex!(Vertex, i_position, i_normal, i_color, i_tex_cords, i_tex_id);
+
+#[derive(Component)]
+pub struct CorePipelineBatch {
+    pub vertices: Vec<Vertex>,
+    pub indices: Vec<u32>,
+}
+
+pub(crate) fn prepare_core_pipeline_phase(
+    mut commands: Commands,
+    meshes: Res<Assets<Mesh>>,
+    query: Query<&ExtractedCorePipelineEntity>,
+    texture_buffer: NonSend<TextureBuffer>,
 ) {
-    let opaque_pipeline = opaque_pipelines.specialize(
-        &mut render_pipeline_cache,
-        &opaque_pipeline,
-        OpaquePipelineKey,
-    );
-    let transparent_pipeline = transparent_pipelines.specialize(
-        &mut render_pipeline_cache,
-        &transparent_pipeline,
-        TransparentPipelineKey,
-    );
-    for (
-        entity,
-        ExtractedCPE {
-            mesh: _,
-            image,
+    let mut vertices = Vec::new();
+    let mut indices = Vec::new();
+    for core_pipeline_entity in query.iter() {
+        let ExtractedCorePipelineEntity {
+            mesh: mesh_handle,
             transform,
             color,
-        },
-    ) in query.iter()
-    {
-        let transparent = images.get(image).unwrap().translucent || color.a() < 1.0;
+            image: image_handle,
+        } = core_pipeline_entity;
 
-        let position = view.pv_matrix * *transform * vec4(0., 0., 0., 1.);
-        let distance = -position.z.abs();
+        let tex_id = texture_buffer.get_position(image_handle);
+        let mesh = meshes.get(mesh_handle).unwrap();
+        let offset = vertices.len() as u32;
+        let ti_transform = Mat3::from_mat4(transform.inverse().transpose());
+        let color: [f32; 4] = color.to_owned().into();
 
-        if transparent {
-            transparents.add(Transparent {
-                distance,
-                entity,
-                pipeline: transparent_pipeline,
-            });
-        } else {
-            opaques.add(Opaque {
-                distance,
-                entity,
-                pipeline: opaque_pipeline,
+        for vertex in mesh.vertices.iter() {
+            let position = vec4(
+                vertex.position[0],
+                vertex.position[1],
+                vertex.position[2],
+                1.0,
+            );
+            let position = *transform * position;
+            let normal = vec3(vertex.normal[0], vertex.normal[1], vertex.normal[2]);
+            let normal = ti_transform * normal;
+            vertices.push(Vertex {
+                i_position: [position.x, position.y, position.z],
+                i_normal: normal.into(),
+                i_color: color,
+                i_tex_cords: vertex.tex_coords,
+                i_tex_id: tex_id,
             });
         }
+        for idx in mesh.indices.iter() {
+            indices.push(*idx + offset);
+        }
     }
+    commands
+        .spawn()
+        .insert(CorePipelineBatch { vertices, indices });
 }
 
 pub fn prepare_bindless_textures(
     window: NonSend<Window>,
     images: Res<Assets<Image>>,
     mut texture_buffer: NonSendMut<TextureBuffer>,
-    query: Query<(&Handle<Image>, With<ExtractedCPE>)>,
+    query: Query<(&Handle<Image>, With<ExtractedCorePipelineEntity>)>,
 ) {
     let display = window.display();
     for (image_handle, _) in query.iter() {
-        if texture_buffer.contains(image_handle) {
-            continue;
-        }
         let image = images.get(image_handle).unwrap();
-        let raw_image = RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
-        let texture = SrgbTexture2d::new(display, raw_image).unwrap();
-        texture_buffer.insert_or_update(image_handle.clone_weak(), texture);
+        texture_buffer.insert(image_handle.clone_weak(), display, image);
     }
 }

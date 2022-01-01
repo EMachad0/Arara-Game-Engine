@@ -1,8 +1,8 @@
 use arara_asset::Handle;
 use arara_ecs::system::NonSendMut;
 use arara_utils::HashMap;
-use glium::implement_uniform_block;
-use glium::texture::{ResidentTexture, SrgbTexture2d, TextureHandle as GliumTextureHandle};
+use glium::{implement_uniform_block, Display};
+use glium::texture::{ResidentTexture, SrgbTexture2d, TextureHandle as GliumTextureHandle, RawImage2d};
 use std::collections::VecDeque;
 
 use crate::{Image, DEFAULT_IMAGE_HANDLE};
@@ -49,11 +49,10 @@ impl TextureBuffer {
 
     /// Inserts a texture that matches the `Handle`.
     /// If no matching one is found a new [`glium::TextureHandle`] is created.
-    pub fn insert_or_update(&mut self, image_handle: Handle<Image>, texture: SrgbTexture2d) {
+    pub fn insert(&mut self, image_handle: Handle<Image>, display: &Display, image: &Image) {
         match self.textures.entry(image_handle) {
             std::collections::hash_map::Entry::Occupied(mut entry) => {
                 let meta = entry.get_mut();
-                meta.texture = texture.resident().unwrap();
                 meta.frames_since_last_use = 0;
                 meta.taken = true;
             }
@@ -68,6 +67,10 @@ impl TextureBuffer {
                     TEXTURE_BUFFER_SIZE
                 );
                 let uniform_buffer_position = self.available_positions.pop_front().unwrap();
+
+                let raw_image = RawImage2d::from_raw_rgba_reversed(&image.data, image.dimensions);
+                let texture = SrgbTexture2d::new(display, raw_image).unwrap();
+
                 entry.insert(CachedTextureMeta {
                     texture: texture.resident().unwrap(),
                     uniform_buffer_position,

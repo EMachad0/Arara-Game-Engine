@@ -1,7 +1,6 @@
-// use crate::render_phase::draw::DrawFunctionId;
 use arara_ecs::{prelude::ResMut, entity::Entity};
 
-use crate::CachedPipelineId;
+use crate::{CachedPipelineId, render_phase::DrawFunctionId};
 
 /// An item which will be drawn to the screen. A phase item should be queued up for rendering
 /// during the [`RenderStage::Queue`](crate::RenderStage::Queue) stage.
@@ -14,7 +13,7 @@ pub trait PhaseItem: Send + Sync + 'static {
     /// Determines the order in which the items are drawn during the corresponding [`RenderPhase`].
     fn sort_key(&self) -> Self::SortKey;
     // Specifies the [`Draw`] function used to render the item.
-    // fn draw_function(&self) -> DrawFunctionId;
+    fn draw_function(&self) -> DrawFunctionId;
 }
 
 pub trait EntityPhaseItem: PhaseItem {

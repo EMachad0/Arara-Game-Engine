@@ -29,7 +29,7 @@ impl Default for SimpleMeshBundle {
 }
 
 #[derive(Component)]
-pub struct ExtractedCPE {
+pub struct ExtractedCorePipelineEntity {
     pub mesh: Handle<Mesh>,
     pub image: Handle<Image>,
     pub transform: Mat4,

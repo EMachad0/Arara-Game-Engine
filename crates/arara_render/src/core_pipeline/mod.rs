@@ -1,81 +1,56 @@
-mod main_pass;
+mod core_pipeline_entities;
+mod draw_functions;
+mod extract_phase;
 mod phase_items;
 mod pipelines;
 mod prepare_phase;
-mod simple_mesh;
+mod queue_phase;
 
-use arara_app::prelude::*;
-use arara_asset::{Assets, Handle};
-use arara_ecs::prelude::*;
-use arara_transform::GlobalTransform;
+use arara_app::{App, Plugin, StartupStage};
+use arara_ecs::system::{NonSend, IntoExclusiveSystem, Commands, Res};
 use arara_utils::tracing::info;
 use arara_window::Window;
+pub use core_pipeline_entities::{BPLight, SimpleMeshBundle};
+use draw_functions::DrawSimpleMesh;
+use extract_phase::{extract_core_pipeline_entities, extract_core_pipeline_phases};
 use glium::{Api, Profile, Version};
-pub use main_pass::main_pass;
-pub use phase_items::*;
-pub use prepare_phase::{prepare_bindless_textures, prepare_split_render_phase};
-pub use simple_mesh::*;
-pub use pipelines::*;
+pub use phase_items::{Opaque3D, Transparent3D};
+pub use pipelines::{CorePipeline, DefaultShader};
+use prepare_phase::{prepare_bindless_textures, prepare_core_pipeline_phase};
+use queue_phase::queue_core_pipeline_phase;
 
-use crate::{
-    render_phase::{sort_phase_system, RenderPhase},
-    ClearColor, Color, Image, Mesh, RenderStage, SpecializedPipelines, Visibility,
-};
+use crate::{DrawFunctions, RenderStage, SpecializedPipelines, RenderPhase};
 
 #[derive(Default)]
 pub struct CorePipelinePlugin;
 
 impl Plugin for CorePipelinePlugin {
-    fn build(&self, app_builder: &mut App) {
-        app_builder
-            .init_resource::<ClearColor>()
-            .init_resource::<BPLight>()
-            .init_resource::<DefaultShader>()
-            .init_resource::<OpaquePipeline>()
-            .init_resource::<SpecializedPipelines<OpaquePipeline>>()
-            .init_resource::<TransparentPipeline>()
-            .init_resource::<SpecializedPipelines<TransparentPipeline>>()
+    fn build(&self, app: &mut App) {
+        app.init_resource::<BPLight>()
+            .init_resource::<CorePipeline>()
+            .init_resource::<SpecializedPipelines<CorePipeline>>()
+            .init_resource::<DrawFunctions<Opaque3D>>()
+            .init_resource::<DrawFunctions<Transparent3D>>()
             .add_startup_system_to_stage(StartupStage::PostStartup, debug_glium_backend_info)
-            .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_camera_phases)
+            .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_phases)
             .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_entities)
-            .add_system_to_stage(RenderStage::Prepare, prepare_bindless_textures)
-            .add_system_to_stage(RenderStage::Prepare, prepare_split_render_phase)
-            .add_system_to_stage(RenderStage::PhaseSort, sort_phase_system::<Transparent>);
-        // .add_system_to_stage(RenderStage::PhaseSort, sort_phase_system::<Opaque>);
+            .add_system_to_stage(RenderStage::Prepare, prepare_bindless_textures.exclusive_system())
+            .add_system_to_stage(RenderStage::Prepare, prepare_core_pipeline_phase)
+            .add_system_to_stage(RenderStage::Queue, queue_core_pipeline_phase)
+            .add_system_to_stage(RenderStage::Cleanup, clear_core_pipeline_entities);
+
+        let draw_simple_mesh = DrawSimpleMesh::new(&mut app.world);
+        app.world
+            .get_resource::<DrawFunctions<Opaque3D>>()
+            .unwrap()
+            .write()
+            .add(draw_simple_mesh);
     }
 }
 
-fn extract_core_pipeline_camera_phases(mut commands: Commands) {
-    commands.insert_resource(RenderPhase::<Opaque>::default());
-    commands.insert_resource(RenderPhase::<Transparent>::default());
-}
-
-fn extract_core_pipeline_entities(
-    mut commands: Commands,
-    meshes: Res<Assets<Mesh>>,
-    images: Res<Assets<Image>>,
-    query: Query<(
-        Entity,
-        &Handle<Mesh>,
-        &Handle<Image>,
-        &GlobalTransform,
-        &Color,
-        &Visibility,
-    )>,
-) {
-    for (entity, mesh, image, global_transform, color, visibility) in query.iter() {
-        if !visibility.active || !visibility.visible {
-            continue;
-        }
-        if meshes.get(mesh).is_none() || images.get(image).is_none() {
-            continue;
-        }
-        commands.entity(entity).insert(ExtractedCPE {
-            mesh: mesh.clone_weak(),
-            image: image.clone_weak(),
-            transform: global_transform.compute_matrix(),
-            color: *color,
-        });
+fn clear_core_pipeline_entities(mut commands: Commands, phase: Res<RenderPhase<Opaque3D>>) {
+    for item in phase.items.iter() {
+        commands.entity(item.entity).despawn();
     }
 }
 
