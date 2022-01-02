@@ -1,11 +1,10 @@
 use arara_asset::{Assets, Handle};
 use arara_ecs::prelude::*;
+use arara_render::{Image, Mesh, TextureBuffer};
 use arara_window::Window;
 use glam::{vec3, vec4, Mat3};
 
-use crate::{
-    core_pipeline::core_pipeline_entities::ExtractedCorePipelineEntity, Image, Mesh, TextureBuffer,
-};
+use crate::core_pipeline_entities::ExtractedCorePipelineEntity;
 
 #[derive(Copy, Clone)]
 pub struct Vertex {

@@ -1,3 +1,4 @@
+mod coordinate_system;
 mod core_pipeline_entities;
 mod draw_functions;
 mod extract_phase;
@@ -8,8 +9,12 @@ mod queue_phase;
 
 use arara_app::{App, Plugin, StartupStage};
 use arara_ecs::system::{Commands, IntoExclusiveSystem, NonSend, Res};
+use arara_render::{
+    DrawFunctions, EntityPhaseItem, RenderPhase, RenderPhases, RenderStage, SpecializedPipelines,
+};
 use arara_utils::tracing::info;
 use arara_window::Window;
+pub use coordinate_system::{CoordinateSystem, CoordinateSystemPlugin};
 pub use core_pipeline_entities::{BPLight, SimpleMeshBundle};
 use draw_functions::DrawSimpleMesh;
 use extract_phase::{extract_core_pipeline_entities, extract_core_pipeline_phases};
@@ -18,10 +23,6 @@ pub use phase_items::{Opaque3D, Transparent3D};
 pub use pipelines::{CorePipeline, DefaultShader};
 use prepare_phase::{prepare_bindless_textures, prepare_core_pipeline_phase};
 use queue_phase::queue_core_pipeline_phase;
-
-use crate::{
-    DrawFunctions, EntityPhaseItem, RenderPhase, RenderPhases, RenderStage, SpecializedPipelines,
-};
 
 #[derive(Default)]
 pub struct CorePipelinePlugin;

@@ -1,8 +1,6 @@
 mod billboard;
 mod clear_color;
 mod color;
-mod coordinate_system;
-mod core_pipeline;
 mod frame_executor;
 mod geometry;
 mod render_phase;
@@ -14,8 +12,6 @@ mod view;
 pub use billboard::*;
 pub use clear_color::*;
 pub use color::*;
-pub use coordinate_system::*;
-pub use core_pipeline::*;
 use frame_executor::draw_frame;
 pub use geometry::*;
 pub use render_phase::*;
@@ -26,15 +22,8 @@ pub use view::*;
 
 pub mod prelude {
     pub use crate::{
-        billboard::Billboard,
-        clear_color::ClearColor,
-        color::*,
-        coordinate_system::{CoordinateSystem, CoordinateSystemPlugin},
-        core_pipeline::*,
-        geometry::*,
-        texture::Image,
-        view::Visibility,
-        RenderPlugin,
+        billboard::Billboard, clear_color::ClearColor, color::*, geometry::*, texture::Image,
+        view::Visibility, RenderPlugin,
     };
 }
 
@@ -115,7 +104,6 @@ impl Plugin for RenderPlugin {
         app.add_plugin(shader::ShaderPlugin)
             .add_plugin(geometry::MeshPlugin)
             .add_plugin(texture::ImagePlugin)
-            .add_plugin(core_pipeline::CorePipelinePlugin)
             .add_plugin(billboard::BillboardPlugin);
     }
 }

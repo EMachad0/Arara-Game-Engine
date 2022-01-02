@@ -1,12 +1,9 @@
 use arara_ecs::prelude::*;
+use arara_render::{DrawFunctions, RenderPhase, RenderPipelineCache};
 
 use crate::{
-    core_pipeline::{
-        draw_functions::DrawSimpleMesh, pipelines::CorePipelineKey,
-        prepare_phase::CorePipelineBatch,
-    },
-    render_phase::{DrawFunctions, RenderPhase},
-    CorePipeline, Opaque3D, RenderPipelineCache, SpecializedPipelines, Transparent3D,
+    draw_functions::DrawSimpleMesh, pipelines::CorePipelineKey, prepare_phase::CorePipelineBatch,
+    CorePipeline, Opaque3D, SpecializedPipelines, Transparent3D,
 };
 
 pub(crate) fn queue_core_pipeline_phase(

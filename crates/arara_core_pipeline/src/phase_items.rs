@@ -1,8 +1,7 @@
-use crate::{
-    render_phase::{CachedPipelinePhaseItem, DrawFunctionId, EntityPhaseItem, PhaseItem},
-    CachedPipelineId,
-};
 use arara_ecs::prelude::Entity;
+use arara_render::{
+    CachedPipelineId, CachedPipelinePhaseItem, DrawFunctionId, EntityPhaseItem, PhaseItem,
+};
 use arara_utils::FloatOrd;
 
 pub struct Opaque3D {

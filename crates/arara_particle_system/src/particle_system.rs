@@ -1,10 +1,10 @@
 use std::f32::consts::PI;
 
 use arara_asset::Handle;
+use arara_core_pipeline::SimpleMeshBundle;
 use arara_ecs::prelude::{Bundle, Commands, Component, Entity, Query, Res};
 use arara_render::{
-    Billboard, Color, ColorOrGradient, Image, Mesh, SimpleMeshBundle, Visibility,
-    DEFAULT_IMAGE_HANDLE,
+    Billboard, Color, ColorOrGradient, Image, Mesh, Visibility, DEFAULT_IMAGE_HANDLE,
 };
 use arara_time::{Time, Timer};
 use arara_transform::{BuildChildren, Children, GlobalTransform, Transform};

@@ -1,7 +1,7 @@
 use arara_ecs::prelude::*;
+use arara_render::{Color, Image, Mesh, Visibility, DEFAULT_IMAGE_HANDLE};
 use glam::{vec3, Mat4, Vec3};
 
-use crate::{geometry::Mesh, prelude::Visibility, Color, Image, DEFAULT_IMAGE_HANDLE};
 use arara_asset::Handle;
 use arara_transform::{GlobalTransform, Transform};
 

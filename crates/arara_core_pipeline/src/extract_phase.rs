@@ -3,16 +3,10 @@ use arara_ecs::{
     entity::Entity,
     system::{Commands, Query, Res},
 };
+use arara_render::{Color, Image, Mesh, RenderPhase, Visibility};
 use arara_transform::GlobalTransform;
 
-use crate::{
-    core_pipeline::{
-        core_pipeline_entities::ExtractedCorePipelineEntity,
-        phase_items::{Opaque3D, Transparent3D},
-    },
-    render_phase::RenderPhase,
-    Color, Image, Mesh, Visibility,
-};
+use crate::{core_pipeline_entities::ExtractedCorePipelineEntity, Opaque3D, Transparent3D};
 
 pub(crate) fn extract_core_pipeline_phases(mut commands: Commands) {
     commands.insert_resource(RenderPhase::<Opaque3D>::default());
