@@ -22,16 +22,20 @@ glium::implement_vertex!(Vertex, i_position, i_normal, i_color, i_tex_cords, i_t
 pub struct CorePipelineBatch {
     pub vertices: Vec<Vertex>,
     pub indices: Vec<u32>,
+    pub transparent: bool,
 }
 
 pub(crate) fn prepare_core_pipeline_phase(
     mut commands: Commands,
     meshes: Res<Assets<Mesh>>,
+    images: Res<Assets<Image>>,
     query: Query<&ExtractedCorePipelineEntity>,
     texture_buffer: NonSend<TextureBuffer>,
 ) {
-    let mut vertices = Vec::new();
-    let mut indices = Vec::new();
+    let mut vertices_opaque = Vec::new();
+    let mut vertices_transparent = Vec::new();
+    let mut indices_opaque = Vec::new();
+    let mut indices_transparent = Vec::new();
     for core_pipeline_entity in query.iter() {
         let ExtractedCorePipelineEntity {
             mesh: mesh_handle,
@@ -39,6 +43,18 @@ pub(crate) fn prepare_core_pipeline_phase(
             color,
             image: image_handle,
         } = core_pipeline_entity;
+
+        let transparent = images.get(image_handle).unwrap().translucent || color.a() < 1.0;
+        let vertices = if transparent {
+            &mut vertices_transparent
+        } else {
+            &mut vertices_opaque
+        };
+        let indices = if transparent {
+            &mut indices_transparent
+        } else {
+            &mut indices_opaque
+        };
 
         let tex_id = texture_buffer.get_position(image_handle);
         let mesh = meshes.get(mesh_handle).unwrap();
@@ -68,9 +84,16 @@ pub(crate) fn prepare_core_pipeline_phase(
             indices.push(*idx + offset);
         }
     }
-    commands
-        .spawn()
-        .insert(CorePipelineBatch { vertices, indices });
+    commands.spawn().insert(CorePipelineBatch {
+        vertices: vertices_opaque,
+        indices: indices_opaque,
+        transparent: false,
+    });
+    commands.spawn().insert(CorePipelineBatch {
+        vertices: vertices_transparent,
+        indices: indices_transparent,
+        transparent: true,
+    });
 }
 
 pub fn prepare_bindless_textures(

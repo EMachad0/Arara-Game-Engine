@@ -177,10 +177,8 @@ fn add_shapes(
 
 fn add_color_only_shader(
     asset_server: Res<AssetServer>,
-    mut opaque_pipeline: ResMut<OpaquePipeline>,
-    mut transparent_pipeline: ResMut<TransparentPipeline>,
+    mut pipeline: ResMut<CorePipeline>,
 ) {
     let fragment_shader = asset_server.load("shaders/fragment_shader_no_light_src.frag");
-    opaque_pipeline.fragment_shader = fragment_shader.clone();
-    transparent_pipeline.fragment_shader = fragment_shader;
+    pipeline.fragment_shader = fragment_shader.clone();
 }

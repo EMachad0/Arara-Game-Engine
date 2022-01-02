@@ -19,7 +19,9 @@ pub use pipelines::{CorePipeline, DefaultShader};
 use prepare_phase::{prepare_bindless_textures, prepare_core_pipeline_phase};
 use queue_phase::queue_core_pipeline_phase;
 
-use crate::{DrawFunctions, RenderPhase, RenderPhases, RenderStage, SpecializedPipelines};
+use crate::{
+    DrawFunctions, EntityPhaseItem, RenderPhase, RenderPhases, RenderStage, SpecializedPipelines,
+};
 
 #[derive(Default)]
 pub struct CorePipelinePlugin;
@@ -40,11 +42,24 @@ impl Plugin for CorePipelinePlugin {
             )
             .add_system_to_stage(RenderStage::Prepare, prepare_core_pipeline_phase)
             .add_system_to_stage(RenderStage::Queue, queue_core_pipeline_phase)
-            .add_system_to_stage(RenderStage::Cleanup, clear_core_pipeline_entities);
+            .add_system_to_stage(
+                RenderStage::Cleanup,
+                clear_core_pipeline_entities::<Opaque3D>,
+            )
+            .add_system_to_stage(
+                RenderStage::Cleanup,
+                clear_core_pipeline_entities::<Transparent3D>,
+            );
 
         let draw_simple_mesh = DrawSimpleMesh::new(&mut app.world);
         app.world
             .get_resource::<DrawFunctions<Opaque3D>>()
+            .unwrap()
+            .write()
+            .add(draw_simple_mesh);
+        let draw_simple_mesh = DrawSimpleMesh::new(&mut app.world);
+        app.world
+            .get_resource::<DrawFunctions<Transparent3D>>()
             .unwrap()
             .write()
             .add(draw_simple_mesh);
@@ -57,9 +72,12 @@ impl Plugin for CorePipelinePlugin {
     }
 }
 
-fn clear_core_pipeline_entities(mut commands: Commands, phase: Res<RenderPhase<Opaque3D>>) {
+fn clear_core_pipeline_entities<I: EntityPhaseItem>(
+    mut commands: Commands,
+    phase: Res<RenderPhase<I>>,
+) {
     for item in phase.items.iter() {
-        commands.entity(item.entity).despawn();
+        commands.entity(item.entity()).despawn();
     }
 }
 

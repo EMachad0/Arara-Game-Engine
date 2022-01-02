@@ -10,8 +10,9 @@ use glam::Vec4;
 use glium::implement_uniform_block;
 
 use crate::{
-    core_pipeline::prepare_phase::CorePipelineBatch, render_phase::Draw, BPLight, ExtractedView,
-    Opaque3D, RenderPipelineCache, TextureBuffer, TrackedFrame,
+    core_pipeline::prepare_phase::CorePipelineBatch, render_phase::Draw, BPLight,
+    CachedPipelinePhaseItem, EntityPhaseItem, ExtractedView, PhaseItem,
+    RenderPipelineCache, TextureBuffer, TrackedFrame,
 };
 
 #[derive(Debug, Default, Clone, Copy)]
@@ -61,8 +62,8 @@ impl DrawSimpleMesh {
     }
 }
 
-impl Draw<Opaque3D> for DrawSimpleMesh {
-    fn draw<'w>(&mut self, world: &'w World, frame: &mut TrackedFrame, item: &Opaque3D) {
+impl<I: PhaseItem + CachedPipelinePhaseItem + EntityPhaseItem> Draw<I> for DrawSimpleMesh {
+    fn draw<'w>(&mut self, world: &'w World, frame: &mut TrackedFrame, item: &I) {
         let (window, texture_buffer, pipeline_cache, bp_light, view, query) =
             self.params.get(world);
 
@@ -92,12 +93,16 @@ impl Draw<Opaque3D> for DrawSimpleMesh {
             samplers: &texture_uniform_buffer,
         };
 
-        let pipeline = match pipeline_cache.get(item.pipeline) {
+        let pipeline = match pipeline_cache.get(item.cached_pipeline()) {
             Some(pipeline) => pipeline,
             None => return,
         };
 
-        let CorePipelineBatch { vertices, indices } = query.get(item.entity).unwrap();
+        let CorePipelineBatch {
+            vertices,
+            indices,
+            transparent: _,
+        } = query.get(item.entity()).unwrap();
 
         let vertex_buffer = glium::VertexBuffer::new(display, &vertices).unwrap();
         let index_buffer = glium::IndexBuffer::new(

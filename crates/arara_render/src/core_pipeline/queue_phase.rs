@@ -6,34 +6,54 @@ use crate::{
         prepare_phase::CorePipelineBatch,
     },
     render_phase::{DrawFunctions, RenderPhase},
-    CorePipeline, Opaque3D, RenderPipelineCache, SpecializedPipelines,
+    CorePipeline, Opaque3D, RenderPipelineCache, SpecializedPipelines, Transparent3D,
 };
 
 pub(crate) fn queue_core_pipeline_phase(
     mut opaques: ResMut<RenderPhase<Opaque3D>>,
-    query: Query<(Entity, With<CorePipelineBatch>)>,
+    mut transparents: ResMut<RenderPhase<Transparent3D>>,
+    query: Query<(Entity, &CorePipelineBatch)>,
     mut render_pipeline_cache: NonSendMut<RenderPipelineCache>,
     pipeline: Res<CorePipeline>,
     mut pipelines: ResMut<SpecializedPipelines<CorePipeline>>,
     opaque_draw_functions: Res<DrawFunctions<Opaque3D>>,
+    transparent_draw_functions: Res<DrawFunctions<Transparent3D>>,
 ) {
     let opaque_pipeline = pipelines.specialize(
         &mut render_pipeline_cache,
         &pipeline,
         CorePipelineKey { transparent: false },
     );
+    let transparent_pipeline = pipelines.specialize(
+        &mut render_pipeline_cache,
+        &pipeline,
+        CorePipelineKey { transparent: true },
+    );
 
-    for (entity, _) in query.iter() {
-        let draw_opaque_function = opaque_draw_functions
-            .read()
-            .get_id::<DrawSimpleMesh>()
-            .unwrap();
+    let draw_opaque_function = opaque_draw_functions
+        .read()
+        .get_id::<DrawSimpleMesh>()
+        .unwrap();
+    let draw_transparent_function = transparent_draw_functions
+        .read()
+        .get_id::<DrawSimpleMesh>()
+        .unwrap();
 
-        opaques.add(Opaque3D {
-            distance: 0.0,
-            entity,
-            draw_function: draw_opaque_function,
-            pipeline: opaque_pipeline,
-        });
+    for (entity, batch) in query.iter() {
+        if batch.transparent {
+            transparents.add(Transparent3D {
+                distance: 0.0,
+                entity,
+                draw_function: draw_transparent_function,
+                pipeline: transparent_pipeline,
+            });
+        } else {
+            opaques.add(Opaque3D {
+                distance: 0.0,
+                entity,
+                draw_function: draw_opaque_function,
+                pipeline: opaque_pipeline,
+            });
+        }
     }
 }
