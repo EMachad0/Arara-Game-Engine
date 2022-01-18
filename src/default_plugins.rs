@@ -11,6 +11,7 @@ impl PluginGroup for DefaultPlugins {
         group.add(arara_asset::AssetPlugin);
         group.add(arara_window::WindowPlugin);
         group.add(arara_render::RenderPlugin);
+        group.add(arara_core_pipeline::CorePipelinePlugin);
         group.add(arara_transform::TransformPlugin);
         group.add(arara_camera::CameraPlugin);
         group.add(arara_camera::FlyCameraPlugin);

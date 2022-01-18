@@ -1,8 +1,6 @@
 use arara::prelude::*;
 use arara_particle_system::{self, ParticleSystem, ParticleSystemPlugin, SpawnShape, Value};
 
-use arara_render::DefaultShader;
-
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
@@ -77,11 +75,7 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
         });
 }
 
-fn add_color_only_shader(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let vertex_shader = asset_server.load("shaders/vertex_shader_src.vert");
+fn add_color_only_shader(asset_server: Res<AssetServer>, mut pipeline: ResMut<CorePipeline>) {
     let fragment_shader = asset_server.load("shaders/fragment_shader_no_light_src.frag");
-    commands.insert_resource(DefaultShader {
-        vertex_shader,
-        fragment_shader,
-    });
+    pipeline.fragment_shader = fragment_shader.clone();
 }

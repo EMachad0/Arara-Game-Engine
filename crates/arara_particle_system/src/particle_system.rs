@@ -1,8 +1,11 @@
 use std::f32::consts::PI;
 
 use arara_asset::Handle;
+use arara_core_pipeline::SimpleMeshBundle;
 use arara_ecs::prelude::{Bundle, Commands, Component, Entity, Query, Res};
-use arara_render::{Billboard, Color, ColorOrGradient, Image, Mesh, SimpleMeshBundle, Visibility};
+use arara_render::{
+    Billboard, Color, ColorOrGradient, Image, Mesh, Visibility, DEFAULT_IMAGE_HANDLE,
+};
 use arara_time::{Time, Timer};
 use arara_transform::{BuildChildren, Children, GlobalTransform, Transform};
 use glam::{vec3, Vec3};
@@ -36,7 +39,7 @@ impl Default for ParticleSystem {
             particle_mesh: Default::default(),
             particle_color: ColorOrGradient::Color(Color::WHITE),
             particle_velocity: Value::Constant(2.0),
-            image: Default::default(),
+            image: DEFAULT_IMAGE_HANDLE.typed(),
             billboard: Some(Billboard::ViewPlane),
         }
     }

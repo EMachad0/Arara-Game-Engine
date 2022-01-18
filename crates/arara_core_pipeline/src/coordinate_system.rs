@@ -2,12 +2,10 @@ use arara_asset::Assets;
 use arara_ecs::prelude::*;
 
 use arara_app::{App, Plugin};
+use arara_render::{Color, Cuboid, Mesh};
 use arara_transform::Transform;
 
-use crate::{
-    geometry::{Cuboid, Mesh},
-    Color, SimpleMeshBundle,
-};
+use crate::SimpleMeshBundle;
 
 pub struct CoordinateSystem {
     pub count: u32,

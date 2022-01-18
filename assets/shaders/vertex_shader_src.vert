@@ -1,4 +1,8 @@
-#version 150
+#version 460
+
+uniform camera {
+    mat4 u_pv_matrix;
+};
 
 in vec3 i_position;
 in vec3 i_normal;
@@ -11,8 +15,6 @@ out vec3 v_normal;
 out vec4 v_color;
 out vec2 v_tex_cords;
 flat out uint v_tex_id;
-
-uniform mat4 u_pv_matrix;
 
 void main() {
     gl_Position = u_pv_matrix * vec4(i_position, 1.0);

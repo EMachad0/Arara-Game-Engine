@@ -1,36 +1,29 @@
 mod billboard;
 mod clear_color;
 mod color;
-mod coordinate_system;
-mod core_pipeline;
+mod frame_executor;
 mod geometry;
 mod render_phase;
+mod render_resource;
 mod shader;
-mod shaders;
 mod texture;
 mod view;
 
 pub use billboard::*;
 pub use clear_color::*;
 pub use color::*;
-pub use coordinate_system::*;
-pub use core_pipeline::*;
+use frame_executor::draw_frame;
 pub use geometry::*;
+pub use render_phase::*;
+pub use render_resource::*;
 pub use shader::*;
 pub use texture::*;
 pub use view::*;
 
 pub mod prelude {
     pub use crate::{
-        billboard::Billboard,
-        clear_color::ClearColor,
-        color::*,
-        coordinate_system::{CoordinateSystem, CoordinateSystemPlugin},
-        core_pipeline::{BPLight, SimpleMeshBundle},
-        geometry::*,
-        texture::Image,
-        view::Visibility,
-        RenderPlugin,
+        billboard::Billboard, clear_color::ClearColor, color::*, geometry::*, texture::Image,
+        view::Visibility, RenderPlugin,
     };
 }
 
@@ -68,11 +61,17 @@ pub struct RenderPlugin;
 
 impl Plugin for RenderPlugin {
     fn build(&self, app: &mut App) {
+        app.init_resource::<ClearColor>()
+            .init_resource::<RenderPhases>()
+            .init_non_send_resource::<RenderPipelineCache>();
+
         app.schedule
             .add_stage_before(
                 CoreStage::PreUpdate,
                 RenderStage::Extract,
-                SystemStage::parallel().with_system(extract_cameras),
+                SystemStage::parallel()
+                    .with_system(extract_cameras)
+                    .with_system(extract_shaders),
             )
             .add_stage_after(
                 RenderStage::Extract,
@@ -93,7 +92,8 @@ impl Plugin for RenderPlugin {
                 RenderStage::PhaseSort,
                 RenderStage::Render,
                 SystemStage::parallel()
-                    .with_system(main_pass.exclusive_system().at_end().label("MainPass")),
+                    .with_system(process_pipeline_queue)
+                    .with_system(draw_frame.exclusive_system().at_end().label("MainPass")),
             )
             .add_stage_after(
                 RenderStage::Render,
@@ -104,7 +104,6 @@ impl Plugin for RenderPlugin {
         app.add_plugin(shader::ShaderPlugin)
             .add_plugin(geometry::MeshPlugin)
             .add_plugin(texture::ImagePlugin)
-            .add_plugin(core_pipeline::CorePipelinePlugin)
             .add_plugin(billboard::BillboardPlugin);
     }
 }

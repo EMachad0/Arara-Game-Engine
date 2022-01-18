@@ -1,4 +1,5 @@
-#version 150
+#version 460
+#extension GL_ARB_bindless_texture : require
 
 in vec3 v_position;
 in vec3 v_normal;
@@ -8,20 +9,25 @@ flat in uint v_tex_id;
 
 out vec4 color;
 
-uniform vec3 u_camera_pos;
-uniform vec3 u_light_pos;
-uniform sampler2DArray tex;
+uniform samplers {
+    sampler2D tex[5];
+};
+
+uniform bplight {
+    vec4 u_camera_pos;
+    vec4 u_light_pos;
+};
 
 const float shineness = 32.0;
 const vec3 light_color = vec3(0.3);
 
 void main() {
-    vec4 tex_color = texture(tex, vec3(v_tex_cords, float(v_tex_id))) * v_color;
+    vec4 tex_color = texture(tex[v_tex_id], v_tex_cords) * v_color;
     vec3 base_color = vec3(tex_color);
 
     vec3 normal = normalize(v_normal);
-    vec3 camera_dir = normalize(u_camera_pos - v_position);
-    vec3 light_dir = normalize(u_light_pos - v_position);
+    vec3 camera_dir = normalize(vec3(u_camera_pos) - v_position);
+    vec3 light_dir = normalize(vec3(u_light_pos) - v_position);
     vec3 half_direction = normalize(light_dir + camera_dir);
     
     float diffuse = max(dot(normal, light_dir), 0.0);
