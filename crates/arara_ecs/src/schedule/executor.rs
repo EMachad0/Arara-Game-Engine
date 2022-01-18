@@ -31,8 +31,7 @@ impl ParallelSystemExecutor for SingleThreadedExecutor {
         for system in systems {
             if system.should_run() {
                 #[cfg(feature = "trace")]
-                let system_span =
-                    arara_utils::tracing::info_span!("system", name = &*system.name());
+                let system_span = arara_utils::tracing::info_span!("system", name = &*system.name());
                 #[cfg(feature = "trace")]
                 let _system_guard = system_span.enter();
                 system.system_mut().run((), world);
@@ -42,8 +41,8 @@ impl ParallelSystemExecutor for SingleThreadedExecutor {
 }
 
 impl SingleThreadedExecutor {
-    /// Calls system.new_archetype() for each archetype added since the last call to
-    /// [update_archetypes] and updates cached archetype_component_access.
+    /// Calls `system.new_archetype()` for each archetype added since the last call to
+    /// `update_archetypes` and updates cached `archetype_component_access`.
     fn update_archetypes(&mut self, systems: &mut [ParallelSystemContainer], world: &World) {
         let archetypes = world.archetypes();
         let new_generation = archetypes.generation();

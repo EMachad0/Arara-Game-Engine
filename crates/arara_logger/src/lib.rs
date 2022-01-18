@@ -29,7 +29,7 @@ use tracing_subscriber::{prelude::*, registry::Registry, EnvFilter};
 ///     App::new()
 ///         .insert_resource(LogSettings {
 ///             level: Level::DEBUG,
-///             filter: "wgpu=error,bevy_render=info".to_string(),
+///             filter: "wgpu=error,arara_render=info".to_string(),
 ///         })
 ///         .add_plugins(DefaultPlugins)
 ///         .run();
@@ -44,9 +44,9 @@ use tracing_subscriber::{prelude::*, registry::Registry, EnvFilter};
 /// If you want to setup your own tracing collector, you should disable this
 /// plugin from `DefaultPlugins` with [`App::add_plugins_with`]:
 /// ```no_run
-/// # use bevy_internal::DefaultPlugins;
-/// # use bevy_app::App;
-/// # use bevy_log::LoggerPlugin;
+/// # use arara_internal::DefaultPlugins;
+/// # use arara_app::App;
+/// # use arara_log::LoggerPlugin;
 /// fn main() {
 ///     App::new()
 ///         .add_plugins_with(DefaultPlugins, |group| group.disable::<LoggerPlugin>())
@@ -128,7 +128,7 @@ impl Plugin for LoggerPlugin {
         let subscriber = subscriber.with(chrome_layer);
 
         arara_utils::tracing::subscriber::set_global_default(subscriber)
-            .expect("Could not set global default tracing subscriber. If you've already set up a tracing subscriber, please disable LoggerPlugin from Bevy's DefaultPlugins");
+            .expect("Could not set global default tracing subscriber. If you've already set up a tracing subscriber, please disable LoggerPlugin from arara's DefaultPlugins");
     }
 }
 

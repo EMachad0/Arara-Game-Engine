@@ -12,7 +12,7 @@ pub use state::*;
 
 #[cfg(test)]
 mod tests {
-    use crate::{self as arara_ecs, component::Component, world::World};
+    use crate::{self as bevy_ecs, component::Component, world::World};
 
     #[derive(Component, Debug, Eq, PartialEq)]
     struct A(usize);

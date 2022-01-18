@@ -7,7 +7,9 @@ edition = "2021"
 trace = []
 
 [dependencies]
+# internal
 arara_utils = { path = "../arara_utils", version = "0.1.0" }
 arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
+# external
 glium = "*"
 cgmath = "*"

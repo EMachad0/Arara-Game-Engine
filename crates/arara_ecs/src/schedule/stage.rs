@@ -953,7 +953,7 @@ mod tests {
         world::World,
     };
 
-    use crate as arara_ecs;
+    use crate as bevy_ecs;
     use crate::component::Component;
     #[derive(Component)]
     struct W<T>(T);
@@ -2071,7 +2071,7 @@ mod tests {
 
     #[test]
     fn change_query_wrapover() {
-        use crate::{self as arara_ecs, component::Component};
+        use crate::{self as bevy_ecs, component::Component};
 
         #[derive(Component)]
         struct C;
@@ -2109,7 +2109,7 @@ mod tests {
 
     #[test]
     fn run_criteria_with_query() {
-        use crate::{self as arara_ecs, component::Component};
+        use crate::{self as bevy_ecs, component::Component};
 
         #[derive(Component)]
         struct Foo;
@@ -2148,7 +2148,7 @@ mod tests {
 
     #[test]
     fn stage_run_criteria_with_query() {
-        use crate::{self as arara_ecs, component::Component};
+        use crate::{self as bevy_ecs, component::Component};
 
         #[derive(Component)]
         struct Foo;

@@ -1,5 +1,5 @@
-use arara_utils::define_label;
 pub use ecs_macros::{AmbiguitySetLabel, RunCriteriaLabel, StageLabel, SystemLabel};
+use arara_utils::define_label;
 
 define_label!(StageLabel);
 define_label!(SystemLabel);

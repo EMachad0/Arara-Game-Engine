@@ -46,7 +46,7 @@ impl std::fmt::Display for FileTextureError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         write!(
             f,
-            "Error reading image file {}: {}, this is an error in `bevy_render`.",
+            "Error reading image file {}: {}, this is an error in `arara_render`.",
             self.path, self.error
         )
     }
