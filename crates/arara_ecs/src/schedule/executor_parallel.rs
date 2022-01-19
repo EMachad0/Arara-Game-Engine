@@ -4,10 +4,10 @@ use crate::{
     schedule::{ParallelSystemContainer, ParallelSystemExecutor},
     world::World,
 };
-use async_channel::{Receiver, Sender};
-use bevy_tasks::{ComputeTaskPool, Scope, TaskPool};
 #[cfg(feature = "trace")]
 use arara_utils::tracing::Instrument;
+use async_channel::{Receiver, Sender};
+use bevy_tasks::{ComputeTaskPool, Scope, TaskPool};
 use fixedbitset::FixedBitSet;
 
 #[cfg(test)]
@@ -200,7 +200,8 @@ impl ParallelExecutor {
                 let finish_sender = self.finish_sender.clone();
                 let system = system.system_mut();
                 #[cfg(feature = "trace")] // NB: outside the task to get the TLS current span
-                let system_span = arara_utils::tracing::info_span!("system", name = &*system.name());
+                let system_span =
+                    arara_utils::tracing::info_span!("system", name = &*system.name());
                 #[cfg(feature = "trace")]
                 let overhead_span =
                     arara_utils::tracing::info_span!("system overhead", name = &*system.name());

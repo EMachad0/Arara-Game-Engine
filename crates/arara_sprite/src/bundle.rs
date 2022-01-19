@@ -1,7 +1,7 @@
 use arara_asset::Handle;
 use arara_ecs::{bundle::Bundle, component::Component};
 use arara_render::{Image, Visibility, DEFAULT_IMAGE_HANDLE};
-use arara_transform::{Transform, GlobalTransform};
+use arara_transform::{GlobalTransform, Transform};
 
 #[derive(Component, Default, Clone)]
 pub struct Sprite;
