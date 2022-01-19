@@ -12,14 +12,12 @@ use crate::{converters, event::*, EventLoop, Window};
 
 pub fn run(mut app: App) {
     let mut app_exit_event_reader = ManualEventReader::<AppExit>::default();
-    // let mut mouse_pressed = false;
 
     let mut ev = app.world.get_non_send_resource_mut::<EventLoop>().unwrap();
     let event_loop = ev.take().unwrap();
 
     trace!("Entering winit event loop");
     event_loop.run(move |ev, _, control_flow| {
-        // update_camera(&mut app.world);
         *control_flow = ControlFlow::Poll;
 
         // Exit on [App::AppExit] event
