@@ -19,7 +19,7 @@ impl Default for WindowProps {
             title: "Arara title".into(),
             width: 1024,
             height: 768,
-            vsync: true,
+            vsync: false,
             resizable: true,
             decorations: true,
             cursor_locked: false,
