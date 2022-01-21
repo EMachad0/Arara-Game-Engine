@@ -8,7 +8,7 @@ The code of this examples can be found at the [examples](./examples) folder, and
 
 * **Snowman Exemple**
     ```shell
-    cargo run -- example snow-man
+    cargo run --example snow-man
     ```
     <details>
         <summary>Snowman ScreenShot</summary>
@@ -17,7 +17,7 @@ The code of this examples can be found at the [examples](./examples) folder, and
 
 * **Robot Example**
     ```shell
-    cargo run -- example robot
+    cargo run --example robot
     ```
     <details>
         <summary>Robot ScreenShot</summary>
@@ -26,7 +26,7 @@ The code of this examples can be found at the [examples](./examples) folder, and
 
 * **Castle Example**
     ```shell
-    cargo run -- example robot
+    cargo run --example robot
     ```
     <details>
         <summary>Castle ScreenShot</summary>
@@ -37,7 +37,7 @@ The code of this examples can be found at the [examples](./examples) folder, and
 
 * **Snowman Exemple**
     ```shell
-    cargo run -- example snow-man
+    cargo run --example snow-man
     ```
     <details>
         <summary>Snowman GIF</summary>
@@ -46,7 +46,7 @@ The code of this examples can be found at the [examples](./examples) folder, and
 
 * **Fire**
     ```shell
-    cargo run -- example fire
+    cargo run --example fire
     ```
     <details>
         <summary>Fire GIF</summary>
