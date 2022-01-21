@@ -10,9 +10,9 @@ pub use projection::*;
 
 pub mod prelude {
     pub use crate::{
-        bundle::{FlyCameraBundle, PerspectiveCameraBundle, OrthographicCameraBundle},
+        bundle::{FlyCameraBundle, PerspectiveCameraBundle, OrthographicCameraBundle, FlyCamera2dBundle},
         camera::Camera,
-        fly_camera::FlyCamera,
+        fly_camera::{FlyCamera, FlyCamera2d},
         projection::{PerspectiveProjection, OrthographicProjection},
     };
 }
@@ -36,7 +36,7 @@ impl Plugin for FlyCameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_system_to_stage(CoreStage::PreUpdate, fly_camera_creation)
             .add_system(camera_movement_system)
+            .add_system(camera_2d_movement_system)
             .add_system(mouse_motion_system);
-        // .add_system(camera_2d_movement_system)
     }
 }

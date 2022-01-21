@@ -1,4 +1,4 @@
-use crate::{Camera, FlyCamera, PerspectiveProjection, OrthographicProjection};
+use crate::{Camera, FlyCamera, FlyCamera2d, OrthographicProjection, PerspectiveProjection};
 use arara_ecs::bundle::Bundle;
 use arara_transform::{GlobalTransform, Transform};
 
@@ -28,7 +28,7 @@ pub struct FlyCameraBundle {
 /// Component bundle for camera entities with orthographic projection
 ///
 /// Use this for 2D games, isometric games, CAD-like 3D views.
-#[derive(Bundle, Default)]
+#[derive(Bundle)]
 pub struct OrthographicCameraBundle {
     pub camera: Camera,
     pub projection: OrthographicProjection,
@@ -36,7 +36,7 @@ pub struct OrthographicCameraBundle {
     pub global_transform: GlobalTransform,
 }
 
-impl OrthographicCameraBundle {
+impl Default for OrthographicCameraBundle {
     /// Create an orthographic projection camera to render 2D content.
     ///
     /// The projection creates a camera space where X points to the right of the screen,
@@ -50,21 +50,40 @@ impl OrthographicCameraBundle {
     /// from `X=-960` to `X=+960` in world space, left to right. This can be changed by changing
     /// the [`OrthographicProjection::scaling_mode`] field.
     ///
-    /// The camera is placed at `Z=+1000-0.1`, looking toward the world origin `(0,0,0)`.
-    /// Its orthographic projection extends from `1000.0` to `-1000.0` in camera view space,
-    /// corresponding to `Z=+999.9` (closest to camera) to `Z=-999.9` (furthest away from
+    /// The camera is placed at `Z=+512+0.01`, looking toward the world origin `(0,0,0)`.
+    /// Its orthographic projection extends from `512.0` to `-512.0` in camera view space,
+    /// corresponding to `Z=+512.0` (closest to camera) to `Z=-512.0` (furthest away from
     /// camera) in world space.
-    pub fn new_2d() -> Self {
-        // we want 0 to be "closest" and +far to be "farthest" in 2d, so we offset
-        // the camera's translation by far and use a right handed coordinate system
-        let projection = OrthographicProjection::default();
-        let transform = Transform::from_xyz(0.0, 0.0, 512.01); //.looking_at_xyz(0.0, 0.0, 0.0);
-        OrthographicCameraBundle {
-            camera: Camera::default(),
-            transform,
+    fn default() -> Self {
+        Self {
+            transform: Transform::from_xyz(0.0, 0.0, 512.01),
+            camera: Default::default(),
+            projection: Default::default(),
             global_transform: Default::default(),
-            projection,
         }
     }
 }
 
+/// Component bundle for camera entities with perspective projection and keyboard + mouse control
+///
+/// Use this for 2D games, isometric games, CAD-like 3D views.
+#[derive(Bundle)]
+pub struct FlyCamera2dBundle {
+    pub camera: Camera,
+    pub fly_camera: FlyCamera2d,
+    pub projection: OrthographicProjection,
+    pub transform: Transform,
+    pub global_transform: GlobalTransform,
+}
+
+impl Default for FlyCamera2dBundle {
+    fn default() -> Self {
+        Self {
+            transform: Transform::from_xyz(0.0, 0.0, 512.01),
+            fly_camera: FlyCamera2d::default(),
+            camera: Default::default(),
+            projection: Default::default(),
+            global_transform: Default::default(),
+        }
+    }
+}

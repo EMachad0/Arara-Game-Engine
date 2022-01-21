@@ -9,7 +9,7 @@ fn main() {
 }
 
 fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands.spawn_bundle(FlyCamera2dBundle::default());
     for i in 0..10 {
         for j in 0..10 {
             let x = 100.0 * i as f32;
