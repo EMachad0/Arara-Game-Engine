@@ -38,7 +38,7 @@ fn rotate_billboards(
     let camera_transform = cameras.iter().last().unwrap().0;
     let camera_position = camera_transform.translation;
 
-    let view_plane_normal = camera_transform.rotation * -Vec3::Z;
+    let view_plane_normal = camera_transform.rotation * Vec3::Z;
     let view_plane_billboard_rotation = calc_billboard_rotation(view_plane_normal, false);
     let view_plane_axial_billboard_rotation = calc_billboard_rotation(view_plane_normal, true);
 
@@ -46,12 +46,12 @@ fn rotate_billboards(
         let rotation = match billboard {
             Billboard::ViewPlane => view_plane_billboard_rotation,
             Billboard::ViewPoint => {
-                let normal = (global_transform.translation - camera_position).normalize();
+                let normal = (camera_position - global_transform.translation).normalize();
                 calc_billboard_rotation(normal, false)
             }
             Billboard::AxialViewPlane => view_plane_axial_billboard_rotation,
             Billboard::AxialViewPoint => {
-                let normal = (global_transform.translation - camera_position).normalize();
+                let normal = (camera_position - global_transform.translation).normalize();
                 calc_billboard_rotation(normal, true)
             }
         };

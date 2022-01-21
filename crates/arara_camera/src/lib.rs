@@ -10,10 +10,10 @@ pub use projection::*;
 
 pub mod prelude {
     pub use crate::{
-        bundle::{FlyCameraBundle, PerspectiveCameraBundle},
+        bundle::{FlyCameraBundle, PerspectiveCameraBundle, OrthographicCameraBundle},
         camera::Camera,
         fly_camera::FlyCamera,
-        projection::Perspective,
+        projection::{PerspectiveProjection, OrthographicProjection},
     };
 }
 
@@ -24,7 +24,8 @@ pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(process_resize::<Perspective>);
+        app.add_system(process_resize::<PerspectiveProjection>);
+        app.add_system(process_resize::<OrthographicProjection>);
     }
 }
 
