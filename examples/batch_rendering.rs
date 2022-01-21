@@ -9,14 +9,13 @@ fn main() {
         .add_plugin(LogDiagnosticPlugin {
             wait_duration: Duration::from_secs(3),
         })
-        .add_startup_system(add_cubes.system())
-        .insert_resource(Camera::new(vec3(-10.0, -10.0, -10.0), FRAC_PI_4, FRAC_PI_4))
-        .insert_resource(FlyCamera::new(2.0, 0.1))
+        .add_startup_system(add_cubes)
+        .add_startup_system(add_camera)
         .insert_resource(BPLight {
             position: vec3(-5.0, 5.0, -5.0),
         })
         .insert_resource(ClearColor(Color::WHITE))
-        .add_system(rotate_squares.system())
+        .add_system(rotate_squares)
         .run();
 }
 
@@ -45,4 +44,12 @@ fn add_cubes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
             })
             .insert(Square);
     }
+}
+
+fn add_camera(mut commands: Commands) {
+    // ------------ Camera -----------------
+    commands.spawn_bundle(FlyCameraBundle {
+        transform: Transform::from_xyz(-10.0, -10.0, -10.0).looking_at_xyz(0.0, 0.0, 0.0),
+        ..Default::default()
+    });
 }

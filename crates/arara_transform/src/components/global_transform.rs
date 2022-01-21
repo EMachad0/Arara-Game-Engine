@@ -228,6 +228,31 @@ impl GlobalTransform {
         let up = forward.cross(right);
         self.rotation = Quat::from_mat3(&Mat3::from_cols(right, up, forward));
     }
+
+    #[inline]
+    pub fn view_matrix(&self) -> Mat4 {
+        let normal = self.rotation * -Vec3::Z;
+        let up = self.rotation * Vec3::Y;
+        let right = normal.cross(up).normalize();
+        Mat4::from_cols_array(&[
+            right.x,
+            up.x,
+            -normal.x,
+            0.0,
+            right.y,
+            up.y,
+            -normal.y,
+            0.0,
+            right.z,
+            up.z,
+            -normal.z,
+            0.0,
+            -self.translation.dot(right),
+            -self.translation.dot(up),
+            self.translation.dot(normal),
+            1.0,
+        ])
+    }
 }
 
 impl Default for GlobalTransform {

@@ -5,6 +5,12 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
+        .add_plugin(CoordinateSystemPlugin)
+        .insert_resource(CoordinateSystem {
+            count: 10,
+            lenght: 10.0,
+            radius: 1.0,
+        })
         .add_plugin(LogDiagnosticPlugin {
             wait_duration: Duration::from_secs(3),
         })
@@ -12,8 +18,8 @@ fn main() {
         .insert_resource(BPLight {
             position: vec3(5.0, 30.0, 55.0),
         })
-        .insert_resource(Camera::new(vec3(0.0, 30.0, 70.0), -FRAC_PI_2, -FRAC_PI_6))
-        .insert_resource(FlyCamera::new(20.0, 0.5))
+        // .insert_resource(Camera::new(vec3(0.0, 30.0, 70.0), -FRAC_PI_2, -FRAC_PI_6))
+        // .insert_resource(FlyCamera::new(20.0, 0.5))
         .run()
 }
 
@@ -23,6 +29,12 @@ struct Tower;
 struct Wall;
 
 fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
+    // ------------ Camera -----------------
+    commands.spawn_bundle(FlyCameraBundle {
+        transform: Transform::from_xyz(5.0, 30.0, 55.0).looking_at_xyz(0.0, 10.0, 0.0),
+        ..Default::default()
+    });
+
     // ------------- Floor ------------------
     let floor_height = 10.0;
     commands.spawn_bundle(SimpleMeshBundle {

@@ -1,13 +1,20 @@
+mod bundle;
 mod camera;
 mod fly_camera;
-mod perspective;
+mod projection;
 
+pub use bundle::*;
 pub use camera::*;
 pub use fly_camera::*;
-pub use perspective::*;
+pub use projection::*;
 
 pub mod prelude {
-    pub use crate::{camera::Camera, fly_camera::FlyCamera, perspective::Perspective};
+    pub use crate::{
+        bundle::{FlyCameraBundle, PerspectiveCameraBundle},
+        camera::Camera,
+        fly_camera::FlyCamera,
+        projection::Perspective,
+    };
 }
 
 use arara_app::{App, CoreStage, Plugin};
@@ -17,9 +24,7 @@ pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<Camera>()
-            .init_resource::<Perspective>()
-            .add_system(process_resize);
+        app.add_system(process_resize::<Perspective>);
     }
 }
 
@@ -28,10 +33,9 @@ pub struct FlyCameraPlugin;
 
 impl Plugin for FlyCameraPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<FlyCamera>()
-            .add_system(process_mouse_motion)
-            .add_system(process_scroll)
-            .add_system(process_keyboard)
-            .add_system_to_stage(CoreStage::PostUpdate, update_camera);
+        app.add_system_to_stage(CoreStage::PreUpdate, fly_camera_creation)
+            .add_system(camera_movement_system)
+            .add_system(mouse_motion_system);
+        // .add_system(camera_2d_movement_system)
     }
 }

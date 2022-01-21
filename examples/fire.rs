@@ -16,7 +16,7 @@ fn main() {
         .insert_resource(BPLight {
             position: vec3(10.0, 10.0, 0.0),
         })
-        .insert_resource(Camera::new(vec3(0.0, 5.0, 5.0), -FRAC_PI_2, -FRAC_PI_6))
+        // .insert_resource(Camera::new(vec3(0.0, 5.0, 5.0), -FRAC_PI_2, -FRAC_PI_6))
         .run()
 }
 
@@ -25,6 +25,11 @@ fn add_shapes(
     mut meshes: ResMut<Assets<Mesh>>,
     asset_server: Res<AssetServer>,
 ) {
+    commands.spawn_bundle(FlyCameraBundle {
+        transform: Transform::from_xyz(0.0, 5.0, 5.0).looking_at_xyz(0.0, 3.0, 0.0),
+        ..Default::default()
+    });
+
     // ------------- Particle ------------------
 
     let fire1: Handle<Image> = asset_server.load("textures/fire/fire1.png");

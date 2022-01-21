@@ -3,18 +3,13 @@ use arara::prelude::*;
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_startup_system(add_cubes.system())
-        .insert_resource(Camera::new(
-            vec3(3.0, 0.0, 5.0),
-            (-125f32).to_radians(),
-            0.0,
-        ))
-        .insert_resource(FlyCamera::new(2.0, 0.1))
         .insert_resource(BPLight {
             position: vec3(3.0, 2.0, 5.0),
         })
-        .add_system(rotate_squares.system())
-        .add_system(color_squares.system())
+        .add_startup_system(add_camera)
+        .add_startup_system(add_cubes)
+        .add_system(rotate_squares)
+        .add_system(color_squares)
         .run();
 }
 
@@ -79,4 +74,12 @@ fn add_cubes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
                 })
                 .insert(Square);
         });
+}
+
+fn add_camera(mut commands: Commands) {
+    // ------------ Camera -----------------
+    commands.spawn_bundle(FlyCameraBundle {
+        transform: Transform::from_xyz(3.0, 0.0, 5.0).looking_at_xyz(0.0, 0.0, 0.0),
+        ..Default::default()
+    });
 }

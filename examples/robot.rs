@@ -9,12 +9,11 @@ fn main() {
         .add_plugin(LogDiagnosticPlugin {
             wait_duration: Duration::from_secs(1),
         })
-        .add_startup_system(add_shapes.system())
+        .add_startup_system(add_shapes)
+        .add_startup_system(add_camera)
         .insert_resource(BPLight {
             position: vec3(-2.0, 5.0, 3.0),
         })
-        .insert_resource(Camera::new(vec3(0.0, 5.0, 10.0), -FRAC_PI_2, 0.0))
-        .insert_resource(FlyCamera::new(2.0, 0.1))
         .run()
 }
 
@@ -429,4 +428,12 @@ fn add_shapes(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
                     });
                 });
         });
+}
+
+fn add_camera(mut commands: Commands) {
+    // ------------ Camera -----------------
+    commands.spawn_bundle(FlyCameraBundle {
+        transform: Transform::from_xyz(0.0, 5.0, 10.0).looking_at_xyz(0.0, 4.0, 0.0),
+        ..Default::default()
+    });
 }
