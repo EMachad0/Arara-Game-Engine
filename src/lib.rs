@@ -47,6 +47,10 @@ pub mod core_pipeline {
     pub use arara_core_pipeline::*;
 }
 
+pub mod sprite {
+    pub use arara_sprite::*;
+}
+
 pub mod math {
     pub use glam::*;
     pub use std::f32::consts::*;

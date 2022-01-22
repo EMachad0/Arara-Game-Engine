@@ -5,6 +5,9 @@ use glam::{vec3, Mat4, Vec3};
 use arara_asset::Handle;
 use arara_transform::{GlobalTransform, Transform};
 
+#[derive(Default, Component)]
+pub struct CorePipelineEntity;
+
 #[derive(Bundle)]
 pub struct SimpleMeshBundle {
     pub mesh: Handle<Mesh>,
@@ -13,6 +16,7 @@ pub struct SimpleMeshBundle {
     pub color: Color,
     pub image: Handle<Image>,
     pub visibility: Visibility,
+    pub core_pipeline_entity: CorePipelineEntity,
 }
 
 impl Default for SimpleMeshBundle {
@@ -24,6 +28,7 @@ impl Default for SimpleMeshBundle {
             color: Default::default(),
             image: DEFAULT_IMAGE_HANDLE.typed(),
             visibility: Default::default(),
+            core_pipeline_entity: Default::default(),
         }
     }
 }

@@ -1,43 +1,36 @@
 use arara_asset::{Assets, Handle};
 use arara_ecs::{
-    entity::Entity,
-    system::{Commands, Query, Res},
+    query::With,
+    system::{Query, Res, ResMut},
 };
-use arara_render::{Color, Image, Mesh, RenderPhase, Visibility};
+use arara_render::{Color, Image, Visibility};
 use arara_transform::GlobalTransform;
 
-use crate::{core_pipeline_entities::ExtractedCorePipelineEntity, Opaque3D, Transparent3D};
+use crate::sprite::{ExtractedSprite, Sprite};
 
-pub(crate) fn extract_core_pipeline_phases(mut commands: Commands) {
-    commands.insert_resource(RenderPhase::<Opaque3D>::default());
-    commands.insert_resource(RenderPhase::<Transparent3D>::default());
+#[derive(Default)]
+pub struct ExtractedSprites {
+    pub items: Vec<ExtractedSprite>,
 }
 
-pub(crate) fn extract_core_pipeline_entities(
-    mut commands: Commands,
-    meshes: Res<Assets<Mesh>>,
+pub(crate) fn extract_sprite_entities(
+    mut extracts: ResMut<ExtractedSprites>,
     images: Res<Assets<Image>>,
-    query: Query<(
-        Entity,
-        &Handle<Mesh>,
-        &Handle<Image>,
-        &GlobalTransform,
-        &Color,
-        &Visibility,
-    )>,
+    query: Query<(&Handle<Image>, &GlobalTransform, &Color, &Visibility), With<Sprite>>,
 ) {
-    for (entity, mesh, image, global_transform, color, visibility) in query.iter() {
+    extracts.items.clear();
+    for (image, global_transform, color, visibility) in query.iter() {
         if !visibility.active || !visibility.visible {
             continue;
         }
-        if meshes.get(mesh).is_none() || images.get(image).is_none() {
+        if images.get(image).is_none() {
             continue;
         }
-        commands.entity(entity).insert(ExtractedCorePipelineEntity {
-            mesh: mesh.clone_weak(),
-            image: image.clone_weak(),
+        extracts.items.push(ExtractedSprite {
+            image_handle: image.clone_weak(),
             transform: global_transform.compute_matrix(),
             color: *color,
+            z: global_transform.translation.z,
         });
     }
 }

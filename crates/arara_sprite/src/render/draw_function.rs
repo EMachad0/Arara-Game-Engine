@@ -6,14 +6,13 @@ use arara_ecs::{
     world::World,
 };
 use arara_render::{
-    CachedPipelinePhaseItem, Draw, EntityPhaseItem, ExtractedView, PhaseItem, RenderPipelineCache,
+    CachedPipelinePhaseItem, Draw, EntityPhaseItem, ExtractedView, RenderPipelineCache,
     TextureBuffer, TrackedFrame,
 };
 use arara_window::Window;
-use glam::Vec4;
 use glium::implement_uniform_block;
 
-use crate::{prepare_phase::CorePipelineBatch, BPLight};
+use crate::render::{prepare_phase::SpriteBatch, phase_items::Transparent2D};
 
 #[derive(Debug, Default, Clone, Copy)]
 struct CameraUniformBuffer {
@@ -35,26 +34,17 @@ struct TextureUniformBuffer<'a> {
 
 implement_uniform_block!(TextureUniformBuffer<'a>, tex);
 
-#[derive(Copy, Clone)]
-struct BPLightUniformBuffer {
-    pub u_camera_pos: [f32; 4],
-    pub u_light_pos: [f32; 4],
-}
-
-implement_uniform_block!(BPLightUniformBuffer, u_camera_pos, u_light_pos);
-
-pub struct DrawSimpleMesh {
+pub struct DrawSprite {
     params: SystemState<(
         NonSend<'static, Window>,
         NonSend<'static, TextureBuffer>,
         NonSend<'static, RenderPipelineCache>,
-        SRes<BPLight>,
         SRes<ExtractedView>,
-        SQuery<Read<CorePipelineBatch>>,
+        SQuery<Read<SpriteBatch>>,
     )>,
 }
 
-impl DrawSimpleMesh {
+impl DrawSprite {
     pub fn new(world: &mut World) -> Self {
         Self {
             params: SystemState::new(world),
@@ -62,9 +52,9 @@ impl DrawSimpleMesh {
     }
 }
 
-impl<I: PhaseItem + CachedPipelinePhaseItem + EntityPhaseItem> Draw<I> for DrawSimpleMesh {
-    fn draw<'w>(&mut self, world: &'w World, frame: &mut TrackedFrame, item: &I) {
-        let (window, texture_buffer, pipeline_cache, bp_light, view, query) =
+impl Draw<Transparent2D> for DrawSprite {
+    fn draw<'w>(&mut self, world: &'w World, frame: &mut TrackedFrame, item: &Transparent2D) {
+        let (window, texture_buffer, pipeline_cache, view, query) =
             self.params.get(world);
 
         let display = window.display();
@@ -78,18 +68,8 @@ impl<I: PhaseItem + CachedPipelinePhaseItem + EntityPhaseItem> Draw<I> for DrawS
             glium::uniforms::UniformBuffer::new(display, texture_buffer.texture_uniform_buffer())
                 .unwrap();
 
-        let bplight_uniform_buffer = glium::uniforms::UniformBuffer::new(
-            display,
-            BPLightUniformBuffer {
-                u_camera_pos: Vec4::from((view.position, 0.0)).into(),
-                u_light_pos: Vec4::from((bp_light.position, 0.0)).into(),
-            },
-        )
-        .unwrap();
-
         let uniforms = glium::uniform! {
             camera: &camera_uniform_buffer,
-            bplight: &bplight_uniform_buffer,
             samplers: &texture_uniform_buffer,
         };
 
@@ -98,18 +78,17 @@ impl<I: PhaseItem + CachedPipelinePhaseItem + EntityPhaseItem> Draw<I> for DrawS
             None => return,
         };
 
-        let CorePipelineBatch {
+        let SpriteBatch {
             vertices,
             indices,
-            transparent: _,
         } = query.get(item.entity()).unwrap();
 
         let vertex_buffer = glium::VertexBuffer::new(display, &vertices).unwrap();
-        let index_buffer = glium::IndexBuffer::new(
+        let index_buffer: glium::IndexBuffer<u32> = glium::IndexBuffer::new(
             display,
             glium::index::PrimitiveType::TrianglesList,
-            &indices,
-        )
+            indices,
+        ) 
         .unwrap();
 
         frame

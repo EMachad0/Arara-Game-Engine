@@ -1,10 +1,12 @@
-use arara_asset::{Assets, Handle};
+use arara_asset::Assets;
 use arara_ecs::prelude::*;
 use arara_render::{Image, Mesh, TextureBuffer};
-use arara_window::Window;
 use glam::{vec3, vec4, Mat3};
 
-use crate::core_pipeline_entities::ExtractedCorePipelineEntity;
+use crate::{
+    core_pipeline_entities::ExtractedCorePipelineEntity,
+    extract_phase::ExtractedCorePipelineEntitys,
+};
 
 #[derive(Copy, Clone)]
 pub struct Vertex {
@@ -28,21 +30,24 @@ pub(crate) fn prepare_core_pipeline_phase(
     mut commands: Commands,
     meshes: Res<Assets<Mesh>>,
     images: Res<Assets<Image>>,
-    query: Query<&ExtractedCorePipelineEntity>,
-    texture_buffer: NonSend<TextureBuffer>,
+    extracts: Res<ExtractedCorePipelineEntitys>,
+    mut texture_buffer: NonSendMut<TextureBuffer>,
 ) {
+    if extracts.items.is_empty() {
+        return;
+    }
+
     let mut vertices_opaque = Vec::new();
     let mut vertices_transparent = Vec::new();
     let mut indices_opaque = Vec::new();
     let mut indices_transparent = Vec::new();
-    for core_pipeline_entity in query.iter() {
-        let ExtractedCorePipelineEntity {
-            mesh: mesh_handle,
-            transform,
-            color,
-            image: image_handle,
-        } = core_pipeline_entity;
-
+    for ExtractedCorePipelineEntity {
+        mesh: mesh_handle,
+        transform,
+        color,
+        image: image_handle,
+    } in extracts.items.iter()
+    {
         let transparent = images.get(image_handle).unwrap().translucent || color.a() < 1.0;
         let vertices = if transparent {
             &mut vertices_transparent
@@ -55,7 +60,7 @@ pub(crate) fn prepare_core_pipeline_phase(
             &mut indices_opaque
         };
 
-        let tex_id = texture_buffer.get_position(image_handle);
+        let tex_id = texture_buffer.get_or_insert(image_handle.clone_weak());
         let mesh = meshes.get(mesh_handle).unwrap();
         let offset = vertices.len() as u32;
         let ti_transform = Mat3::from_mat4(transform.inverse().transpose());
@@ -76,34 +81,25 @@ pub(crate) fn prepare_core_pipeline_phase(
                 i_normal: normal.into(),
                 i_color: color,
                 i_tex_cords: vertex.tex_coords,
-                i_tex_id: tex_id,
+                i_tex_id: tex_id as u32,
             });
         }
         for idx in mesh.indices.iter() {
             indices.push(*idx + offset);
         }
     }
-    commands.spawn().insert(CorePipelineBatch {
-        vertices: vertices_opaque,
-        indices: indices_opaque,
-        transparent: false,
-    });
-    commands.spawn().insert(CorePipelineBatch {
-        vertices: vertices_transparent,
-        indices: indices_transparent,
-        transparent: true,
-    });
-}
-
-pub fn prepare_bindless_textures(
-    window: NonSend<Window>,
-    images: Res<Assets<Image>>,
-    mut texture_buffer: NonSendMut<TextureBuffer>,
-    query: Query<(&Handle<Image>, With<ExtractedCorePipelineEntity>)>,
-) {
-    let display = window.display();
-    for (image_handle, _) in query.iter() {
-        let image = images.get(image_handle).unwrap();
-        texture_buffer.insert(image_handle.clone_weak(), display, image);
+    if !vertices_opaque.is_empty() {
+        commands.spawn().insert(CorePipelineBatch {
+            vertices: vertices_opaque,
+            indices: indices_opaque,
+            transparent: false,
+        });
+    }
+    if !vertices_transparent.is_empty() {
+        commands.spawn().insert(CorePipelineBatch {
+            vertices: vertices_transparent,
+            indices: indices_transparent,
+            transparent: true,
+        });
     }
 }

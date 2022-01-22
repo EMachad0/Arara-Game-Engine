@@ -1,17 +1,17 @@
 use arara_asset::Handle;
-use arara_ecs::{bundle::Bundle, component::Component};
-use arara_render::{Image, Visibility, DEFAULT_IMAGE_HANDLE};
+use arara_ecs::bundle::Bundle;
+use arara_render::{Color, Image, Visibility, DEFAULT_IMAGE_HANDLE};
 use arara_transform::{GlobalTransform, Transform};
 
-#[derive(Component, Default, Clone)]
-pub struct Sprite;
+use crate::sprite::Sprite;
 
 #[derive(Bundle, Clone)]
 pub struct SpriteBundle {
     pub sprite: Sprite,
     pub transform: Transform,
     pub global_transform: GlobalTransform,
-    pub texture: Handle<Image>,
+    pub color: Color,
+    pub image: Handle<Image>,
     pub visibility: Visibility,
 }
 
@@ -21,7 +21,8 @@ impl Default for SpriteBundle {
             sprite: Default::default(),
             transform: Default::default(),
             global_transform: Default::default(),
-            texture: DEFAULT_IMAGE_HANDLE.typed(),
+            color: Default::default(),
+            image: DEFAULT_IMAGE_HANDLE.typed(),
             visibility: Default::default(),
         }
     }

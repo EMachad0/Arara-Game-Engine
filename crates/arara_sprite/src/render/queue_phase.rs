@@ -1,56 +1,36 @@
 use arara_ecs::prelude::*;
-use arara_render::{DrawFunctions, RenderPhase, RenderPipelineCache};
+use arara_render::{DrawFunctions, RenderPhase, RenderPipelineCache, SpecializedPipelines};
 
-use crate::{
-    draw_functions::DrawSimpleMesh, pipelines::CorePipelineKey, prepare_phase::CorePipelineBatch,
-    CorePipeline, Opaque3D, SpecializedPipelines, Transparent3D,
+use crate::render::{
+    draw_function::DrawSprite,
+    phase_items::Transparent2D,
+    pipelines::{SpritePipeline, SpritePipelineKey},
+    prepare_phase::SpriteBatch,
 };
 
-pub(crate) fn queue_core_pipeline_phase(
-    mut opaques: ResMut<RenderPhase<Opaque3D>>,
-    mut transparents: ResMut<RenderPhase<Transparent3D>>,
-    query: Query<(Entity, &CorePipelineBatch)>,
+pub(crate) fn queue_sprite_phase(
+    mut phase: ResMut<RenderPhase<Transparent2D>>,
+    query: Query<Entity, With<SpriteBatch>>,
     mut render_pipeline_cache: NonSendMut<RenderPipelineCache>,
-    pipeline: Res<CorePipeline>,
-    mut pipelines: ResMut<SpecializedPipelines<CorePipeline>>,
-    opaque_draw_functions: Res<DrawFunctions<Opaque3D>>,
-    transparent_draw_functions: Res<DrawFunctions<Transparent3D>>,
+    pipeline: Res<SpritePipeline>,
+    mut pipelines: ResMut<SpecializedPipelines<SpritePipeline>>,
+    draw_functions: Res<DrawFunctions<Transparent2D>>,
 ) {
-    let opaque_pipeline = pipelines.specialize(
-        &mut render_pipeline_cache,
-        &pipeline,
-        CorePipelineKey { transparent: false },
-    );
-    let transparent_pipeline = pipelines.specialize(
-        &mut render_pipeline_cache,
-        &pipeline,
-        CorePipelineKey { transparent: true },
-    );
+    if query.is_empty() {
+        return;
+    }
 
-    let draw_opaque_function = opaque_draw_functions
-        .read()
-        .get_id::<DrawSimpleMesh>()
-        .unwrap();
-    let draw_transparent_function = transparent_draw_functions
-        .read()
-        .get_id::<DrawSimpleMesh>()
-        .unwrap();
+    let sprite_pipeline =
+        pipelines.specialize(&mut render_pipeline_cache, &pipeline, SpritePipelineKey);
 
-    for (entity, batch) in query.iter() {
-        if batch.transparent {
-            transparents.add(Transparent3D {
-                distance: 0.0,
-                entity,
-                draw_function: draw_transparent_function,
-                pipeline: transparent_pipeline,
-            });
-        } else {
-            opaques.add(Opaque3D {
-                distance: 0.0,
-                entity,
-                draw_function: draw_opaque_function,
-                pipeline: opaque_pipeline,
-            });
-        }
+    let draw_sprite_function = draw_functions.read().get_id::<DrawSprite>().unwrap();
+
+    for entity in query.iter() {
+        phase.add(Transparent2D {
+            distance: 0.0,
+            entity,
+            draw_function: draw_sprite_function,
+            pipeline: sprite_pipeline,
+        });
     }
 }

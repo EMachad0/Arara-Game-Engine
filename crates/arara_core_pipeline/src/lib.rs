@@ -8,20 +8,20 @@ mod prepare_phase;
 mod queue_phase;
 
 use arara_app::{App, Plugin, StartupStage};
-use arara_ecs::system::{Commands, IntoExclusiveSystem, NonSend, Res};
+use arara_ecs::system::NonSend;
 use arara_render::{
-    DrawFunctions, EntityPhaseItem, RenderPhase, RenderPhases, RenderStage, SpecializedPipelines,
+    DrawFunctions, RenderPhases, RenderStage, SpecializedPipelines, clear_phase_system, RenderPhase,
 };
 use arara_utils::tracing::info;
 use arara_window::Window;
 pub use coordinate_system::{CoordinateSystem, CoordinateSystemPlugin};
 pub use core_pipeline_entities::{BPLight, SimpleMeshBundle};
 use draw_functions::DrawSimpleMesh;
-use extract_phase::{extract_core_pipeline_entities, extract_core_pipeline_phases};
+use extract_phase::{ExtractedCorePipelineEntitys, extract_core_pipeline_entities};
 use glium::{Api, Profile, Version};
 pub use phase_items::{Opaque3D, Transparent3D};
 pub use pipelines::{CorePipeline, DefaultShader};
-use prepare_phase::{prepare_bindless_textures, prepare_core_pipeline_phase};
+use prepare_phase::prepare_core_pipeline_phase;
 use queue_phase::queue_core_pipeline_phase;
 
 #[derive(Default)]
@@ -34,22 +34,20 @@ impl Plugin for CorePipelinePlugin {
             .init_resource::<SpecializedPipelines<CorePipeline>>()
             .init_resource::<DrawFunctions<Opaque3D>>()
             .init_resource::<DrawFunctions<Transparent3D>>()
+            .init_resource::<RenderPhase<Opaque3D>>()
+            .init_resource::<RenderPhase<Transparent3D>>()
+            .init_resource::<ExtractedCorePipelineEntitys>()
             .add_startup_system_to_stage(StartupStage::PostStartup, debug_glium_backend_info)
-            .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_phases)
             .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_entities)
-            .add_system_to_stage(
-                RenderStage::Prepare,
-                prepare_bindless_textures.exclusive_system(),
-            )
             .add_system_to_stage(RenderStage::Prepare, prepare_core_pipeline_phase)
             .add_system_to_stage(RenderStage::Queue, queue_core_pipeline_phase)
             .add_system_to_stage(
                 RenderStage::Cleanup,
-                clear_core_pipeline_entities::<Opaque3D>,
+                clear_phase_system::<Opaque3D>,
             )
             .add_system_to_stage(
                 RenderStage::Cleanup,
-                clear_core_pipeline_entities::<Transparent3D>,
+                clear_phase_system::<Transparent3D>,
             );
 
         let draw_simple_mesh = DrawSimpleMesh::new(&mut app.world);
@@ -70,15 +68,6 @@ impl Plugin for CorePipelinePlugin {
             .unwrap()
             .add::<Opaque3D>()
             .add::<Transparent3D>();
-    }
-}
-
-fn clear_core_pipeline_entities<I: EntityPhaseItem>(
-    mut commands: Commands,
-    phase: Res<RenderPhase<I>>,
-) {
-    for item in phase.items.iter() {
-        commands.entity(item.entity()).despawn();
     }
 }
 
