@@ -8,6 +8,7 @@ fn main() {
         .add_plugin(CoordinateSystemPlugin)
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin::default())
+        .add_plugin(AssetCountDiagnosticsPlugin::<Image>::default())
         .add_plugin(LogDiagnosticPlugin {
             wait_duration: Duration::from_secs(10),
         })

@@ -13,7 +13,8 @@ fn main() {
             level: arara::logger::Level::DEBUG,
             filter: "".to_string(),
         })
-        .add_startup_system(add_shapes.system())
+        .add_startup_system(add_shapes)
+        .add_startup_system(add_camera)
         .insert_resource(BPLight::new(-5.0, 10.0, 0.0))
         .run()
 }
@@ -82,6 +83,14 @@ fn add_shapes(
             ..Default::default()
         },
         color: Color::MIDNIGHT_BLUE,
+        ..Default::default()
+    });
+}
+
+fn add_camera(mut commands: Commands) {
+    // ------------ Camera -----------------
+    commands.spawn_bundle(FlyCameraBundle {
+        transform: Transform::from_xyz(0.0, 5.0, 5.0).looking_at_xyz(0.0, 0.0, 0.0),
         ..Default::default()
     });
 }

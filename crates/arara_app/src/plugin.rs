@@ -1,5 +1,5 @@
 use crate::App;
-use arara_utils::{tracing::debug, HashMap};
+use arara_utils::{tracing::trace, HashMap};
 use std::any::{Any, TypeId};
 
 /// Plugins use [AppBuilder] to configure an [App](crate::App). When an [App](crate::App) registers
@@ -109,7 +109,7 @@ impl PluginGroupBuilder {
         for ty in self.order.iter() {
             if let Some(entry) = self.plugins.get(ty) {
                 if entry.enabled {
-                    debug!("added plugin: {}", entry.plugin.name());
+                    trace!("added plugin: {}", entry.plugin.name());
                     entry.plugin.build(app);
                 }
             }
