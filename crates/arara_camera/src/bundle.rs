@@ -1,4 +1,4 @@
-use crate::{Camera, FlyCamera, FlyCamera2d, OrthographicProjection, PerspectiveProjection};
+use crate::{Camera, FlyCamera, FlyCamera2d, OrthographicProjection, PerspectiveProjection, WorldMouse2d};
 use arara_ecs::bundle::Bundle;
 use arara_transform::{GlobalTransform, Transform};
 
@@ -34,6 +34,7 @@ pub struct OrthographicCameraBundle {
     pub projection: OrthographicProjection,
     pub transform: Transform,
     pub global_transform: GlobalTransform,
+    pub mouse: WorldMouse2d,
 }
 
 impl Default for OrthographicCameraBundle {
@@ -60,6 +61,7 @@ impl Default for OrthographicCameraBundle {
             camera: Default::default(),
             projection: Default::default(),
             global_transform: Default::default(),
+            mouse: Default::default(),
         }
     }
 }
@@ -74,6 +76,7 @@ pub struct FlyCamera2dBundle {
     pub projection: OrthographicProjection,
     pub transform: Transform,
     pub global_transform: GlobalTransform,
+    pub mouse: WorldMouse2d,
 }
 
 impl Default for FlyCamera2dBundle {
@@ -84,6 +87,7 @@ impl Default for FlyCamera2dBundle {
             camera: Default::default(),
             projection: Default::default(),
             global_transform: Default::default(),
+            mouse: Default::default(),
         }
     }
 }

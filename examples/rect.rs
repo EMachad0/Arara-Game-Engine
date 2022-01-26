@@ -9,13 +9,12 @@ fn main() {
         .add_plugin(LogDiagnosticPlugin {
             wait_duration: Duration::from_millis(3000),
         })
+        .add_startup_system(add_camera)
         .add_startup_system(setup)
         .run();
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn_bundle(FlyCamera2dBundle::default());
-
     let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
     
     for i in 0..100 {
@@ -34,4 +33,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             });
         }
     }
+}
+
+fn add_camera(mut commands: Commands) {
+    commands.spawn_bundle(FlyCamera2dBundle::default());
 }

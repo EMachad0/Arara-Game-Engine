@@ -75,8 +75,8 @@ pub fn run(mut app: App) {
                     WindowEvent::CursorMoved { position, .. } => {
                         let mut cursor_moved_events =
                             world.get_resource_mut::<Events<CursorMoved>>().unwrap();
-                        // let position = position.to_logical(winit_window.scale_factor());
-                        let position = (position.x as f32, position.y as f32);
+                        let y = window.height() as f32 - position.y as f32;
+                        let position = (position.x as f32, y);
                         window.update_cursor_position_from_backend(Some(position));
                         cursor_moved_events.send(CursorMoved { position });
                     }

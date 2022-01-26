@@ -2,11 +2,13 @@ mod bundle;
 mod camera;
 mod fly_camera;
 mod projection;
+mod mouse;
 
 pub use bundle::*;
 pub use camera::*;
 pub use fly_camera::*;
 pub use projection::*;
+pub use mouse::*;
 
 pub mod prelude {
     pub use crate::{
@@ -14,6 +16,7 @@ pub mod prelude {
         camera::Camera,
         fly_camera::{FlyCamera, FlyCamera2d},
         projection::{PerspectiveProjection, OrthographicProjection},
+        mouse::WorldMouse2d,
     };
 }
 
@@ -37,6 +40,7 @@ impl Plugin for FlyCameraPlugin {
         app.add_system_to_stage(CoreStage::PreUpdate, fly_camera_creation)
             .add_system(camera_movement_system)
             .add_system(camera_2d_movement_system)
+            .add_system(track_world_mouse_2d)
             .add_system(mouse_motion_system);
     }
 }
