@@ -29,3 +29,23 @@ glium = "*"
 image = "*"
 glam = "*"
 rand = "*"
+
+[[example]]
+name = "fire"
+path = "examples/particle_system/fire.rs"
+
+[[example]]
+name = "firework"
+path = "examples/particle_system/firework.rs"
+
+[[example]]
+name = "particles"
+path = "examples/particle_system/particles.rs"
+
+[[example]]
+name = "seek"
+path = "examples/steering/seek.rs"
+
+[[example]]
+name = "path_following"
+path = "examples/steering/path_following/main.rs"

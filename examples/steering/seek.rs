@@ -60,8 +60,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, window: NonSend
     let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
 
     for _ in 0..4 {
-        let x = (rand::random::<f32>() - 0.5) * window.width() as f32;
-        let y = (rand::random::<f32>() - 0.5) * window.height() as f32;
+        let x = rand::random::<f32>() * window.width() as f32;
+        let y = rand::random::<f32>() * window.height() as f32;
         commands
             .spawn_bundle(SpriteBundle {
                 transform: Transform {
