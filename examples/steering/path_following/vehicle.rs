@@ -20,6 +20,7 @@ pub fn move_speedy(mut query: Query<(&mut Transform, &mut Speedy)>) {
         speedy.speed += acceleration;
         speedy.speed = speedy.speed.clamp_length_max(speedy.max_speed);
         transform.translation += Vec3::from((speedy.speed, 0.0));
+        transform.rotation = Quat::from_rotation_arc_2d(Vec2::X, speedy.speed.normalize());
         speedy.acceleration = Vec2::ZERO;
     }
 }

@@ -41,9 +41,7 @@ fn steer(path_query: Query<&Path>, mut query: Query<(&Transform, &mut Speedy, &F
             let path_dir = (p2 - p1).normalize();
 
             let path_to_position = future_position - p1;
-            let projection = path_to_position
-                .dot(path_dir)
-                .clamp(0.0, path_lenght * 0.8);
+            let projection = path_to_position.dot(path_dir).clamp(0.0, path_lenght * 0.8);
             let closest_point = p1 + path_dir * projection;
             let distance = future_position.distance(closest_point);
             if distance < minimum_distance {
@@ -60,7 +58,7 @@ fn steer(path_query: Query<&Path>, mut query: Query<(&Transform, &mut Speedy, &F
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>, window: NonSend<Window>) {
-    let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
+    let img0: Handle<Image> = asset_server.load("textures/car_40x20.png");
 
     let path = commands
         .spawn()
@@ -84,17 +82,17 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, window: NonSend
             .spawn_bundle(SpriteBundle {
                 transform: Transform {
                     translation: vec3(x, y, 0.0),
-                    scale: vec3(30.0, 30.0, 1.0),
+                    scale: vec3(40.0, 20.0, 1.0),
                     ..Default::default()
                 },
-                color: Color::rgba(rand::random(), rand::random(), rand::random(), 0.8),
+                color: Color::rgb(rand::random(), rand::random(), rand::random()),
                 image: img0.clone(),
                 ..Default::default()
             })
             .insert(FollowPath(path))
             .insert(Speedy {
                 max_speed: 5.0,
-                max_force: 0.1,
+                max_force: 0.2,
                 ..Default::default()
             });
     }
