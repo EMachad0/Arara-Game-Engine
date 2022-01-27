@@ -153,7 +153,7 @@ impl Default for OrthographicProjection {
             top: 1.0,
             near: 0.01,
             far: 1024.0,
-            window_origin: WindowOrigin::Center,
+            window_origin: WindowOrigin::BottomLeft,
             scaling_mode: ScalingMode::WindowSize,
             scale: 1.0,
         }
