@@ -1,0 +1,17 @@
+[package]
+name = "arara_sprite"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+arara_utils = { path = "../arara_utils", version = "0.1.0" }
+arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
+arara_app = { path = "../arara_app", version = "0.1.0" }
+arara_asset = { path = "../arara_asset", version = "0.1.0" }
+arara_transform = { path = "../arara_transform", version = "0.1.0" }
+arara_render = { path = "../arara_render", version = "0.1.0" }
+arara_window = { path = "../arara_window", version = "0.1.0" }
+# external
+bevy_reflect = "*"
+glium = "*"
+glam = "*"

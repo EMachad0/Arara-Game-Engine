@@ -16,3 +16,12 @@ pub struct TransformBundle {
     pub transform: Transform,
     pub global_transform: GlobalTransform,
 }
+
+impl TransformBundle {
+    pub fn new(transform: Transform) -> Self {
+        Self {
+            transform,
+            global_transform: Default::default(),
+        }
+    }
+}

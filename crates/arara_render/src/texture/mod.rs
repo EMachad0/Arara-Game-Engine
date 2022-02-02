@@ -27,6 +27,7 @@ impl Plugin for ImagePlugin {
             .unwrap()
             .set_untracked(DEFAULT_IMAGE_HANDLE, Image::default());
         app.init_non_send_resource::<TextureBuffer>()
+            .add_system_to_stage(RenderStage::Queue, process_queue_to_gpu)
             .add_system_to_stage(RenderStage::Cleanup, update_texture_cache_system);
     }
 }

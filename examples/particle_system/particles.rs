@@ -11,13 +11,12 @@ fn main() {
         .add_plugin(LogDiagnosticPlugin {
             wait_duration: Duration::from_secs(3),
         })
-        .add_startup_system(add_color_only_shader.system())
-        .add_startup_system(add_shapes.system())
+        .add_startup_system(add_color_only_shader)
+        .add_startup_system(add_shapes)
+        .add_startup_system(add_camera)
         .insert_resource(BPLight {
             position: vec3(10.0, 10.0, 0.0),
         })
-        .insert_resource(Camera::new(vec3(0.0, 5.0, 5.0), -FRAC_PI_2, -FRAC_PI_6))
-        .insert_resource(FlyCamera::new(20.0, 0.5))
         .run()
 }
 
@@ -54,4 +53,12 @@ fn add_shapes(
 fn add_color_only_shader(asset_server: Res<AssetServer>, mut pipeline: ResMut<CorePipeline>) {
     let fragment_shader = asset_server.load("shaders/fragment_shader_no_light_src.frag");
     pipeline.fragment_shader = fragment_shader.clone();
+}
+
+fn add_camera(mut commands: Commands) {
+    // ------------ Camera -----------------
+    commands.spawn_bundle(FlyCameraBundle {
+        transform: Transform::from_xyz(0.0, 5.0, 5.0).looking_at_xyz(0.0, 0.0, 0.0),
+        ..Default::default()
+    });
 }

@@ -5,6 +5,7 @@ edition = "2021"
 
 [features]
 trace = []
+event_trace = []
 default = ["bevy_reflect"]
 
 [dependencies]

@@ -6,7 +6,7 @@ use arara_ecs::{
     system::Resource,
     world::World,
 };
-use arara_utils::tracing::debug;
+use arara_utils::tracing::trace;
 
 #[cfg(feature = "trace")]
 use arara_utils::tracing::info_span;
@@ -56,9 +56,9 @@ impl App {
     }
 
     pub fn debug_stage_order(&self) {
-        debug!("------------ Stages ------------");
+        trace!("------------ Stages ------------");
         for stage in self.schedule.iter_stages() {
-            debug!("{:?}", stage.0);
+            trace!("{:?}", stage.0);
         }
     }
 
@@ -101,7 +101,7 @@ impl App {
     }
 
     pub fn add_plugin<T: Plugin>(&mut self, plugin: T) -> &mut Self {
-        debug!("added plugin: {}", plugin.name());
+        trace!("added plugin: {}", plugin.name());
         plugin.build(self);
         self
     }

@@ -16,6 +16,7 @@ arara_window = { path = "crates/arara_window", version = "0.1.0" }
 arara_logger = { path = "crates/arara_logger", version = "0.1.0" }
 arara_render = { path = "crates/arara_render", version = "0.1.0" }
 arara_core_pipeline = { path = "crates/arara_core_pipeline", version = "0.1.0" }
+arara_sprite = { path = "crates/arara_sprite", version = "0.1.0" }
 arara_utils = { path = "crates/arara_utils", version = "0.1.0" }
 arara_time = { path = "crates/arara_time", version = "0.1.0" }
 arara_diagnostic = { path = "crates/arara_diagnostic", version = "0.1.0" }
@@ -28,3 +29,23 @@ glium = "*"
 image = "*"
 glam = "*"
 rand = "*"
+
+[[example]]
+name = "fire"
+path = "examples/particle_system/fire.rs"
+
+[[example]]
+name = "firework"
+path = "examples/particle_system/firework.rs"
+
+[[example]]
+name = "particles"
+path = "examples/particle_system/particles.rs"
+
+[[example]]
+name = "seek"
+path = "examples/steering/seek.rs"
+
+[[example]]
+name = "path_following"
+path = "examples/steering/path_following/main.rs"

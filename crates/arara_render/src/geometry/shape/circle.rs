@@ -26,7 +26,7 @@ impl From<Circle> for Mesh {
         } = circle;
 
         let circle = unit_circle_points(sector_count);
-        let normal = [0.0, 0.0, -1.0];
+        let normal = [0.0, 0.0, 1.0];
 
         let mut vertices: Vec<Vertex> = Vec::new();
 
@@ -44,8 +44,8 @@ impl From<Circle> for Mesh {
         let center_index = vertices.len() as u32;
         for i in 0..center_index {
             indices.push(center_index);
-            indices.push(if i + 1 == center_index { 0 } else { i + 1 });
             indices.push(i);
+            indices.push(if i + 1 == center_index { 0 } else { i + 1 });
         }
 
         vertices.push(Vertex {

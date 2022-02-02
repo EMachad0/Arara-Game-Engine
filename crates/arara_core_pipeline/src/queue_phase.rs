@@ -16,6 +16,10 @@ pub(crate) fn queue_core_pipeline_phase(
     opaque_draw_functions: Res<DrawFunctions<Opaque3D>>,
     transparent_draw_functions: Res<DrawFunctions<Transparent3D>>,
 ) {
+    if query.is_empty() {
+        return;
+    }
+
     let opaque_pipeline = pipelines.specialize(
         &mut render_pipeline_cache,
         &pipeline,

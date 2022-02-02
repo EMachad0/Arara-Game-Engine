@@ -1,6 +1,6 @@
 use super::GlobalTransform;
 use arara_ecs::component::Component;
-use glam::{Mat3, Mat4, Quat, Vec3};
+use glam::{vec3, Mat3, Mat4, Quat, Vec3};
 use std::ops::Mul;
 
 /// Describe the position of an entity. If the entity has a parent, the position is relative
@@ -110,8 +110,26 @@ impl Transform {
     /// local z direction is toward `target` and its unit vector in the local y direction
     /// is toward `up`.
     #[inline]
-    pub fn looking_at(mut self, target: Vec3, up: Vec3) -> Self {
+    pub fn looking_at_up(mut self, target: Vec3, up: Vec3) -> Self {
         self.look_at(target, up);
+        self
+    }
+
+    /// Updates and returns this [`Transform`] by rotating it so that its unit vector in the
+    /// local z direction is toward `target` and its unit vector in the local y direction
+    /// is toward `up`.
+    #[inline]
+    pub fn looking_at(mut self, target: Vec3) -> Self {
+        self.look_at(target, Vec3::Y);
+        self
+    }
+
+    /// Updates and returns this [`Transform`] by rotating it so that its unit vector in the
+    /// local z direction is toward `target` and its unit vector in the local y direction
+    /// is toward `up`.
+    #[inline]
+    pub fn looking_at_xyz(mut self, x: f32, y: f32, z: f32) -> Self {
+        self.look_at(vec3(x, y, z), Vec3::Y);
         self
     }
 
@@ -237,10 +255,21 @@ impl Transform {
     /// `target` and its unit vector in the local y direction is toward `up`.
     #[inline]
     pub fn look_at(&mut self, target: Vec3, up: Vec3) {
-        let forward = Vec3::normalize(self.translation - target);
-        let right = up.cross(forward).normalize();
-        let up = forward.cross(right);
-        self.rotation = Quat::from_mat3(&Mat3::from_cols(right, up, forward));
+        let normal = Vec3::normalize(self.translation - target);
+        let right = up.cross(normal).normalize();
+        let up = normal.cross(right);
+        self.rotation = Quat::from_mat3(&Mat3::from_cols(right, up, normal));
+    }
+
+    /// Rotates this [`Transform`] so that its unit vector in the local z direction is toward
+    /// `target` and its unit vector in the local y direction is toward `up`.
+    /// Does not change the up direction
+    #[inline]
+    pub fn look_at_axial(&mut self, target: Vec3, up: Vec3) {
+        let normal = Vec3::normalize(self.translation - target);
+        let right = up.cross(normal).normalize();
+        let normal = right.cross(up).normalize();
+        self.rotation = Quat::from_mat3(&Mat3::from_cols(right, up, normal));
     }
 }
 

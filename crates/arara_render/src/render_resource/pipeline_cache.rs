@@ -4,7 +4,7 @@ use arara_ecs::{
     system::{NonSend, NonSendMut, Res},
 };
 use arara_utils::{
-    tracing::{debug, error},
+    tracing::{error, trace},
     HashMap, HashSet,
 };
 use arara_window::Window;
@@ -188,7 +188,7 @@ pub(crate) fn extract_shaders(
     mut cache: NonSendMut<RenderPipelineCache>,
 ) {
     for event in events.iter() {
-        debug!("recieved event {:?}", event);
+        trace!("recieved event {:?}", event);
         match event {
             AssetEvent::Created { handle } | AssetEvent::Modified { handle } => {
                 if let Some(shader) = shaders.get(handle) {

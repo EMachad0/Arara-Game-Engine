@@ -8,11 +8,11 @@ fn main() {
         .add_plugin(EntityCountDiagnosticPlugin)
         .add_plugin(LogDiagnosticPlugin::default())
         .add_plugin(ParticleSystemPlugin)
-        // .add_plugin(CoordinateSystemPlugin::default())
-        .add_startup_system(add_shapes.system())
+        .add_startup_system(add_shapes)
+        .add_startup_system(add_camera)
         .init_resource::<Timer>()
         .insert_resource(BPLight::new(0.0, 10.0, 6.0))
-        .add_system(move_snowman.system())
+        .add_system(move_snowman)
         .run()
 }
 
@@ -281,4 +281,12 @@ fn add_shapes(
                     });
                 });
         });
+}
+
+fn add_camera(mut commands: Commands) {
+    // ------------ Camera -----------------
+    commands.spawn_bundle(FlyCameraBundle {
+        transform: Transform::from_xyz(0.0, 5.0, 10.0).looking_at_xyz(0.0, 4.0, 0.0),
+        ..Default::default()
+    });
 }

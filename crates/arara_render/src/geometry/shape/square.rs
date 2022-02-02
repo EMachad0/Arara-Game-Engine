@@ -21,7 +21,7 @@ impl From<Square> for Mesh {
     fn from(square: Square) -> Self {
         let hx = square.x_lenght / 2.;
         let hy = square.y_lenght / 2.;
-        let normal = [0.0, 0.0, -1.0];
+        let normal = [0.0, 0.0, 1.0];
 
         let vertices = vec![
             Vertex {
@@ -30,8 +30,8 @@ impl From<Square> for Mesh {
                 normal,
             },
             Vertex {
-                position: [-hx, hy, 0.0],
-                tex_coords: [0.0, 1.0],
+                position: [hx, -hy, 0.0],
+                tex_coords: [1.0, 0.0],
                 normal,
             },
             Vertex {
@@ -40,8 +40,8 @@ impl From<Square> for Mesh {
                 normal,
             },
             Vertex {
-                position: [hx, -hy, 0.0],
-                tex_coords: [1.0, 0.0],
+                position: [-hx, hy, 0.0],
+                tex_coords: [0.0, 1.0],
                 normal,
             },
         ];

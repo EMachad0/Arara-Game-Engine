@@ -2,9 +2,10 @@
 
 use crate::system::{Local, Res, ResMut, SystemParam};
 use crate::{self as arara_ecs, system::Resource};
+#[cfg(feature = "event_trace")]
 use arara_utils::tracing::trace;
 use std::{
-    fmt::{self},
+    fmt,
     hash::Hash,
     marker::PhantomData,
 };
@@ -269,6 +270,7 @@ impl<'w, 's, T: Resource> EventReader<'w, 's, T> {
     /// Like [`iter`](Self::iter), except also returning the [`EventId`] of the events.
     pub fn iter_with_id(&mut self) -> impl DoubleEndedIterator<Item = (&T, EventId<T>)> {
         internal_event_reader(&mut self.last_event_count.0, &self.events).map(|(event, id)| {
+            #[cfg(feature = "event_trace")]
             trace!("EventReader::iter() -> {}", id);
             (event, id)
         })
@@ -283,6 +285,7 @@ impl<T: Resource> Events<T> {
             id: self.event_count,
             _marker: PhantomData,
         };
+        #[cfg(feature = "event_trace")]
         trace!("Events::send() -> id: {}", event_id);
 
         let event_instance = EventInstance { event_id, event };
@@ -407,6 +410,7 @@ impl<T> std::iter::Extend<T> for Events<T> {
             State::B => self.events_b.extend(events),
         }
 
+        #[cfg(feature = "event_trace")]
         trace!(
             "Events::extend() -> ids: ({}..{})",
             self.event_count,

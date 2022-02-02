@@ -1,6 +1,6 @@
 use arara_ecs::prelude::Component;
 
-#[derive(Component)]
+#[derive(Component, Clone, Copy)]
 pub struct Visibility {
     pub active: bool,
     pub visible: bool,

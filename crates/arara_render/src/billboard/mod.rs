@@ -2,7 +2,7 @@ use arara_app::{App, CoreStage, Plugin};
 use arara_camera::Camera;
 use arara_ecs::prelude::*;
 use arara_transform::{GlobalTransform, Transform};
-use glam::{vec3, Mat3, Quat, Vec3};
+use glam::{Mat3, Quat, Vec3};
 
 pub struct BillboardPlugin;
 
@@ -27,7 +27,7 @@ pub enum Billboard {
 }
 
 fn rotate_billboards(
-    camera: Res<Camera>,
+    cameras: Query<(&GlobalTransform, With<Camera>)>,
     mut query: Query<(&mut Transform, &GlobalTransform, &Billboard)>,
 ) {
     let iterator = query.iter_mut();
@@ -35,10 +35,10 @@ fn rotate_billboards(
         return;
     }
 
-    let camera_position = camera.position;
-    let camera_position = vec3(camera_position.x, camera_position.y, camera_position.z);
+    let camera_transform = cameras.iter().last().unwrap().0;
+    let camera_position = camera_transform.translation;
 
-    let view_plane_normal = vec3(camera.yaw.cos(), camera.pitch.sin(), camera.yaw.sin());
+    let view_plane_normal = camera_transform.rotation * Vec3::Z;
     let view_plane_billboard_rotation = calc_billboard_rotation(view_plane_normal, false);
     let view_plane_axial_billboard_rotation = calc_billboard_rotation(view_plane_normal, true);
 
@@ -46,12 +46,12 @@ fn rotate_billboards(
         let rotation = match billboard {
             Billboard::ViewPlane => view_plane_billboard_rotation,
             Billboard::ViewPoint => {
-                let normal = (global_transform.translation - camera_position).normalize();
+                let normal = (camera_position - global_transform.translation).normalize();
                 calc_billboard_rotation(normal, false)
             }
             Billboard::AxialViewPlane => view_plane_axial_billboard_rotation,
             Billboard::AxialViewPoint => {
-                let normal = (global_transform.translation - camera_position).normalize();
+                let normal = (camera_position - global_transform.translation).normalize();
                 calc_billboard_rotation(normal, true)
             }
         };

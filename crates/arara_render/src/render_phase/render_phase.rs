@@ -1,4 +1,4 @@
-use arara_ecs::{entity::Entity, prelude::ResMut};
+use arara_ecs::{entity::Entity, prelude::ResMut, system::Commands};
 
 use crate::{render_phase::DrawFunctionId, CachedPipelineId};
 
@@ -51,4 +51,14 @@ impl<I: PhaseItem> RenderPhase<I> {
 /// This system sorts all [`RenderPhases`](RenderPhase) for the [`PhaseItem`] type.
 pub fn sort_phase_system<I: PhaseItem>(mut render_phase: ResMut<RenderPhase<I>>) {
     render_phase.sort();
+}
+
+pub fn clear_phase_system<I: EntityPhaseItem>(
+    mut commands: Commands,
+    mut phase: ResMut<RenderPhase<I>>,
+) {
+    for item in phase.items.iter() {
+        commands.entity(item.entity()).despawn();
+    }
+    phase.items.clear();
 }

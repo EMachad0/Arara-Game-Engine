@@ -8,6 +8,7 @@ fn main() {
         .add_plugin(CoordinateSystemPlugin)
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin::default())
+        .add_plugin(AssetCountDiagnosticsPlugin::<Image>::default())
         .add_plugin(LogDiagnosticPlugin {
             wait_duration: Duration::from_secs(10),
         })
@@ -16,7 +17,7 @@ fn main() {
         .insert_resource(BPLight {
             position: vec3(10.0, 10.0, 0.0),
         })
-        .insert_resource(Camera::new(vec3(0.0, 5.0, 5.0), -FRAC_PI_2, -FRAC_PI_6))
+        // .insert_resource(Camera::new(vec3(0.0, 5.0, 5.0), -FRAC_PI_2, -FRAC_PI_6))
         .run()
 }
 
@@ -25,6 +26,11 @@ fn add_shapes(
     mut meshes: ResMut<Assets<Mesh>>,
     asset_server: Res<AssetServer>,
 ) {
+    commands.spawn_bundle(FlyCameraBundle {
+        transform: Transform::from_xyz(0.0, 5.0, 5.0).looking_at_xyz(0.0, 3.0, 0.0),
+        ..Default::default()
+    });
+
     // ------------- Particle ------------------
 
     let fire1: Handle<Image> = asset_server.load("textures/fire/fire1.png");
@@ -120,59 +126,59 @@ fn add_shapes(
             ..Default::default()
         });
 
-    commands
-        .spawn_bundle(SimpleMeshBundle {
-            transform: Transform::from_xyz(0.0, 1.0, 0.0),
-            ..Default::default()
-        })
-        .insert(ParticleSystem {
-            lifetime: 0.5,
-            buffer_quantity: 5,
-            spawn_quantity: 2,
-            image: fire1.clone(),
-            particle_velocity: Value::Range(0.5, 1.0),
-            spawn_shape: SpawnShape::Cone(0.7),
-            particle_color: ColorOrGradient::Color(Color::rgba(0., 0., 0., 0.4)),
-            particle_mesh: meshes.add(Mesh::from(Square::new(1., 1.))),
-            timer: Timer::from_seconds(1.4, true),
-            ..Default::default()
-        });
+    // commands
+    //     .spawn_bundle(SimpleMeshBundle {
+    //         transform: Transform::from_xyz(0.0, 1.0, 0.0),
+    //         ..Default::default()
+    //     })
+    //     .insert(ParticleSystem {
+    //         lifetime: 0.5,
+    //         buffer_quantity: 5,
+    //         spawn_quantity: 2,
+    //         image: fire1.clone(),
+    //         particle_velocity: Value::Range(0.5, 1.0),
+    //         spawn_shape: SpawnShape::Cone(0.7),
+    //         particle_color: ColorOrGradient::Color(Color::rgba(0., 0., 0., 0.4)),
+    //         particle_mesh: meshes.add(Mesh::from(Square::new(1., 1.))),
+    //         timer: Timer::from_seconds(1.4, true),
+    //         ..Default::default()
+    //     });
 
-    commands
-        .spawn_bundle(SimpleMeshBundle {
-            transform: Transform::from_xyz(0.0, 1.0, 0.0),
-            ..Default::default()
-        })
-        .insert(ParticleSystem {
-            lifetime: 0.7,
-            buffer_quantity: 5,
-            spawn_quantity: 2,
-            image: fire3.clone(),
-            particle_velocity: Value::Range(0.5, 1.0),
-            spawn_shape: SpawnShape::Cone(0.7),
-            particle_color: ColorOrGradient::Color(Color::rgba(0., 0., 0., 0.4)),
-            particle_mesh: meshes.add(Mesh::from(Square::new(1., 1.))),
-            timer: Timer::from_seconds(1.3, true),
-            ..Default::default()
-        });
+    // commands
+    //     .spawn_bundle(SimpleMeshBundle {
+    //         transform: Transform::from_xyz(0.0, 1.0, 0.0),
+    //         ..Default::default()
+    //     })
+    //     .insert(ParticleSystem {
+    //         lifetime: 0.7,
+    //         buffer_quantity: 5,
+    //         spawn_quantity: 2,
+    //         image: fire3.clone(),
+    //         particle_velocity: Value::Range(0.5, 1.0),
+    //         spawn_shape: SpawnShape::Cone(0.7),
+    //         particle_color: ColorOrGradient::Color(Color::rgba(0., 0., 0., 0.4)),
+    //         particle_mesh: meshes.add(Mesh::from(Square::new(1., 1.))),
+    //         timer: Timer::from_seconds(1.3, true),
+    //         ..Default::default()
+    //     });
 
-    commands
-        .spawn_bundle(SimpleMeshBundle {
-            transform: Transform::from_xyz(0.0, 1.0, 0.0),
-            ..Default::default()
-        })
-        .insert(ParticleSystem {
-            lifetime: 0.7,
-            buffer_quantity: 5,
-            spawn_quantity: 2,
-            image: fire2.clone(),
-            particle_velocity: Value::Range(0.5, 1.0),
-            spawn_shape: SpawnShape::Cone(0.5),
-            particle_color: ColorOrGradient::Color(Color::rgba(0., 0., 0., 0.4)),
-            particle_mesh: meshes.add(Mesh::from(Square::new(1., 1.))),
-            timer: Timer::from_seconds(1.4, true),
-            ..Default::default()
-        });
+    // commands
+    //     .spawn_bundle(SimpleMeshBundle {
+    //         transform: Transform::from_xyz(0.0, 1.0, 0.0),
+    //         ..Default::default()
+    //     })
+    //     .insert(ParticleSystem {
+    //         lifetime: 0.7,
+    //         buffer_quantity: 5,
+    //         spawn_quantity: 2,
+    //         image: fire2.clone(),
+    //         particle_velocity: Value::Range(0.5, 1.0),
+    //         spawn_shape: SpawnShape::Cone(0.5),
+    //         particle_color: ColorOrGradient::Color(Color::rgba(0., 0., 0., 0.4)),
+    //         particle_mesh: meshes.add(Mesh::from(Square::new(1., 1.))),
+    //         timer: Timer::from_seconds(1.4, true),
+    //         ..Default::default()
+    //     });
 }
 
 fn add_color_only_shader(asset_server: Res<AssetServer>, mut pipeline: ResMut<CorePipeline>) {

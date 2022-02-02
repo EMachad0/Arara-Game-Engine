@@ -52,10 +52,14 @@ impl Color {
     pub const YELLOW: Color = Color::rgb(1.0, 1.0, 0.0);
     pub const YELLOW_GREEN: Color = Color::rgb(0.6, 0.8, 0.2);
 
+    /// Create a color from rgb values
+    /// Values must be between [0..1]
     pub const fn rgb(r: f32, g: f32, b: f32) -> Color {
         Color::Rgba { r, g, b, a: 1.0 }
     }
 
+    /// Create a color from rgba values
+    /// Values must be between [0..1]
     pub const fn rgba(r: f32, g: f32, b: f32, a: f32) -> Color {
         Color::Rgba { r, g, b, a }
     }
