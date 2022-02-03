@@ -4,7 +4,7 @@
 in vec3 v_position;
 in vec3 v_normal;
 in vec4 v_color;
-in vec2 v_tex_cords;
+in vec2 v_tex_coord;
 flat in uint v_tex_id;
 
 out vec4 color;
@@ -14,6 +14,6 @@ uniform samplers {
 };
 
 void main() {
-    vec4 tex_color = texture(tex[v_tex_id], v_tex_cords) * v_color;
+    vec4 tex_color = texture(tex[v_tex_id], v_tex_coord) * v_color;
     color = tex_color; 
 }

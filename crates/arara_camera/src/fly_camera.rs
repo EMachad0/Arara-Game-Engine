@@ -124,7 +124,7 @@ impl Default for FlyCamera {
         Self {
             accel: 1.5,
             max_speed: 0.5,
-            sensitivity: 3.0,
+            sensitivity: 20.0,
             friction: 1.0,
             pitch: 0.0,
             yaw: 0.0,

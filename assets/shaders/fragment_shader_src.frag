@@ -4,7 +4,7 @@
 in vec3 v_position;
 in vec3 v_normal;
 in vec4 v_color;
-in vec2 v_tex_cords;
+in vec2 v_tex_coord;
 flat in uint v_tex_id;
 
 out vec4 color;
@@ -22,7 +22,7 @@ const float shineness = 32.0;
 const vec3 light_color = vec3(0.3);
 
 void main() {
-    vec4 tex_color = texture(tex[v_tex_id], v_tex_cords) * v_color;
+    vec4 tex_color = texture(tex[v_tex_id], v_tex_coord) * v_color;
     vec3 base_color = vec3(tex_color);
 
     vec3 normal = normalize(v_normal);

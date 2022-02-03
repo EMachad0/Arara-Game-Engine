@@ -7,13 +7,13 @@ uniform camera {
 in vec3 i_position;
 in vec3 i_normal;
 in vec4 i_color;
-in vec2 i_tex_cords;
+in vec2 i_tex_coord;
 in uint i_tex_id;
 
 out vec3 v_position;
 out vec3 v_normal;
 out vec4 v_color;
-out vec2 v_tex_cords;
+out vec2 v_tex_coord;
 flat out uint v_tex_id;
 
 void main() {
@@ -22,6 +22,6 @@ void main() {
     v_normal = i_normal;
     v_position = i_position;
     v_color = i_color;
-    v_tex_cords = i_tex_cords;
+    v_tex_coord = i_tex_coord;
     v_tex_id = i_tex_id;
 }

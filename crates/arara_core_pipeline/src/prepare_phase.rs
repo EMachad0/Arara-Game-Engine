@@ -13,11 +13,11 @@ pub struct Vertex {
     i_position: [f32; 3],
     i_normal: [f32; 3],
     i_color: [f32; 4],
-    i_tex_cords: [f32; 2],
+    i_tex_coord: [f32; 2],
     i_tex_id: u32,
 }
 
-glium::implement_vertex!(Vertex, i_position, i_normal, i_color, i_tex_cords, i_tex_id);
+glium::implement_vertex!(Vertex, i_position, i_normal, i_color, i_tex_coord, i_tex_id);
 
 #[derive(Component)]
 pub struct CorePipelineBatch {
@@ -80,7 +80,7 @@ pub(crate) fn prepare_core_pipeline_phase(
                 i_position: [position.x, position.y, position.z],
                 i_normal: normal.into(),
                 i_color: color,
-                i_tex_cords: vertex.tex_coord,
+                i_tex_coord: vertex.tex_coord,
                 i_tex_id: tex_id as u32,
             });
         }
