@@ -90,7 +90,7 @@ impl From<Icosphere> for Mesh {
             vertices.push(Vertex {
                 position: points[i].into(),
                 normal: normals[i].into(),
-                tex_coords: uvs[i].into(),
+                tex_coord: uvs[i].into(),
             });
         }
 

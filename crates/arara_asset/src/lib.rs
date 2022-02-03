@@ -1,16 +1,17 @@
 mod asset_server;
 mod assets;
 pub mod diagnostic;
-mod file_io;
 #[cfg(feature = "filesystem_watcher")]
 mod filesystem_watcher;
 mod handle;
 mod info;
+mod io;
 mod loader;
 mod path;
 mod task_pool;
 
 pub mod prelude {
+    #[doc(hidden)]
     pub use crate::{
         diagnostic::AssetCountDiagnosticsPlugin, AddAsset, AssetEvent, AssetServer, Assets, Handle,
         HandleUntyped,
@@ -20,17 +21,14 @@ pub mod prelude {
 pub use arara_utils::BoxedFuture;
 pub use asset_server::*;
 pub use assets::*;
-pub use file_io::*;
 pub use handle::*;
 pub use info::*;
+pub use io::*;
 pub use loader::*;
 pub use path::*;
 
-use arara_app::{App, Plugin};
-use arara_ecs::{
-    schedule::{StageLabel, SystemStage},
-    system::IntoSystem,
-};
+use arara_app::{prelude::Plugin, App};
+use arara_ecs::schedule::{StageLabel, SystemStage};
 use bevy_tasks::IoTaskPool;
 
 /// The names of asset stages in an App Schedule
@@ -105,16 +103,10 @@ impl Plugin for AssetPlugin {
         // .register_type::<HandleId>()
         .add_system_to_stage(
             arara_app::CoreStage::PreUpdate,
-            asset_server::free_unused_assets_system.system(),
+            asset_server::free_unused_assets_system,
         );
 
-        #[cfg(all(
-            feature = "filesystem_watcher",
-            all(not(target_arch = "wasm32"), not(target_os = "android"))
-        ))]
-        app.add_system_to_stage(
-            AssetStage::LoadAssets,
-            file_io::filesystem_watcher_system.system(),
-        );
+        #[cfg(feature = "filesystem_watcher")]
+        app.add_system_to_stage(AssetStage::LoadAssets, io::filesystem_watcher_system);
     }
 }

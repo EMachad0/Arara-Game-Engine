@@ -26,22 +26,22 @@ impl From<Square> for Mesh {
         let vertices = vec![
             Vertex {
                 position: [-hx, -hy, 0.0],
-                tex_coords: [0.0, 0.0],
+                tex_coord: [0.0, 0.0],
                 normal,
             },
             Vertex {
                 position: [hx, -hy, 0.0],
-                tex_coords: [1.0, 0.0],
+                tex_coord: [1.0, 0.0],
                 normal,
             },
             Vertex {
                 position: [hx, hy, 0.0],
-                tex_coords: [1.0, 1.0],
+                tex_coord: [1.0, 1.0],
                 normal,
             },
             Vertex {
                 position: [-hx, hy, 0.0],
-                tex_coords: [0.0, 1.0],
+                tex_coord: [0.0, 1.0],
                 normal,
             },
         ];

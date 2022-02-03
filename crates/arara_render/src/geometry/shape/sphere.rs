@@ -58,7 +58,7 @@ impl From<Sphere> for Mesh {
                 vertices.push(Vertex {
                     position,
                     normal,
-                    tex_coords,
+                    tex_coord: tex_coords,
                 });
             }
         }

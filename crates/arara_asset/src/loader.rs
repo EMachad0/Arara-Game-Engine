@@ -6,6 +6,7 @@ use anyhow::Result;
 use arara_ecs::system::{Res, ResMut};
 use arara_utils::{BoxedFuture, HashMap};
 use bevy_reflect::{TypeUuid, TypeUuidDynamic};
+use bevy_tasks::TaskPool;
 use crossbeam_channel::{Receiver, Sender};
 use downcast_rs::{impl_downcast, Downcast};
 use std::path::Path;
@@ -42,13 +43,19 @@ impl<T: Asset> LoadedAsset<T> {
         }
     }
 
-    pub fn with_dependency(mut self, asset_path: AssetPath) -> Self {
+    pub fn add_dependency(&mut self, asset_path: AssetPath) {
         self.dependencies.push(asset_path.to_owned());
+    }
+
+    pub fn with_dependency(mut self, asset_path: AssetPath) -> Self {
+        self.add_dependency(asset_path);
         self
     }
 
-    pub fn with_dependencies(mut self, asset_paths: Vec<AssetPath<'static>>) -> Self {
-        self.dependencies.extend(asset_paths);
+    pub fn with_dependencies(mut self, mut asset_paths: Vec<AssetPath<'static>>) -> Self {
+        for asset_path in asset_paths.drain(..) {
+            self.add_dependency(asset_path);
+        }
         self
     }
 }
@@ -75,6 +82,7 @@ pub struct LoadContext<'a> {
     pub(crate) labeled_assets: HashMap<Option<String>, BoxedLoadedAsset>,
     pub(crate) path: &'a Path,
     pub(crate) version: usize,
+    pub(crate) task_pool: &'a TaskPool,
 }
 
 impl<'a> LoadContext<'a> {
@@ -83,6 +91,7 @@ impl<'a> LoadContext<'a> {
         ref_change_channel: &'a RefChangeChannel,
         asset_io: &'a dyn AssetIo,
         version: usize,
+        task_pool: &'a TaskPool,
     ) -> Self {
         Self {
             ref_change_channel,
@@ -90,11 +99,12 @@ impl<'a> LoadContext<'a> {
             labeled_assets: Default::default(),
             version,
             path,
+            task_pool,
         }
     }
 
     pub fn path(&self) -> &Path {
-        &self.path
+        self.path
     }
 
     pub fn has_labeled_asset(&self, label: &str) -> bool {
@@ -131,17 +141,21 @@ impl<'a> LoadContext<'a> {
         }
         asset_metas
     }
+
+    pub fn task_pool(&self) -> &TaskPool {
+        self.task_pool
+    }
 }
 
 /// The result of loading an asset of type `T`
 #[derive(Debug)]
 pub struct AssetResult<T> {
-    pub asset: T,
+    pub asset: Box<T>,
     pub id: HandleId,
     pub version: usize,
 }
 
-/// A channel to send and receive [AssetResult]s
+/// A channel to send and receive [`AssetResult`]s
 #[derive(Debug)]
 pub struct AssetLifecycleChannel<T> {
     pub sender: Sender<AssetLifecycleEvent<T>>,
@@ -164,8 +178,8 @@ impl<T: AssetDynamic> AssetLifecycle for AssetLifecycleChannel<T> {
         if let Ok(asset) = asset.downcast::<T>() {
             self.sender
                 .send(AssetLifecycleEvent::Create(AssetResult {
+                    asset,
                     id,
-                    asset: *asset,
                     version,
                 }))
                 .unwrap()
@@ -189,10 +203,10 @@ impl<T> Default for AssetLifecycleChannel<T> {
     }
 }
 
-/// Updates the [Assets] collection according to the changes queued up by [AssetServer].
+/// Updates the [`Assets`] collection according to the changes queued up by [`AssetServer`].
 pub fn update_asset_storage_system<T: Asset + AssetDynamic>(
     asset_server: Res<AssetServer>,
-    mut assets: ResMut<Assets<T>>,
+    assets: ResMut<Assets<T>>,
 ) {
-    asset_server.update_asset_storage(&mut assets);
+    asset_server.update_asset_storage(assets);
 }

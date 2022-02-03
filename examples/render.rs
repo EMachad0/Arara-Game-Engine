@@ -26,17 +26,25 @@ fn add_shapes(
 ) {
     let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
     let img1: Handle<Image> = asset_server.load("textures/fire/fire1.png");
+    let monkey_mesh = asset_server.load("models/Monkey.gltf#Mesh0/Primitive0");
 
     commands.spawn_bundle(SimpleMeshBundle {
         mesh: meshes.add(Mesh::from(Cuboid::new(2.0, 2.0, 2.0))),
-        transform: Transform::from_translation(Vec3::new(2.0, 1.5, -1.0)),
+        transform: Transform::from_xyz(2.0, 1.5, -1.0),
         color: Color::PURPLE,
+        ..Default::default()
+    });
+
+        commands.spawn_bundle(SimpleMeshBundle {
+        mesh: monkey_mesh,
+        transform: Transform::from_xyz(2.0, 3.5, -1.0),
+        color: Color::BLUE,
         ..Default::default()
     });
 
     commands.spawn_bundle(SimpleMeshBundle {
         mesh: meshes.add(Mesh::from(Sphere::new(32, 16, 1.0))),
-        transform: Transform::from_translation(Vec3::new(-2.0, 1.5, -1.0)),
+        transform: Transform::from_xyz(-2.0, 1.5, -1.0),
         color: Color::PURPLE,
         image: img0.clone(),
         ..Default::default()
@@ -44,7 +52,7 @@ fn add_shapes(
 
     commands.spawn_bundle(SimpleMeshBundle {
         mesh: meshes.add(Mesh::from(Icosphere::new(4, 1.0))),
-        transform: Transform::from_translation(Vec3::new(0.0, 3.0, 3.0)),
+        transform: Transform::from_xyz(0.0, 3.0, 3.0),
         color: Color::PURPLE,
         image: img1.clone(),
         ..Default::default()

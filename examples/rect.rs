@@ -16,7 +16,7 @@ fn main() {
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let img0: Handle<Image> = asset_server.load("textures/joaozinho.png");
-    
+
     for i in 0..100 {
         for j in 0..100 {
             let x = 10.0 * i as f32;

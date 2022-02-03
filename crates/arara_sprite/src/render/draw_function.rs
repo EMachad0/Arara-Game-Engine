@@ -12,7 +12,7 @@ use arara_render::{
 use arara_window::Window;
 use glium::implement_uniform_block;
 
-use crate::render::{prepare_phase::SpriteBatch, phase_items::Transparent2D};
+use crate::render::{phase_items::Transparent2D, prepare_phase::SpriteBatch};
 
 #[derive(Debug, Default, Clone, Copy)]
 struct CameraUniformBuffer {
@@ -54,8 +54,7 @@ impl DrawSprite {
 
 impl Draw<Transparent2D> for DrawSprite {
     fn draw<'w>(&mut self, world: &'w World, frame: &mut TrackedFrame, item: &Transparent2D) {
-        let (window, texture_buffer, pipeline_cache, view, query) =
-            self.params.get(world);
+        let (window, texture_buffer, pipeline_cache, view, query) = self.params.get(world);
 
         let display = window.display();
 
@@ -78,18 +77,12 @@ impl Draw<Transparent2D> for DrawSprite {
             None => return,
         };
 
-        let SpriteBatch {
-            vertices,
-            indices,
-        } = query.get(item.entity()).unwrap();
+        let SpriteBatch { vertices, indices } = query.get(item.entity()).unwrap();
 
         let vertex_buffer = glium::VertexBuffer::new(display, &vertices).unwrap();
-        let index_buffer: glium::IndexBuffer<u32> = glium::IndexBuffer::new(
-            display,
-            glium::index::PrimitiveType::TrianglesList,
-            indices,
-        ) 
-        .unwrap();
+        let index_buffer: glium::IndexBuffer<u32> =
+            glium::IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, indices)
+                .unwrap();
 
         frame
             .draw(

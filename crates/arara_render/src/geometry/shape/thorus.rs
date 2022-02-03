@@ -68,7 +68,7 @@ impl From<Thorus> for Mesh {
                 vertices.push(Vertex {
                     position: [x, y, z],
                     normal: normal.into(),
-                    tex_coords,
+                    tex_coord: tex_coords,
                 });
             }
         }

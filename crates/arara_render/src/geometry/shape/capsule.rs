@@ -88,7 +88,7 @@ impl From<Capsule> for Mesh {
             Vertex {
                 position: [0.0, 0.0, 0.0],
                 normal: [0.0, 0.0, 0.0],
-                tex_coords: [0.0, 0.0],
+                tex_coord: [0.0, 0.0],
             };
             vert_len
         ];
@@ -125,7 +125,7 @@ impl From<Capsule> for Mesh {
             vertices[j] = Vertex {
                 position: [0.0, summit, 0.0],
                 normal: [0.0, 1.0, 0.0],
-                tex_coords: [s_texture_polar, 1.0],
+                tex_coord: [s_texture_polar, 1.0],
             };
 
             // South.
@@ -133,7 +133,7 @@ impl From<Capsule> for Mesh {
             vertices[idx] = Vertex {
                 position: [0.0, -summit, 0.0],
                 normal: [0.0, -1.0, 0.0],
-                tex_coords: [s_texture_polar, 1.0],
+                tex_coord: [s_texture_polar, 1.0],
             };
         }
 
@@ -152,7 +152,7 @@ impl From<Capsule> for Mesh {
             vertices[idxn] = Vertex {
                 position: [rtc.x, half_depth, -rtc.y],
                 normal: [tc.x, 0.0, -tc.y],
-                tex_coords: [s_texture, vt_aspect_north],
+                tex_coord: [s_texture, vt_aspect_north],
             };
 
             // South equator.
@@ -160,7 +160,7 @@ impl From<Capsule> for Mesh {
             vertices[idxs] = Vertex {
                 position: [rtc.x, -half_depth, -rtc.y],
                 normal: [tc.x, 0.0, -tc.y],
-                tex_coords: [s_texture, vt_aspect_south],
+                tex_coord: [s_texture, vt_aspect_south],
             };
         }
 
@@ -211,7 +211,7 @@ impl From<Capsule> for Mesh {
                         -rho_cos_phi_north * tc.y,
                     ],
                     normal: [cos_phi_north * tc.x, -sin_phi_north, -cos_phi_north * tc.y],
-                    tex_coords: [s_texture, t_tex_north],
+                    tex_coord: [s_texture, t_tex_north],
                 };
 
                 // South hemisphere.
@@ -223,7 +223,7 @@ impl From<Capsule> for Mesh {
                         -rho_cos_phi_south * tc.y,
                     ],
                     normal: [cos_phi_south * tc.x, -sin_phi_south, -cos_phi_south * tc.y],
-                    tex_coords: [s_texture, t_tex_south],
+                    tex_coord: [s_texture, t_tex_south],
                 };
             }
         }
@@ -250,7 +250,7 @@ impl From<Capsule> for Mesh {
                     vertices[idx_cyl_lat] = Vertex {
                         position: [rtc.x, z, -rtc.y],
                         normal: [tc.x, 0.0, -tc.y],
-                        tex_coords: [s_texture, t_texture],
+                        tex_coord: [s_texture, t_texture],
                     };
 
                     idx_cyl_lat += 1;

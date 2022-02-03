@@ -36,7 +36,7 @@ impl From<Circle> for Mesh {
             vertices.push(Vertex {
                 position,
                 normal,
-                tex_coords,
+                tex_coord: tex_coords,
             });
         }
 
@@ -51,7 +51,7 @@ impl From<Circle> for Mesh {
         vertices.push(Vertex {
             position: [0.0, 0.0, 0.0],
             normal,
-            tex_coords: [0.5, 0.5],
+            tex_coord: [0.5, 0.5],
         });
 
         Self { vertices, indices }

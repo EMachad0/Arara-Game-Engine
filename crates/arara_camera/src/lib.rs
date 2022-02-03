@@ -1,22 +1,24 @@
 mod bundle;
 mod camera;
 mod fly_camera;
-mod projection;
 mod mouse;
+mod projection;
 
 pub use bundle::*;
 pub use camera::*;
 pub use fly_camera::*;
-pub use projection::*;
 pub use mouse::*;
+pub use projection::*;
 
 pub mod prelude {
     pub use crate::{
-        bundle::{FlyCameraBundle, PerspectiveCameraBundle, OrthographicCameraBundle, FlyCamera2dBundle},
+        bundle::{
+            FlyCamera2dBundle, FlyCameraBundle, OrthographicCameraBundle, PerspectiveCameraBundle,
+        },
         camera::Camera,
         fly_camera::{FlyCamera, FlyCamera2d},
-        projection::{PerspectiveProjection, OrthographicProjection},
         mouse::WorldMouse2d,
+        projection::{OrthographicProjection, PerspectiveProjection},
     };
 }
 

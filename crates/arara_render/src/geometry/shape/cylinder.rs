@@ -45,7 +45,7 @@ impl From<Cylinder> for Mesh {
             vertices.push(Vertex {
                 position,
                 normal,
-                tex_coords,
+                tex_coord: tex_coords,
             });
         }
 
@@ -56,7 +56,7 @@ impl From<Cylinder> for Mesh {
             vertices.push(Vertex {
                 position,
                 normal,
-                tex_coords,
+                tex_coord: tex_coords,
             });
         }
 
@@ -82,7 +82,7 @@ impl From<Cylinder> for Mesh {
         vertices.push(Vertex {
             position: [0.0, 0.0, -height / 2.0],
             normal: base_normal,
-            tex_coords: [0.5, 0.5],
+            tex_coord: [0.5, 0.5],
         });
 
         for vertice in circle_points.iter() {
@@ -95,7 +95,7 @@ impl From<Cylinder> for Mesh {
             vertices.push(Vertex {
                 position,
                 normal: base_normal,
-                tex_coords,
+                tex_coord: tex_coords,
             });
         }
 
@@ -115,7 +115,7 @@ impl From<Cylinder> for Mesh {
         vertices.push(Vertex {
             position: [0.0, 0.0, height / 2.0],
             normal: top_normal,
-            tex_coords: [0.5, 0.5],
+            tex_coord: [0.5, 0.5],
         });
 
         for vertice in circle_points.iter() {
@@ -124,7 +124,7 @@ impl From<Cylinder> for Mesh {
             vertices.push(Vertex {
                 position,
                 normal: top_normal,
-                tex_coords,
+                tex_coord: tex_coords,
             });
         }
 

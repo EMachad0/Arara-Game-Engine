@@ -1,6 +1,6 @@
 use arara_asset::Handle;
 use arara_ecs::component::Component;
-use arara_render::{Image, Color};
+use arara_render::{Color, Image};
 use glam::Mat4;
 
 #[derive(Component, Default, Clone)]

@@ -9,11 +9,11 @@ use crate::{render::extract_phase::ExtractedSprites, sprite::ExtractedSprite, QU
 pub struct Vertex {
     i_position: [f32; 3],
     i_color: [f32; 4],
-    i_tex_cords: [f32; 2],
+    i_tex_coord: [f32; 2],
     i_tex_id: u32,
 }
 
-glium::implement_vertex!(Vertex, i_position, i_color, i_tex_cords, i_tex_id);
+glium::implement_vertex!(Vertex, i_position, i_color, i_tex_coord, i_tex_id);
 
 #[derive(Component)]
 pub struct SpriteBatch {
@@ -60,7 +60,7 @@ pub(crate) fn prepare_sprite_phase(
             vertices.push(Vertex {
                 i_position: [position.x, position.y, position.z],
                 i_color: color,
-                i_tex_cords: vertex.tex_coords,
+                i_tex_coord: vertex.tex_coord,
                 i_tex_id: tex_id as u32,
             });
         }
@@ -70,4 +70,3 @@ pub(crate) fn prepare_sprite_phase(
     }
     commands.spawn().insert(SpriteBatch { vertices, indices });
 }
-

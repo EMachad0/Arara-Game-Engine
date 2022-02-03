@@ -24,4 +24,3 @@ pub fn move_speedy(mut query: Query<(&mut Transform, &mut Speedy)>) {
         speedy.acceleration = Vec2::ZERO;
     }
 }
-

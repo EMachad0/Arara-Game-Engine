@@ -3,10 +3,10 @@ use arara_ecs::system::{NonSend, NonSendMut, Res};
 use arara_utils::tracing::trace;
 use arara_utils::HashMap;
 use arara_window::Window;
+use glium::implement_uniform_block;
 use glium::texture::{
     RawImage2d, ResidentTexture, SrgbTexture2d, TextureHandle as GliumTextureHandle,
 };
-use glium::implement_uniform_block;
 use std::collections::VecDeque;
 
 use crate::{Image, DEFAULT_IMAGE_HANDLE};
@@ -80,8 +80,7 @@ impl TextureBuffer {
 
     pub fn texture_uniform_buffer(&self) -> TextureUniformBuffer<'_> {
         let default_handle = GliumTextureHandle::new(
-            self
-                .textures
+            self.textures
                 .get(&DEFAULT_IMAGE_HANDLE.typed())
                 .unwrap_or_else(|| self.textures.iter().next().expect("No texture in buffer").1)
                 .texture
@@ -103,7 +102,8 @@ impl TextureBuffer {
             meta.frames_since_last_use += 1;
             meta.taken = false;
             if meta.frames_since_last_use > 3 {
-                self.available_positions.push_back(meta.uniform_buffer_position);
+                self.available_positions
+                    .push_back(meta.uniform_buffer_position);
             }
         }
         self.textures

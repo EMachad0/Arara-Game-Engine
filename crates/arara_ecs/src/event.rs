@@ -4,11 +4,7 @@ use crate::system::{Local, Res, ResMut, SystemParam};
 use crate::{self as arara_ecs, system::Resource};
 #[cfg(feature = "event_trace")]
 use arara_utils::tracing::trace;
-use std::{
-    fmt,
-    hash::Hash,
-    marker::PhantomData,
-};
+use std::{fmt, hash::Hash, marker::PhantomData};
 
 /// An `EventId` uniquely identifies an event.
 ///

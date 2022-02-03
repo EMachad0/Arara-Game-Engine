@@ -80,7 +80,7 @@ pub(crate) fn prepare_core_pipeline_phase(
                 i_position: [position.x, position.y, position.z],
                 i_normal: normal.into(),
                 i_color: color,
-                i_tex_cords: vertex.tex_coords,
+                i_tex_cords: vertex.tex_coord,
                 i_tex_id: tex_id as u32,
             });
         }

@@ -10,14 +10,14 @@ mod queue_phase;
 use arara_app::{App, Plugin, StartupStage};
 use arara_ecs::system::NonSend;
 use arara_render::{
-    DrawFunctions, RenderPhases, RenderStage, SpecializedPipelines, clear_phase_system, RenderPhase,
+    clear_phase_system, DrawFunctions, RenderPhase, RenderPhases, RenderStage, SpecializedPipelines,
 };
 use arara_utils::tracing::info;
 use arara_window::Window;
 pub use coordinate_system::{CoordinateSystem, CoordinateSystemPlugin};
 pub use core_pipeline_entities::{BPLight, SimpleMeshBundle};
 use draw_functions::DrawSimpleMesh;
-use extract_phase::{ExtractedCorePipelineEntitys, extract_core_pipeline_entities};
+use extract_phase::{extract_core_pipeline_entities, ExtractedCorePipelineEntitys};
 use glium::{Api, Profile, Version};
 pub use phase_items::{Opaque3D, Transparent3D};
 pub use pipelines::{CorePipeline, DefaultShader};
@@ -41,14 +41,8 @@ impl Plugin for CorePipelinePlugin {
             .add_system_to_stage(RenderStage::Extract, extract_core_pipeline_entities)
             .add_system_to_stage(RenderStage::Prepare, prepare_core_pipeline_phase)
             .add_system_to_stage(RenderStage::Queue, queue_core_pipeline_phase)
-            .add_system_to_stage(
-                RenderStage::Cleanup,
-                clear_phase_system::<Opaque3D>,
-            )
-            .add_system_to_stage(
-                RenderStage::Cleanup,
-                clear_phase_system::<Transparent3D>,
-            );
+            .add_system_to_stage(RenderStage::Cleanup, clear_phase_system::<Opaque3D>)
+            .add_system_to_stage(RenderStage::Cleanup, clear_phase_system::<Transparent3D>);
 
         let draw_simple_mesh = DrawSimpleMesh::new(&mut app.world);
         app.world

@@ -1,0 +1,29 @@
+[package]
+name = "arara_gltf"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# arara
+arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
+arara_app = { path = "../arara_app", version = "0.1.0" }
+arara_asset = { path = "../arara_asset", version = "0.1.0" }
+arara_render = { path = "../arara_render", version = "0.1.0" }
+arara_transform = { path = "../arara_transform", version = "0.1.0" }
+arara_utils = { path = "../arara_utils", version = "0.1.0" }
+arara_logger = { path = "../arara_logger", version = "0.1.0" }
+
+# other
+glium = "*"
+glam = "*"
+bevy_reflect = "*"
+gltf = { version = "0.16.0", default-features = false, features = [
+    "KHR_lights_punctual",
+    "KHR_materials_unlit",
+    "names",
+    "utils",
+] }
+thiserror = "1.0"
+anyhow = "1.0.4"
+base64 = "0.13.0"
+percent-encoding = "2.1"

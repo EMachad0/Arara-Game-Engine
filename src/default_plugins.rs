@@ -16,5 +16,6 @@ impl PluginGroup for DefaultPlugins {
         group.add(arara_transform::TransformPlugin);
         group.add(arara_camera::CameraPlugin);
         group.add(arara_camera::FlyCameraPlugin);
+        group.add(arara_gltf::GltfPlugin);
     }
 }

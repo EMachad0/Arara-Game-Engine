@@ -1,4 +1,6 @@
-use crate::{Camera, FlyCamera, FlyCamera2d, OrthographicProjection, PerspectiveProjection, WorldMouse2d};
+use crate::{
+    Camera, FlyCamera, FlyCamera2d, OrthographicProjection, PerspectiveProjection, WorldMouse2d,
+};
 use arara_ecs::bundle::Bundle;
 use arara_transform::{GlobalTransform, Transform};
 
