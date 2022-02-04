@@ -18,6 +18,7 @@ fn main() {
         .add_startup_system_to_stage(StartupStage::PostStartup, draw_paths)
         .add_system(steer)
         .add_system(move_speedy)
+        .add_system(spawn_vehicle_on_mouse_click)
         .run();
 }
 
@@ -57,6 +58,9 @@ fn steer(path_query: Query<&Path>, mut query: Query<(&Transform, &mut Speedy, &F
     }
 }
 
+// pub const CAR_IMAGE_HANDLE: HandleUntyped =
+//     HandleUntyped::weak_from_u64(Image::TYPE_UUID, 14324239193847198473);
+
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>, window: NonSend<Window>) {
     let img0: Handle<Image> = asset_server.load("textures/car_40x20.png");
 
@@ -91,10 +95,49 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, window: NonSend
             })
             .insert(FollowPath(path))
             .insert(Speedy {
-                max_speed: 5.0,
-                max_force: 0.2,
+                max_speed: 2.0 + rand::random::<f32>() * 8.0,
+                max_force: rand::random(),
                 ..Default::default()
             });
+    }
+}
+
+fn spawn_vehicle_on_mouse_click(
+    mut commands: Commands,
+    mut mouse_button_input_events: EventReader<MouseButtonInput>,
+    path_query: Query<Entity, With<Path>>,
+    asset_server: Res<AssetServer>,
+    mouse_query: Query<&WorldMouse2d>,
+) {
+    let path = path_query.single();
+    let img0: Handle<Image> = asset_server.load("textures/car_40x20.png");
+    for event in mouse_button_input_events.iter() {
+        if let MouseButtonInput {
+            button: MouseButton::Left,
+            state: ElementState::Pressed,
+        } = event
+        {
+            let mouse = mouse_query.single();
+            if let Some(pos) = mouse.pos() {
+                commands
+                    .spawn_bundle(SpriteBundle {
+                        transform: Transform {
+                            translation: vec3(pos.x, pos.y, 0.0),
+                            scale: vec3(40.0, 20.0, 1.0),
+                            ..Default::default()
+                        },
+                        color: Color::rgb(rand::random(), rand::random(), rand::random()),
+                        image: img0.clone(),
+                        ..Default::default()
+                    })
+                    .insert(FollowPath(path))
+                    .insert(Speedy {
+                        max_speed: 2.0 + rand::random::<f32>() * 8.0,
+                        max_force: rand::random(),
+                        ..Default::default()
+                    });
+            }
+        }
     }
 }
 

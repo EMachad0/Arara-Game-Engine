@@ -10,7 +10,11 @@ use keyboard::{keyboard_input_system, KeyCode, KeyboardInput};
 use mouse::{mouse_button_input_system, MouseButton, MouseButtonInput, MouseMotion, MouseWheel};
 
 pub mod prelude {
-    pub use crate::{keyboard::KeyCode, mouse::MouseButton, Input};
+    pub use crate::{
+        keyboard::KeyCode,
+        mouse::{MouseButton, MouseButtonInput, MouseMotion, MouseWheel},
+        ElementState, Input,
+    };
 }
 
 /// Adds keyboard and mouse input to an App

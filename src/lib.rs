@@ -63,3 +63,7 @@ pub mod input {
 pub mod asset {
     pub use arara_asset::*;
 }
+
+pub mod reflect {
+    pub use bevy_reflect::*;
+}

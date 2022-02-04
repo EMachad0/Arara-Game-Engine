@@ -26,6 +26,7 @@ arara_asset = { path = "crates/arara_asset", version = "0.1.0" }
 arara_particle_system = { path = "crates/arara_particle_system", version = "0.1.0" }
 arara_ecs = { path = "crates/arara_ecs", version = "0.1.0" }
 # external
+bevy_reflect = "*"
 glium = "*"
 image = "*"
 glam = "*"
