@@ -27,8 +27,8 @@ fn setup(
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
-    let texture_handle = asset_server.load("textures/gabe-idle-run.png");
-    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(24.0, 24.0), 7, 1);
+    let texture_handle = asset_server.load("textures/megaman.png");
+    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(180.0, 180.0), 5, 2);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
     commands.spawn_bundle(OrthographicCameraBundle {
         projection: OrthographicProjection::origin_center(),
@@ -37,8 +37,8 @@ fn setup(
     commands
         .spawn_bundle(SpriteSheetBundle {
             texture_atlas: texture_atlas_handle,
-            transform: Transform::from_scale(Vec3::splat(24.0 * 6.0)),
+            transform: Transform::from_scale(Vec3::splat(180.0)),
             ..Default::default()
         })
-        .insert(Timer::from_seconds(0.1, true));
+        .insert(Timer::from_seconds(1.0 / 15.0, true));
 }
