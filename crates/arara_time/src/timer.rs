@@ -1,3 +1,5 @@
+use arara_ecs::prelude::Component;
+
 use crate::{Duration, Stopwatch};
 
 /// Tracks elapsed time. Enters the finished state once `duration` is reached.
@@ -7,7 +9,7 @@ use crate::{Duration, Stopwatch};
 /// exceeded, and can still be reset at any given point.
 ///
 /// Paused timers will not have elapsed time increased.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, Component)]
 pub struct Timer {
     stopwatch: Stopwatch,
     duration: Duration,

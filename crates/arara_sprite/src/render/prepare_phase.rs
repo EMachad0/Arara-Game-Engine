@@ -39,9 +39,10 @@ pub(crate) fn prepare_sprite_phase(
         .sort_by(|a, b| a.z.partial_cmp(&b.z).unwrap());
 
     for ExtractedSprite {
+        image_handle,
         transform,
         color,
-        image_handle,
+        uv_coord,
         z: _,
     } in extracts.items.iter()
     {
@@ -56,11 +57,18 @@ pub(crate) fn prepare_sprite_phase(
                 vertex.position[2],
                 1.0,
             );
+            let i_tex_coord = match uv_coord {
+                Some(coord) => [
+                    coord.point.x + vertex.tex_coord[0] * coord.size.x,
+                    coord.point.y + vertex.tex_coord[1] * coord.size.y,
+                ],
+                None => vertex.tex_coord,
+            };
             let position = *transform * position;
             vertices.push(Vertex {
                 i_position: [position.x, position.y, position.z],
                 i_color: color,
-                i_tex_coord: vertex.tex_coord,
+                i_tex_coord,
                 i_tex_id: tex_id as u32,
             });
         }

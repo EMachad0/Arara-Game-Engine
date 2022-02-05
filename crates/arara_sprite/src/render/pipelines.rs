@@ -33,6 +33,7 @@ impl SpecializedPipeline for SpritePipeline {
         let draw_parameters = glium::DrawParameters {
             backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockwise,
             blend: glium::draw_parameters::Blend::alpha_blending(),
+            dithering: false,
             ..Default::default()
         };
         RenderPipelineDescriptor {

@@ -1,26 +1,33 @@
 mod bundle;
 mod render;
 mod sprite;
+mod texture_atlas;
 
 use arara_app::{App, Plugin};
-use arara_asset::{Assets, HandleUntyped};
+use arara_asset::{AddAsset, Assets, HandleUntyped};
 use arara_render::{
     clear_phase_system, DrawFunctions, Mesh, RenderPhase, RenderPhases, RenderStage,
     SpecializedPipelines, Square,
 };
 use bevy_reflect::TypeUuid;
 
-use crate::render::{
-    draw_function::DrawSprite,
-    extract_phase::{extract_sprite_entities, ExtractedSprites},
-    phase_items::Transparent2D,
-    pipelines::SpritePipeline,
-    prepare_phase::prepare_sprite_phase,
-    queue_phase::queue_sprite_phase,
+use crate::{
+    render::{
+        draw_function::DrawSprite,
+        extract_phase::{extract_sprite_entities, ExtractedSprites},
+        phase_items::Transparent2D,
+        pipelines::SpritePipeline,
+        prepare_phase::prepare_sprite_phase,
+        queue_phase::queue_sprite_phase,
+    },
+    texture_atlas::TextureAtlas,
 };
 
 pub mod prelude {
-    pub use crate::bundle::SpriteBundle;
+    pub use crate::{
+        bundle::{SpriteBundle, SpriteSheetBundle},
+        texture_atlas::{TextureAtlas, TextureAtlasSprite},
+    };
 }
 
 pub const QUAD_MESH_HANDLE: HandleUntyped =
@@ -31,7 +38,8 @@ pub struct SpritePlugin;
 
 impl Plugin for SpritePlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<SpritePipeline>()
+        app.add_asset::<TextureAtlas>()
+            .init_resource::<SpritePipeline>()
             .init_resource::<SpecializedPipelines<SpritePipeline>>()
             .init_resource::<DrawFunctions<Transparent2D>>()
             .init_resource::<RenderPhase<Transparent2D>>()

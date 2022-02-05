@@ -160,6 +160,15 @@ impl Default for OrthographicProjection {
     }
 }
 
+impl OrthographicProjection {
+    pub fn origin_center() -> Self {
+        Self {
+            window_origin: WindowOrigin::Center,
+            ..Default::default()
+        }
+    }
+}
+
 pub fn process_resize<T: CameraProjection + Component>(
     mut event_reader: EventReader<WindowResized>,
     mut projections: Query<(&mut Camera, &mut T)>,
