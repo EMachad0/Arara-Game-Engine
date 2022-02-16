@@ -35,6 +35,7 @@ impl FromWorld for Window {
         let size = dpi::LogicalSize::new(window_props.width, window_props.height);
         let wb = glutin::window::WindowBuilder::new()
             .with_inner_size(size)
+            .with_resizable(window_props.resizable)
             .with_title(window_props.title.clone());
         let cb = glutin::ContextBuilder::new()
             .with_depth_buffer(24)
