@@ -5,7 +5,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
-        .add_plugin(CoordinateSystemPlugin)
+        // .add_plugin(CoordinateSystemPlugin)
         .insert_resource(CoordinateSystem {
             count: 10,
             lenght: 10.0,

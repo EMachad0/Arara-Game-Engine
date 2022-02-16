@@ -26,8 +26,11 @@ pub struct Window {
 
 impl FromWorld for Window {
     fn from_world(world: &mut World) -> Self {
+        let window_props = world
+            .get_resource::<WindowProps>()
+            .and_then(|w| Some(w.to_owned()))
+            .unwrap_or_default();
         let event_loop = world.get_non_send_resource::<EventLoop>().unwrap();
-        let window_props = WindowProps::default();
 
         let size = dpi::LogicalSize::new(window_props.width, window_props.height);
         let wb = glutin::window::WindowBuilder::new()

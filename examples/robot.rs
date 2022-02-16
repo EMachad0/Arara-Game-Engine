@@ -4,7 +4,7 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugin(FrameTimeDiagnosticPlugin)
-        .add_plugin(CoordinateSystemPlugin)
+        // .add_plugin(CoordinateSystemPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
         .add_plugin(LogDiagnosticPlugin {
             wait_duration: Duration::from_secs(1),
