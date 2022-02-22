@@ -121,6 +121,9 @@ fn reset(
         }
         let vy = 1.0 - aux;
         ball.velocity = vec2(vx, vy);
+        if let GameState::DEFEAT = game_state.game_state {
+            ball.speed = 1.0;
+        }
 
         let mut player_query = query.q1();
         let mut player_transform = player_query.single_mut();
