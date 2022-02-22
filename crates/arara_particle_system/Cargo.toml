@@ -14,5 +14,5 @@ arara_asset = { path = "../arara_asset", version = "0.1.0" }
 arara_camera = { path = "../arara_camera", version = "0.1.0" }
 arara_time = { path = "../arara_time", version = "0.1.0" }
 arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
-glam = "*"
-rand = "0.8.4"
+glam = "0.20.2"
+rand = "0.8.5"

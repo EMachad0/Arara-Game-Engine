@@ -16,13 +16,13 @@ arara_utils = { path = "../arara_utils", version = "0.1.0" }
 arara_asset = { path = "../arara_asset", version = "0.1.0" }
 arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
 # other
-bevy_reflect = "*"
+bevy_reflect = "0.6.0"
 glium = "0.31.0"
-glam = "*"
-hex = "*"
-image = "*"
-thiserror = "*"
-anyhow = "*"
-hexasphere = "*"
-dyn-clone = "*"
-parking_lot = "*"
+glam = "0.20.2"
+hex = "0.4.3"
+image = "0.24.1"
+thiserror = "1.0.30"
+anyhow = "1.0.55"
+hexasphere = "7.0.0"
+dyn-clone = "1.0.4"
+parking_lot = "0.12.0"

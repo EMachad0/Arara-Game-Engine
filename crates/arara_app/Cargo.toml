@@ -11,5 +11,5 @@ trace = []
 arara_utils = { path = "../arara_utils", version = "0.1.0" }
 arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
 # external
-glium = "*"
-cgmath = "*"
+glium = "0.31.0"
+cgmath = "0.18.0"

@@ -12,5 +12,5 @@ arara_transform = { path = "../arara_transform", version = "0.1.0" }
 arara_window = { path = "../arara_window", version = "0.1.0" }
 arara_render = { path = "../arara_render", version = "0.1.0" }
 # external
-glium = "*"
-glam = "*"
+glium = "0.31.0"
+glam = "0.20.2"

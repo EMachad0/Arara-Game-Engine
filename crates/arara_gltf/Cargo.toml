@@ -14,16 +14,16 @@ arara_utils = { path = "../arara_utils", version = "0.1.0" }
 arara_logger = { path = "../arara_logger", version = "0.1.0" }
 
 # other
-glium = "*"
-glam = "*"
-bevy_reflect = "*"
+glium = "0.31.0"
+glam = "0.20.2"
+bevy_reflect = "0.6.0"
 gltf = { version = "0.16.0", default-features = false, features = [
     "KHR_lights_punctual",
     "KHR_materials_unlit",
     "names",
     "utils",
 ] }
-thiserror = "1.0"
-anyhow = "1.0.4"
+thiserror = "1.0.30"
+anyhow = "1.0.55"
 base64 = "0.13.0"
-percent-encoding = "2.1"
+percent-encoding = "2.1.0"

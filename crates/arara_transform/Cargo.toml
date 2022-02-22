@@ -10,5 +10,5 @@ arara_app = { path = "../arara_app", version = "0.1.0" }
 arara_ecs = { path = "../arara_ecs", version = "0.1.0" }
 # other
 bevy_reflect = "0.6.0"
-smallvec = { version = "1.4", features = ["serde"] }
-glam = "*"
+smallvec = { version = "1.8.0", features = ["serde"] }
+glam = "0.20.2"
