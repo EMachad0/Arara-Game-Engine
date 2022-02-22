@@ -12,7 +12,7 @@ pub use window::*;
 pub use window_props::*;
 
 pub mod prelude {
-    pub use crate::{event::*, window::Window, window_props::WindowProps, WindowPlugin};
+    pub use crate::{event::*, window::{Window, WindowMode}, window_props::WindowProps, WindowPlugin};
 }
 
 use arara_app::{App, AppExit, Plugin};

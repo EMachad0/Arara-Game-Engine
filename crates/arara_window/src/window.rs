@@ -36,6 +36,7 @@ impl FromWorld for Window {
         let wb = glutin::window::WindowBuilder::new()
             .with_inner_size(size)
             .with_resizable(window_props.resizable)
+            .with_fullscreen(to_backend_window_mode(window_props.mode))
             .with_title(window_props.title.clone());
         let cb = glutin::ContextBuilder::new()
             .with_depth_buffer(24)
@@ -156,4 +157,12 @@ pub enum WindowMode {
     Windowed,
     BorderlessFullscreen,
     Fullscreen { use_size: bool },
+}
+
+fn to_backend_window_mode(window_mode: WindowMode) -> Option<glutin::window::Fullscreen>{
+    match window_mode {
+        WindowMode::Windowed => None,
+        WindowMode::BorderlessFullscreen => Some(glutin::window::Fullscreen::Borderless(None)),
+        WindowMode::Fullscreen { use_size: _ } => Some(glutin::window::Fullscreen::Borderless(None)),
+    }
 }

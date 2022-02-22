@@ -7,6 +7,12 @@ use crate::{path::*, vehicle::*};
 
 fn main() {
     App::new()
+        .insert_resource(WindowProps {
+            vsync: true,
+            title: "Arara Stering Behaviors".to_string(),
+            mode: arara_window::WindowMode::BorderlessFullscreen,
+            ..Default::default()
+        })
         .add_plugins(DefaultPlugins)
         .add_plugin(FrameTimeDiagnosticPlugin)
         .add_plugin(EntityCountDiagnosticPlugin)
