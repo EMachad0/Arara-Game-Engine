@@ -51,3 +51,7 @@ path = "examples/steering/seek.rs"
 [[example]]
 name = "path_following"
 path = "examples/steering/path_following/main.rs"
+
+[[example]]
+name = "breakout"
+path = "examples/breakout/main.rs"
