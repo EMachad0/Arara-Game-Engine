@@ -7,10 +7,10 @@ fn main() {
         .add_plugin(EntityCountDiagnosticPlugin)
         .add_plugin(AssetCountDiagnosticsPlugin::<Mesh>::default())
         .add_plugin(LogDiagnosticPlugin::default())
-        .add_startup_system(add_cubes)
-        .add_startup_system(add_camera)
-        .insert_resource(BPLight::new(-5.0, 5.0, -5.0))
+        .insert_resource(BPLight::new(-5.0, -5.0, -5.0))
         .insert_resource(ClearColor(Color::WHITE))
+        .add_startup_system(add_camera)
+        .add_startup_system(add_cubes)
         .add_system(rotate_cubes)
         .run();
 }
