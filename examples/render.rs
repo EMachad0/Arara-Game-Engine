@@ -34,7 +34,7 @@ fn add_shapes(
         ..Default::default()
     });
 
-        commands.spawn_bundle(SimpleMeshBundle {
+    commands.spawn_bundle(SimpleMeshBundle {
         mesh: monkey_mesh,
         transform: Transform::from_xyz(2.0, 3.5, -1.0),
         color: Color::BLUE,

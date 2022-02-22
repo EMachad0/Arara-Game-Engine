@@ -8,7 +8,7 @@ use arara_transform::GlobalTransform;
 
 use crate::{
     sprite::{ExtractedSprite, Sprite},
-    texture_atlas::{TextureAtlas, TextureAtlasSprite, TextureAtlasCoord},
+    texture_atlas::{TextureAtlas, TextureAtlasCoord, TextureAtlasSprite},
 };
 
 #[derive(Default)]

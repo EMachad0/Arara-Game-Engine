@@ -4,8 +4,7 @@ use crate::texture::Image;
 pub(crate) fn dynamic_image_to_image(dyn_img: image::DynamicImage) -> Image {
     // Remove this once a way to add diferent size textures is figured out
     let translucent = match dyn_img {
-        image::DynamicImage::ImageRgba8(_)
-        | image::DynamicImage::ImageRgba16(_) => true,
+        image::DynamicImage::ImageRgba8(_) | image::DynamicImage::ImageRgba16(_) => true,
         _ => false,
     };
 
